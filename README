@@ -1,0 +1,25 @@
+These are labs I've used in teaching programming to electrical
+engineering students at Glasgow university.
+
+Disclaimers:
+- All of these labs are the product of unpaid extra work that I
+  did voluntarily because the alternative was too horrible to
+  bear.  As such, the work is considerably below what I would
+  normally consider "acceptable quality" -- once the lab was good
+  enough to get students started in the right direction, I stopped
+  working on it.  I accept no blame for any faults in the labs.
+
+- I provided some input to the syllabus, but the final call was
+  always the lecturer, not me.  These labs include some stuff
+  that I don't think is useful; they even include some stuff that
+  I think is actively harmful to students learning to program.
+  (e.g. pointers, excessive amounts of sine waves)
+  Again, I accept no fault for these.
+
+
+This material is dual-licensed under:
+- Creative Commons Attribution-ShareAlike 2.5 UK: Scotland
+- the academic CRAPL license, because it's such an incredibly good
+  idea.
+
+
