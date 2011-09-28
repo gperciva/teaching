@@ -92,9 +92,10 @@ def modify_array(arr):
     # len(x) returns the length of x
     for i in range(len(arr)):
         arr[i] = math.exp(i)
+    return arr
 
 arr1 = numpy.zeros(8)
-modify_array(arr1)
+arr1 = modify_array(arr1)
 
 arr2 = numpy.zeros(6)
 # do math on entire array at once
@@ -179,17 +180,23 @@ same directory as your <code>.py</code> file.
 <pre>
 import numpy
 import scipy.io.wavfile
+convert_16_bit = float( (2**15) - 1 )
 
 sample_rate, samples = scipy.io.wavfile.read(
     "a440-1second.wav")
 print "Data type is:", samples.dtype
 
-# change the file
-samples = samples * 0.5
+# scale to -1.0 -- 1.0
+samples = samples / convert_16_bit
 print "Data type is now:", samples.dtype
 
-samples = numpy.int16(samples)
+# change the file
+samples = samples * 0.5
+
+# scale to -32768 -- 32767
+samples = numpy.int16( samples * convert_16_bit )
 print "Data type is now:", samples.dtype
+
 scipy.io.wavfile.write("quieter.wav",
     sample_rate, samples)
 </pre>
