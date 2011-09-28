@@ -1,0 +1,644 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Lab 1</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+<h1>Lab 1 for C programming</h1>
+
+<div class="info">
+<p>
+Tips for programming are on <a href="../info/programming-howto.html">How
+to Think about Programming</a>.
+</p>
+
+<p>
+I recommend using the <code>geany</code> python IDE.  Write code,
+then press <code>F5</code> to run it.
+</p>
+
+</div>
+
+<div class="center">
+Exercises:
+
+<ul style="list-style-type:none;">
+<li>
+1. <a href="lab1.html#print-text">Printing text</a>
+</li><li>
+2. <a href="lab1.html#declare-print-variables">Declaring and
+printing variables</a>
+</li><li>
+3. <a href="lab1.html#keyboard-input">Keyboard input</a>
+</li><li>
+4. <a href="lab1.html#functions">Functions</a>
+</li>
+</ul>
+</div>
+
+<div class="info">
+Material like this:
+
+<pre>
+foo = bar(baz)
+</pre>
+
+is a code example which can be copy-and-pasted directly into a
+<code>.py</code> file.  Some of these examples will be an entire
+standalone file; other examples will be an <em>exerpt</em> which
+must be placed in the appropriate context.
+</div>
+
+
+<br style="clear:both"/>
+<a name="print-text">
+<h2>Exercise 1: "Hello, world!" and friends</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+By convention, the first thing to learn in a new programming
+language is to print the text "<code>Hello,&nbsp;world!</code>".
+Although text isn't very exciting by itself, the ability to
+output text is vital for debugging (fixing programs).
+</p>
+
+<p>
+Most programming languages, including python, indicate text with
+"double quotation marks": the first <code>"</code> indicates the
+beginning of text.  The computer then treates everything until the
+next <code>"</code> as text.
+</p>
+
+<p>
+This causes problems if you want to print an actual " symbol in
+the output.  For that reason, we use <em>escape sequences</em> to
+represent symbols which are difficult (or impossible) to indicate
+with plain text.
+</p>
+
+<p>
+In addition to telling a compiler how to create an executable
+file, source code should also tell future programmers why the code
+does what it does.  If anything in the code is unclear, a
+programmer should add <em>comments</em> which explain the
+situation.
+</p>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Printing text (complete example):
+</p>
+
+<pre>
+print "hello world!"
+</pre>
+
+<p>
+Selected <em>escape sequences</em>:
+</p>
+
+<blockquote>
+<table>
+  <tr><th>Sequence</th><th>Name</th></tr>
+  <tr><td>\n</td><td>New line</td></tr>
+  <tr><td>\t</td><td>Horizontal tab</td></tr>
+  <tr><td>\\</td><td>Back slash</td></tr>
+  <tr><td>\'</td><td>Single quotation mark</td></tr>
+  <tr><td>\"</td><td>Double quotation mark</td></tr>
+</table>
+</blockquote>
+
+<p>
+Comments:
+</p>
+
+<pre>
+# this is a comment
+
+print "hello"
+
+# print "this will not be printed"
+</pre>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Write a short self-introduction (not necessarily truthful!), and a
+list of items you would buy if given 1, 10, 100, or 1000 pounds.
+Example output:
+</p>
+
+<pre class="example">
+Greetings!  I am \Sir Percival\ of the Round Table, hailing from
+Vancouver, Canada.  My fair city lies approximately 4,500 miles to
+the West.  In my country, we say `eh?' a lot.
+
+Free money, you say?  Well, let's see...
+        Pounds   Purchase
+        1        A packet of tea biscuits.
+        10       Second-hand DVDs of "Still Game", so I can learn Glasgow patter.
+        100      An external hard drive for my laptop.
+        1000     A visit to my family next Christmas.
+</pre>
+
+<p>
+Your program should:
+</p>
+
+<ul>
+<li>
+Print a message similar to the above example.
+
+</li><li>
+No line should be longer than 80 characters -- you will need to
+use multiple <code>print</code> statements.
+
+</li><li>
+Use <em>all</em> these escape sequences: <code>\n \t \\ \'
+\"</code>
+
+</li><li>
+Use a comment for something.
+
+</li>
+</ul>
+
+
+<br>
+
+<p>
+(optional: make it funny.  We'll like you more.  You won't get any
+marks for being funny, but hey, you'll make a friend!  Looking at
+these programming exercises gets <em>really</em> boring.)
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+
+<br style="clear:both"/>
+<a name="declare-print-variables">
+<h2>Exercise 2: Variables and (simple) Math</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+Computers would be boring if they didn't do any computation, and
+variables make computation a lot easier.
+</p>
+
+<p>
+Variables must be <em>declared</em> before you can use them.
+Unlike many other programming languages, python does not require
+that you specify whether the variable is an integer,
+floating-point number, string, or anything else.
+</p>
+
+<p>
+Variables can be more than one letter long; in fact, this is very
+heavily encouraged!  Other than strictly mathematical variables
+like <code>t</code> or <code>n</code>, you should almost always
+use long variables names.  Use the underscore <code>_</code> to
+join multiple words together.
+</p>
+
+<br>
+
+<p>
+Text variables are called <em>strings</em>, short for "a string of
+characters".  Technically, they are stored as an <em>array</em> of
+characters, but that detail is not important to us.
+</p>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+Declaring and printing variables, and basic math:
+
+<pre>
+x = 3
+print "x is currently", x
+
+y = 4.001
+print "y is currently", y
+print "Make that shorter: %.1f" % (y)
+print "Make that longer: %.8f" % (y)
+
+z = x/y
+z = x + z*y - y
+print "Why does z = %i ?\n" % (z)
+
+animal_name = "cat"
+cute_name = "kitty"
+combo = cute_name + animal_name
+print "We can do \"math\" on strings: %s" % (combo)
+
+print "We can print multiple",
+print "variables: %i %f %i %s\n" % (x, y, z, cute_name)
+</pre>
+
+<div class="info">
+Examine the above program carefully -- there is a
+lot of good information in it!  Try changing the values of
+variables, and examine the new output.
+</div>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Save your introduction/story program from Exercise 1 with a new
+file name: we will be modifying it, but you don't want to lose all
+your hard work.
+</p>
+
+<p>
+Modify the new version of your introduction/story so that your program:
+</p>
+
+<ul>
+<li>
+Uses variables for all numbers, and at least one string
+</li><li>
+Use some math to change the value of a variable.
+</li><li>
+Prints at least one integer
+</li><li>
+Prints at least one float
+</li><li>
+Prints at least one string
+</li><li>
+You may not use any numbers within the "double-quotes" of a
+<code>print</code> statement -- use variable substitution 
+
+</li>
+</ul>
+
+<p>
+(hint: converting units is an easy way to get some math in there.
+Change between miles / km, pounds / euros, pounds / kg, human
+years / cat years, etc.  You may need to rewrite part of your
+self-introduction to introduce some units.)
+</p>
+
+<div class="info">
+Think about your variable names.  Don't write something like:
+
+<pre>
+d = d * 1.609344
+</pre>
+
+Instead, give them more descriptive names, like
+
+<pre>
+distance_km = distance_miles * 1.609344
+</pre>
+
+</div>
+
+
+<br>
+
+<p>
+(optional: invent a new measurement (like "centi-flipsies") and
+convert into them.)
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+<br style="clear:both"/>
+<a name="keyboard-input">
+<h2>Exercise 3: Keyboard input</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+Programs would be pretty boring without user interaction.  The
+easiest way to get information from the user is with the keyboard.
+</p>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Reading strings:
+</p>
+
+<pre>
+print "Enter an animal name:"
+animal_name = raw_input()
+print "You typed: %s" % (animal_name)
+</pre>
+
+<p>
+Reading numbers is slightly more complicated; you need to change
+the string into an integer or float.
+</p>
+
+<pre>
+print "Enter your age (as an integer):"
+user_input = raw_input()
+age = int(user_input)
+
+print "Enter a float:"
+user_input = raw_input()
+weight = float(user_input)
+
+print "You typed: %i, %f" % (age, weight)
+</pre>
+
+<div class="info">
+If the user types something other than an int/float, you'll get an
+error.  For now, don't worry about those.
+</div>
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+<em>Mad libs</em> (similar to "ad-lib") is a popular party game in
+North America.  Somebody writes a story, but removes a few nouns,
+adjectives, and verbs.  Other people must supply words to replace
+them (often with a clue, such as "an animal name" or "a movement
+verb"), without knowing the context in which they would be used.
+The result is nonsensical and sometimes funny.  For example:
+</p>
+
+<pre class="example">
+One day, a ________________ went to _______ and _____________ a ______.
+            name of animal           place       verb (past)     noun
+
+(other people supply: "polar bear", "Russia", "ate", and "house".)
+</pre>
+
+<p>
+Write a program which implements a mad-lib game:
+</p>
+
+<ul>
+<li>
+Unlike traditional mad-libs, your story must use numeric values
+(e.g., "price in pounds, number of people") in addition to text.
+
+</li><li>
+Use at least one integer, one float, and one string.  The variable
+names must provide clues about their function, i.e.
+
+<pre>
+animal_name
+time_minutes
+</pre>
+
+</li><li>
+Ask the user to supply values for these variables.
+
+</li><li>
+Read the values from the keyboard input.
+
+</li><li>
+Convert at least one numeric variable into a different value.
+
+</li><li>
+Print out a madlib (including numeric values).
+
+</li>
+</ul>
+
+<br>
+
+<p>
+(optional: make it funny)
+</p>
+
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+<br style="clear:both"/>
+<a name="functions">
+<h2>Exercise 4: Functions</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+You are familiar with functions in mathematics -- you've handled
+functions like g(x)&nbsp;=&nbsp;x^2&nbsp;+&nbsp;2x&nbsp;-&nbsp;3.
+In this case, the function <em>returns</em> a value.  The returned
+value is computed based on the input.  You have also seen
+functions with multiple inputs:
+h(x,y)&nbsp;=&nbsp;5x&nbsp;-&nbsp;6x&nbsp;+&nbsp;x*y.
+</p>
+
+<p>
+We use functions like this in programming.  We need to specify the
+number of input variables, do the math, then return the answer.
+</p>
+
+<p>
+We also sometimes use functions which do not return any values --
+these are useful if we want to repeat a few commands, or simply
+for program organization.
+</p>
+
+<div class="info">
+Functions must be declared before ("higher in the <code>.py</code>
+file") they are used.
+</div>
+
+<br>
+
+<p>
+Note that each function has its own <em>scope</em> of variables.
+In fact, you can re-use the same variable name in different
+functions!
+</p>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Simple function.  Note that functions must be indented with 4
+spaces or a tab!
+</p>
+
+<pre>
+def g(x):
+    return x*x + 2*x - 3
+
+a = 3.2
+b = g(a)
+print "g(%f) = %f" % (a, b)
+print "g(5) = %f" % (g(5))
+</pre>
+
+<div class="info">
+Note the different variables names in the above example!
+</div>
+
+<p>
+Various functions:
+</p>
+
+<pre>
+def cat_years(human_years):
+    y = human_years / 7.0
+    rounded_y = int(round(y))
+    return rounded_y
+
+def sum_of_squares(a, b):
+    return a*a + b*b
+
+def p(years, c, animal):
+    print "If I were a %s, I'd be" % (animal),
+    print "%i years old.\n" % (years)
+    print "The sum of squares",
+    print "was %f units.\n" % (c)
+
+my_age = 18
+x = 3.3
+animal = "cat"
+
+years_a = cat_years(my_age)
+sum = sum_of_squares(x, 7.4)
+
+p(years_a, sum, animal)
+</pre>
+
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+As electrical engineering students, you are familiar with Ohm's
+Law (<em>V&nbsp;=&nbsp;IR</em>) and calculating the value of
+resistors in series (<em>R&nbsp;=&nbsp;R1+R2</em>) and parallel
+(<em>1/R&nbsp;=&nbsp;1/R1&nbsp;+&nbsp;1/R2</em>).  Consider the
+following circuit:
+</p>
+
+<div class="centeredImage">
+<img src="resistors.png" width=80%>
+</div>
+
+<p>
+Write a program to calculate the overall current in this circuit.
+</p>
+
+<ul>
+<li>
+You <em>must</em> use 3 functions: <code>ohm_law(...)</code>,
+<code>series(...)</code>, and <code>parallel(...)</code>.  A 4th
+function <code>parallel_three(...)</code> is optional.  Do not
+write functions like <code>sum_r1_r2(...)</code>.
+
+</li><li>
+Calculate the current for:
+
+<pre>
+r1=100; r2=200; r3=300; r4=400; r5=500; r6=600; r7=700;
+</pre>
+
+<p>
+(you may copy&paste this into your <code>.py</code> file)
+<p>
+
+<p>
+The answer should be 124.6 mA.
+</p>
+
+</li><li>
+Calculate the current for:
+
+<pre>
+r1=123; r2=234; r3=345; r4=456; r5=567; r6=678; r7=789;
+</pre>
+
+<p>
+The answer should be 107.6 mA.
+</p>
+
+</li><li>
+You may find it helpful to use intermediate variables, and to
+print debugging information.
+
+</li>
+</ul>
+
+<br>
+
+<p>
+(optional: you can call functions as inputs to other functions,
+i.e.
+
+<pre>
+z = f( g(x,y), h(x,y) );
+</pre>
+
+Using this, calculate the current from voltage and Rx values in a
+single line.)
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+
+<p><a href="lab2.html">Move on to Lab 2</a></p>
+
+<!-- footer -->
+<br style="clear:both"/>
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+
+</body>
+

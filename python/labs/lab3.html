@@ -1,0 +1,381 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Lab 3</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+<h1>Lab 3 for C programming</h1>
+
+<div class="center">
+Exercises:
+
+<ul style="list-style-type:none;">
+<li>
+8. <a href="#arrays">Arrays</a>
+</li><li>
+9. Reading and writing wav files
+</li><li>
+10. Classes and buffer-based audio
+</li>
+</ul>
+</div>
+
+
+
+
+<br style="clear:both"/>
+<a name="arrays">
+<h2>Exercise 8: Arrays</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+An <em>array</em> is an ordered sequence of values; you cannot
+rearrange values without changing the meaning).  A two-dimensional
+array is just a normal "table".
+</p>
+
+<p>
+In python, we will use arrays from the <code>numpy</code>
+(numerical python) module.  Note that these arrays are
+<em>zero-indexed</em>.
+</p>
+
+<p>
+creates an array in memory, storing each value at the appropriate
+index:
+</p>
+
+<blockquote>
+<table border="1" cellpadding="2" cellspacing="2">
+<tr><td>Index</td><td>0</td><td>1</td><td>2</td><td>3</td></tr>
+<tr><td>Value</td><td>3</td><td>-2</td><td>987</td><td>12</td></tr>
+</table>
+</blockquote>
+
+<br>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Initializing and displaying:
+</p>
+
+<pre>
+import numpy
+# initialize all positions with 0
+arr = numpy.zeros(8)
+print arr
+</pre>
+
+<p>
+Arrays, functions, math, and graphs:
+</p>
+
+<pre>
+import numpy
+import pylab
+import math
+
+# this modifies arr directly.
+# can be dangerous!
+def modify_array(arr):
+    # len(x) returns the length of x
+    for i in range(len(arr)):
+        arr[i] = math.exp(i)
+
+arr1 = numpy.zeros(8)
+modify_array(arr1)
+
+arr2 = numpy.zeros(6)
+# do math on entire array at once
+arr2 = (arr2 + 1) * 400
+
+pylab.plot(arr1)
+pylab.plot(arr2)
+pylab.show()
+</pre>
+
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Display graphs for three sine waves on the same graph.
+</p>
+
+<ul>
+<li>
+sine wave at 100 hz
+
+</li><li>
+sine wave at 440 hz
+
+</li><li>
+sine wave at 440, <em>pi/2</em> radians out of phase with the
+previous wave
+
+</li>
+</ul>
+
+<p>
+Pick a sampling rate sufficient to demonstrate whatever you think
+we're trying to demonstrate.
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+<br style="clear:both"/>
+<a name="two-d-arrays">
+<h2>Exercise 9: Reading and writing wav files</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+Most of the audio done in this class will be through wav files,
+since these are easily created in a cross-platform manner.  (this
+is so you can do homework at home instead of in the lab -- aren't
+I nice?  :)
+</p>
+
+<p>
+One warning is that python tries to avoid losing any precision.
+If you do an operation like dividing by 2 using integer types, you
+would normally lose prevision -- as a result, python automatically
+switches to floats.  That's generally a good idea, but most audio
+programs only support wavfiles with samples in <em>16-bit
+integer</em> format, not <em>64-bit float</em>.  As a result, we
+convert the samples back into <code>int16</code> before writing
+the wavfile.
+</p>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Reading and writing a file.  Download <a
+href="a440-1second.wav">a440-1second.wav</a> and place it in the
+same directory as your <code>.py</code> file.
+</p>
+
+<pre>
+import numpy
+import scipy.io.wavfile
+
+sample_rate, samples = scipy.io.wavfile.read(
+    "a440-1second.wav")
+print "Data type is:", samples.dtype
+
+# change the file
+samples = samples * 0.5
+print "Data type is now:", samples.dtype
+
+samples = numpy.int16(samples)
+print "Data type is now:", samples.dtype
+scipy.io.wavfile.write("quieter.wav",
+    sample_rate, samples)
+</pre>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Two steps to this exercise:
+</p>
+
+<ol>
+<li>
+Write a program which asks the user for a frequency, then
+generates a wavfile with a 1-second sine wave at that frequency.
+</li><li>
+Modify your previous program so that it asks the user for multiple
+sine waves.  Keep on asking for more frequencies until the user
+types a <code>0</code>.
+<br>
+Once you have all the frequencies, "<em>mix</em>" them together
+to create a single 1-second wavfile containing sine waves of those
+frequencies at once.
+</li>
+</ol>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+<br style="clear:both"/>
+<a name="tic-tac-toe">
+<h2>Exercise 10: Classes and buffer-based audio</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+So far we have been creating the entire audio file in a single
+array.  That's fine on desktop computers creating 1 second of
+audio (assuming 44100 Hz with 16-bit samples, that's
+44100*16/8/1024 = 86 Kb memory), but what if you wanted to create
+an hour's worth of audio at once?  That would be 300 megs of
+memory!  do-able on modern desktops, but kind-of a waste.
+</p>
+
+<p>
+So instead, we will create audio in small bits and pieces.  A
+buffer size of 2048 is fairly traditional.  How many buffers will
+we need to create 1 second of audio?
+</p>
+
+<br>
+
+<p>
+In order to generate a sine wave that is "continuous" over
+multiple buffers, we need store the state -- the <em>x</em> in
+<em>sin(x)</em>.  (Replace <em>x</em> with <em>t</em> or
+<em>i</em> or <em>n</em> depending on your background)
+</p>
+
+<p>
+We do this with things called "classes and objects".  A
+<em>class</em> is a combination of data and functions which act on
+that data -- you can think of them like a type of variable (like
+int or float).  An <em>object</em> is a specific instance of that
+variable type.
+</p>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Classes:
+</p>
+
+<pre>
+# by convention we capitalize a class name
+class CounterOne:
+    x = 0
+    # note the "self" in the argument list!
+    def get_next(self):
+        # note the self.x
+        y = self.x
+        self.x = self.x+1
+        return y
+
+# note the capitalization (convention)
+counter = CounterOne()
+for i in range(8):
+    print counter.get_next()
+</pre>
+
+<p>
+Silly example for using two classes:
+</p>
+
+<pre>
+import random
+
+class CounterOne:
+    x = 0
+    def get_next(self):
+        y = self.x
+        self.x = self.x+1
+        return y
+
+class CounterTwo:
+    x = 0
+    def get_next(self):
+        y = self.x
+        self.x = self.x+2
+        return y
+
+if random.random() &lt; 0.5:
+    counter = CounterOne()
+else:
+    counter = CounterTwo()
+
+# the code here doesn't know if it's
+# using CounterOne or CounterTwo!
+for i in range(8):
+    print counter.get_next()
+</pre>
+
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Write a program that generates waves in buffers of 2048 samples.
+</p>
+
+<ul>
+<li>
+You may use a long array to store your final answer before
+writing it to disk with <code>scipy.io.wavfile.write()</code>.
+This is because we have not covered how to write a wavfile
+incrementally -- you still <em>must</em> generate the waves
+in small bits.
+</li><li>
+Give the user the option to pick from at a sine wave or at least
+one other wave of your choice (sawtooth, square, triangular, etc).
+</li><li>
+You <em>must</em> use a class to generate each wave.
+<br>
+(hint: name your classes "SineOscillator" and "SquareOscillator"
+instead of "Counter")
+</li><li>
+You do not need to support multiple waves at once (i.e. additive
+synthesis).  But if you're bored, go ahead!
+</li><li>
+You do not need to let the user specify the amplitude and phase of
+each wave, but it would be neat if you did.  :)
+</li>
+</ul>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+<p><a href="lab4.html">Move on to Lab 4</a></p>
+
+<!-- footer -->
+<br style="clear:both"/>
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+
+</body>
+

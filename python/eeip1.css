@@ -1,0 +1,171 @@
+h1, h2 {
+  text-align: center;
+}
+
+.left {
+  float: left;
+}
+
+.right{
+  float: right;
+}
+
+.left, .right {
+  border: 1px solid #333333;
+  width: 47%;
+  margin: 0.5em;
+/* maybe, if it works on IE */
+  overflow: auto;
+  overflow-y: hidden;
+  -ms-overflow-y: hidden;
+}
+
+.task {
+  border: 1px solid #333333;
+  width: 90%;
+  margin: 0.5em auto;
+/* maybe, if it works on IE */
+  overflow: auto;
+  overflow-y: hidden;
+  -ms-overflow-y: hidden;
+}
+
+.minefield {
+  border: 3px solid #333333;
+  width: 30em;
+  margin: 0.5em auto;
+  background: #ffff00;
+  padding: 1em;
+  text-align: center;
+  font-weight: bold;
+}
+
+.left p, .right p, .task p {
+  padding: 0 0.3em;
+}
+
+.left h3, .right h3 {
+  border-bottom: 1px solid #555555;
+  background: #dddddd;
+  text-align: left;
+  padding: 0 0.5em;
+  margin: 0;
+}
+
+.right h3 {
+  background: #ffffdd;
+}
+
+.task h3 {
+  border-bottom: 1px solid #555555;
+  background: #55dd55;
+  text-align: left;
+  padding: 0 0.5em;
+  margin: 0;
+}
+
+.task h4 {
+  border-top: 1px solid #555555;
+  background: #55dd55;
+  text-align: right;
+  padding: 0 0.5em;
+  margin: 0;
+}
+
+.center {
+/*
+  width: 60%
+  margin: 0 auto;
+*/
+  display: block;
+  margin: 1em;
+  padding: 0.5em;
+  text-align: left;
+}
+
+.warning {
+  border: 2px solid #444444;
+  width: 90%;
+  margin: 1em auto;
+  background: #ff0000;
+  color: #ffffff;
+}
+
+.info {
+  border: 2px solid #444444;
+  background: #77eeff;
+  width: 90%;
+  margin: 1em auto;
+  padding: 0.2em;
+}
+
+.info a {
+  font-weight: bold;
+}
+
+pre {
+  padding: 0em 1em 0em;
+  border: solid #eeee00;
+  border-width: 1px 0.5em 1px 1em;
+}
+
+pre.example {
+  border: 2px solid #ee00ee;
+  padding: 0em 2em 0em;
+}
+
+pre.clear {
+  border: 0em solid white;
+}
+
+table {
+  background: #ddeeff;
+}
+table table {
+  background: #aaccff;
+}
+
+code {
+  color: #ee3333;
+}
+
+.warning code {
+  color: #ffff55;
+}
+
+em {
+  color: #dd00aa;
+}
+
+.warning em {
+  color: blue;
+}
+
+.bad {
+  background: #dd9977;
+}
+
+.mines {
+  background: #ffffaa;
+}
+
+ul {
+  padding: 0em 2em;
+}
+
+ul ul {
+  padding: 0em 1em;
+}
+
+.maybe {
+  background: #ffcccc;
+}
+
+.centeredImage {
+  text-align:center;
+  margin-top:0px;
+  margin-bottom:0px;
+  padding:0px;
+}
+
+
