@@ -1,0 +1,8 @@
+LABS
+- alternate if ? true:false
+- memory management
+- remove 5 structures, keep coin return as exercise 5.  Or maybe
+  4, rounding off the first lab without functions.
+- add step-by-step starting to "Programming in the labs"
+
+

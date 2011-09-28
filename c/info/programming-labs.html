@@ -1,0 +1,224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Using the lab software</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+
+<h1>Using the lab software</h1>
+
+<p>
+In these labs, we use <code>gcc</code> (the GNU Compiler
+Collection) on <code>cygwin</code> (a unix-like environment for
+windows).  This term (spring 2010), you can find
+<code>cygwin</code> under:
+
+<blockquote>
+Start menu &rarr; Electrical Engineering &rarr; Introductory
+Programming &rarr; cygwin
+</blockquote>
+</p>
+
+<div class="left">
+<h3>First time</h3>
+
+<h4>Listing contents of a directory</h4>
+
+<p>
+To see a list of files in a directory (or folder), type:
+</p>
+
+<pre>
+ls
+</pre>
+
+<p>
+followed by <code>&lt;enter&gt;</code>.  (all these commands must
+be followed by an <code>&lt;enter&gt;</code>)
+</p>
+
+
+<h4>New directory</h4>
+
+<p>
+To make a new directory (here called "<code>cpractice</code>", use:
+</p>
+
+<pre>
+mkdir cpractice
+</pre>
+
+
+<h4>Change directory</h4>
+
+<p>
+To change (move) into a directory, use:
+</p>
+
+<pre>
+cd cpractice
+</pre>
+
+To change to the directory one level up (i.e. the opposite of
+<code>cd&nbsp;cpractice</code>, use:
+
+<pre>
+cd ..
+</pre>
+
+
+<h4>Compile a source file</h4>
+
+<p>
+When we program, we write <em>source files</em>.  A computer
+cannot run these directly; it must first <em>compiler</em> it into
+an <em>executable</em> file (sometimes called an <em>executable
+binary</em>.
+</p>
+
+<p>
+This example assumes that we have created a file called
+"<code>p1.c</code>" (short for "practice 1 as a C file").
+</p>
+
+<pre>
+gcc -o p1.exe p1.c
+</pre>
+
+<div class="warning">
+Don't confuse <code>pl</code> (lower-case PL) with <code>p1</code>
+(lower-case P one)!
+</div>
+
+
+<h4>Running an executable binary</h4>
+
+<p>
+After the executable has been created, we can run it with:
+</p>
+
+<pre>
+./p1.exe
+</pre>
+
+<p>
+Some lab computers will be able to run <code>p1.exe</code>
+directly, but if that doesn't work, use <code>./p1.exe</code>
+</p>
+
+<div class="warning">
+Don't confuse <code>pl</code> (lower-case PL) with <code>p1</code>
+(lower-case P one)!
+</div>
+
+<h4>Running previous commands</h4>
+
+<p>
+You'll probably want to re-run a lot of commands you've already
+typed in.  The shortcut is to press the UP arrow; this goes
+through your command history.
+</p>
+
+
+<h4>Copying files</h4>
+
+<p>
+To copy a file, use:
+</p>
+
+<pre>
+cp NAME.OLD NAME.NEW
+</pre>
+
+<p>
+(replace UPPER-CASE as appropriate)
+</p>
+
+</div>
+
+<div class="right">
+<h3>Summary of commands</h3>
+
+<p>
+Replace the UPPER_CASE text with whatever is relevant.
+</p>
+
+<pre>
+ls
+mkdir DIR
+cd DIR
+cd ..
+gcc -o OUTPUT.exe INPUT.c
+./OUTPUT.exe
+cp NAME.OLD NAME.NEW
+</pre>
+
+</div>
+
+<div class="right">
+<h3>File names</h3>
+
+<p>
+You can name files whatever you want, but keep the <code>.c</code>
+extension for C source files and <code>.exe</code> for
+executables.
+</p>
+
+<p>
+I recommend that you avoid having spaces in filenames, but if you
+really want to use them, you can still use that file by typing an
+escape character of <code>\</code> in front of any spaces.
+</p>
+
+</div>
+
+
+<div class="right">
+<h3>Text editors</h3>
+
+<p>
+You may use any text editor you want.  The old labs suggested
+<code>emacs</code>, but this is a very difficult editor to learn.
+For the first week or two, you might prefer to use the standard
+Notepad text editor that comes with Windows.
+</p>
+
+<p>
+I've heard good things about <a
+href="http://notepad-plus.sourceforge.net/uk/site.htm">Notepad++</a>
+and <a href="http://www.jedit.org/">jedit</a> (both open-source
+and free to download+share), but I haven't used them myself so I
+can't fully endorse them.  You should be able to install these
+programs to your H: drive.
+</p>
+
+<div class="warning">
+It's worth spending a few minutes to set up your editor -- you
+will spend a lot of time in it, so make sure you're comfortable!
+</div>
+
+</div>
+
+
+
+<!-- footer -->
+<br style="clear:both"/>
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+</body>
+

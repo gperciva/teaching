@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Why is input so difficult?</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+
+<h1>Why is input so difficult in C?</h1>
+
+<div class="left">
+<h3>Problems</h3>
+
+<p>
+As we mentioned in <a href="../info/why-c.html">Why are we
+learning C</a>, the C language is fairly low-level: it
+deliberately mimics the way that computer architectures work.
+This is a good idea when the programmer must optimize every aspect
+of the program (15-30 years ago), or in understanding how the
+hardware works (your 2nd year "system architecture" course).  But
+this causes problems when non-experts try to build useful or
+interesting programs.
+</p>
+
+<p>
+In order to simplify input and output, the C language treats
+everything as a file.  This produces smaller executables and
+requires less work to port the language to a new computer
+architecture, but it means that the computer does not do certain
+automatic checks.
+</p>
+
+<br>
+
+<p>
+For example, when the computer executes
+<code>scanf("%i",&nbsp;&amp;x);</code> it will look for an
+<code>int</code> in the <code>stdin</code> (standard input)
+"file".  If it does not find an <code>int</code>, the function
+will return a <code>0</code>.  The function will not advance
+beyond the point of incorrect input -- C does not make assumptions
+about what you, the programmer, wants to do.  If the programmer
+wants to skip over the non-<code>int</code> data, then the
+programmer is expected to know how to do this.
+</p>
+
+<br>
+
+<p>
+A famous problem in C is memory management.  C does not try to
+take care of memory for you; it does exactly what the programmer
+tells it to do.  This is unfortunate when reading text from the
+keyboard -- as we see in <a href="../labs/lab5.html">Lab 5</a>,
+text is an array of characters.  If nothing tells the computer to
+<em>stop</em> reading text from the keyboard, it will continue to
+read text from the keyboard, merrily replacing vital system
+information with the text it reads from the keyboard.
+</p>
+
+<p>
+However, this is not the only problem.  We can limit the number of
+characters with <code>scanf("%4s",&nbsp;text);</code>.  However,
+this means that anything over 4 characters will still be in the
+keyboard buffer -- <code>scanf</code> will not remove any extra
+characters from the buffer.  We must do that manually.
+</p>
+
+<div class="info">
+Some websites recommend using one of these:
+<pre>
+fflush(NULL)
+fflush(stdin)
+</pre>
+
+However, <code>fflush</code> is intended for <em>output</em>
+streams.  It is not guaranteed to clear an <em>input</em> stream
+like <code>stdin</code>.
+</div>
+
+</div>
+
+<div class="right">
+<h3>Reading text safely</h3>
+
+<p>
+Limit the number of characters, and clear the keyboard buffer
+after reading a string:
+
+<pre>
+#include &lt;stdio.h&gt;
+
+// you're not expected to understand this.
+void clearKeyboardBuffer() {
+    char ch;
+    while ((ch = getchar() != '\n') &amp;&amp; (ch != EOF));
+}
+
+int main() {
+    char text[5];
+    printf("Enter some text (4 chars max):\n");
+    scanf("%4s", text);
+    printf("You typed: %s\n", text);
+
+    clearKeyboardBuffer();
+
+    printf("Again:\n");
+    scanf("%4s", text);
+    printf("You typed: %s\n", text);
+}
+</pre>
+
+<div class="info">
+Note that this is one of the few times that you will see a
+<code>while&nbsp;(...);</code> loop (with a semicolon
+<code>;</code> at the end, instead of a code block
+<code>{&nbsp;...&nbsp;}</code>.
+</div>
+
+<br>
+
+<p>
+Check if the input was an integer:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+// you're not expected to understand this.
+void clearKeyboardBuffer() {
+    char ch;
+    while ((ch = getchar() != '\n') &amp;&amp; (ch != EOF));
+}
+
+int main() {
+    int x;
+    int was_int;
+
+    printf("Please enter an integer: \n");
+    was_int = scanf("%i", &amp;x);
+    while (!was_int) {
+        printf("That wasn't an integer!");
+        printf("  Try again: \n");
+        clearKeyboardBuffer();
+        was_int = scanf("%i", &amp;x);
+    }
+    printf("Thanks, your int was %i.\n", x);
+}
+</pre>
+
+</div>
+
+
+<!-- footer -->
+<br style="clear:both"/>
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+</body>
+

@@ -1,0 +1,228 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Lab 8</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+<h1>Lab 8 for C programming</h1>
+
+<div class="center">
+Exercises:
+
+<ul style="list-style-type:none;">
+<li>
+A. <a href="lab8.html#pointers">Pointers (and audio: bring
+headphones)</a>
+
+</li><li>
+B. <a href="lab8.html#files">File input/output</a>
+
+</li>
+</ul>
+</div>
+
+
+
+<br style="clear:both"/>
+<a name="pointers">
+<h2>Exercise A: pointers (and audio: bring headphones)</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+</p>
+
+<p>
+</p>
+
+<p>
+</p>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+</p>
+
+<pre>
+</pre>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+</p>
+
+<ul>
+<li>
+</li><li>
+</li>
+</ul>
+
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+<br style="clear:both"/>
+<a name="files">
+<h2>Exercise B: File input/output</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+</p>
+
+<p>
+</p>
+
+<p>
+</p>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+</p>
+
+<pre>
+</pre>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+We're revisiting the Roguelike game room from <a
+href="lab2.html#for-loops">Lab 3, Exercise 8</a>.  However, I
+recommend starting a new file instead of modifying your previous
+game, since this version won't use many <code>for</code> loops.
+You might want to glance at your old file just to refresh your
+memory, though.
+</p>
+ 
+<p>
+Create a program that lets you move around on a map.  When you
+move onto special characters, a special event should happen.
+</p>
+
+
+<pre class="example">
+You arrive at the park.
+
++------+
+|.+.~~~|
+|.@...~|
+|.....~|
+|.._=_.|
++------+
+</pre>
+
+<p>
+In this example, the <code>@</code> is the player (as before).  If
+the player moves onto a <code>.</code> then nothing happens.  A
+<code>~</code> is water, so it should print out a message like
+"your feet get wet".  The underscore <code>_</code> is a park
+bench, so a message like "you sit down" might be appropriate.  The
+<code>=</code> is a table, so the message might be "you dance on
+the table.  Other people stop and stare at you".  The
+<code>+</code> is a tree, so maybe "you sit against the tree and
+fall asleep" could work.  The <code>|</code> and <code>-</code>
+are boundaries of the area; if the player steps there, the program
+should exit.
+</p>
+
+<p>
+Write a program similar to the example described.
+</p>
+
+<ul>
+<li>
+You only need one room, and you can pick whatever symbols you
+want.  The size should be at least 3x3, and it should include at
+least 2 special symbols and 1 "exit program" symbol.
+
+</li><li>
+TODO: read map + actions from file.
+
+</li><li>
+You can pick any theme for the game, and invent any text.
+
+</li><li>
+Hint: the steps in your main loop should be:
+
+<ol>
+<li>
+Draw the room and player's position.
+</li><li>
+Get the player's movement command.  (up, down, left, right)
+</li><li>
+Find the char the player will step on.
+</li><li>
+Print out any special message.
+</li><li>
+Exit the game if the char is an "exit" char.
+</li><li>
+Repeat.
+</li>
+</ol>
+
+</li><li>
+
+When appropriate, separate commands into distinct functions.
+However, any command(s) dealing with the 2-D array should be in
+the <code>int main()</code> function.
+
+</li>
+</ul>
+
+<br>
+<p>
+(optional: make it interesting, and try playing each other's
+games.)
+</p>
+
+
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+
+<p><a href="../index.html">Back to main</a></p>
+
+<!-- footer -->
+<br style="clear:both"/>
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+
+</body>
+

@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Programming at Home</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+
+<h1>Programming at Home</h1>
+
+<div class="info">
+If you work seriously for the scheduled lab times and ask
+questions when appropriate, you should have no difficulty
+finishing the labs.  However, if you fall behind due to browsing
+facebook, leaving early, and not asking questions when you feel
+lost, then you might want to do additional work at home to catch
+up.
+
+<br><br>
+
+If you have problems with the instructions below, then we'll try
+to help as best we can, but it's difficult to help with computer
+problems without the computer.  If you have a laptop and bring it
+in, then we can probably help, but if you have a desktop and run
+into problems, we might not be able to do much.
+</div>
+
+
+<div class="left">
+<h3>Setting up the compiler</h3>
+
+<h4>Linux</h4>
+
+<p>
+Most Linux distributions will come with a typical development
+environment (including <code>gcc</code> and <code>make</code>).
+If yours doesn't, install those packages.  Note that some
+distributions have a <code>gcc-base</code> package which does
+<em>not</em> include the full <code>gcc</code>.
+</p>
+
+<h4>MacOS X</h4>
+
+<p>
+MacOS X comes with "Xcode" or "Developer tools", either as an
+extra CD, or as an optional install on the DVD.  Once you install
+that, you will have a full developer environment.
+</p>
+
+<p>
+You can either write text files and run <code>gcc</code> on the
+command-line, or run Xcode and compile from within that
+environment.
+</p>
+
+<h4>Windows</h4>
+
+<p>
+To get an experience similar to the lab setup, install cygwin.
+This is a free, open-source collection of programs.
+</p>
+
+<blockquote>
+<a href="http://www.cygwin.com/">http://www.cygwin.com</a>
+</blockquote>
+
+<p>
+Note that the basic cygwin install does not include gcc.  To
+install it, you must select <code>gcc4</code> and
+<code>libncurses-devel</code> during the "package selection"
+phase.
+</p>
+
+<p>
+The package <code>gcc4-core</code> does <em>not</em> set it up
+correctly.  For more information, see the cygwin documentation.
+</p>
+
+<br>
+
+<p>
+Another option is to install a different C compiler, such as the
+one in Microsoft Visual C++.  For most of the material in this
+course, there is no problem with this software.  However, see the
+warnings to the right.
+</p>
+
+</div>
+
+
+<div class="right">
+<h3>Warnings</h3>
+
+<p>
+In general, any C compiler will be able to handle the material we
+cover in this 1st-year course.  However, there are a few
+exceptions.
+</p>
+
+<!--
+<h4>Minefield exercises</h4>
+
+<p>
+The minefield labs require you to replace compiled <code>.o</code>
+object files.  Unfortunately, object files are <em>not</em>
+portable between different operating systems.  In fact, they are
+not even guaranteed to work on different versions of cygwin.
+</p>
+
+<p>
+The supplied object files for minefield were compiled on an Ubuntu
+9.04 on x86 (<em>not</em> 64-bit), and on the lab computers for
+Windows/cygwin.  If you have a different developer environment
+(including a more recent version of cygwin), then there's no way
+that you can compile minefield at home.
+</p>
+
+<p>
+However, you can still work on the "prep" labs.  Since the
+minefield labs do not introduce any material that is not covered
+by the prep labs, this option covers the bulk of work in the
+course.
+</p>
+-->
+
+<h4><code>ncurses</code></h4>
+
+<p>
+Some of the labs use a library called <code>ncurses</code>.  This
+is available on linux, MacOS X, and cygwin, but is probably not
+available for non-cygwin windows.  If you are using Microsoft
+Visual C++, Borland Turbo C, Watcom C, or another windows-specific
+C compiler, then you cannot work on those exercises at home.
+</p>
+
+
+<h4>ANSI C</h4>
+
+<p>
+The labs use C that conforms to the ANSI C standard (sometimes
+called C89 or C90).  Certain very old C compilers (i.e.
+pre-1990) might not accept these additions to the C language.
+</p>
+
+<p>
+I really doubt that this will be a problem, though.
+</p>
+
+
+</div>
+
+
+
+<!-- footer -->
+<br style="clear:both"/>
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+</body>
+

@@ -1,0 +1,3 @@
+rsync -r *.html *.css info labs \
+  gperciva@percival-music.ca:percival-music.ca/teaching/c/
+

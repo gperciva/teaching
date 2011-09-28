@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Lab 7</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+<h1>Lab 7 for C programming</h1>
+
+<div class="center">
+Exercises:
+
+<ul style="list-style-type:none;">
+<li>
+16. <a href="lab7.html#keyboard-movement">Keyboard movement and
+<code>switch</code></a>
+</li><li class="mines">
+&#8226;&nbsp;&nbsp;<a href="../mines/mine-5.html">Minefield 5</a>
+</li>
+</ul>
+</div>
+
+
+
+<br style="clear:both"/>
+<a name="keyboard-movement">
+<h2>Exercise 16: Keyboard movement and <code>switch</code></h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+Until now we have been getting input after the user has pressed
+the <code>ENTER</code> key.  This is fine for some applications,
+but games generally benefit quicker interaction.
+</p>
+
+<br>
+
+<p>
+In addition to the <code>int&nbsp;getch()</code> function which
+returns a keypress instantly, ncurses defines the constants
+<code>KEY_UP</code>, <code>KEY_DOWN</code>, <code>KEY_LEFT</code>,
+and <code>KEY_RIGHT</code>.  These may be used to check if the key
+was an arrow key.
+</p>
+
+<br>
+
+<p>
+Handling individual keys generally requires many branches of a
+conditional.  This can be done with <code>if</code> statements,
+but the resulting code is fairly unwieldy.  It is generally a
+better idea to use the <code>switch</code> and <code>case</code>
+commands to select the appropriate branch for each key press.
+</p>
+
+<p>
+These commands test an integer variable type (including
+<code>int</code>, <code>long</code>, <code>char</code>, but not
+<code>float</code>) against multiple constants.
+
+</p>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Displaying key presses in ncurses:
+</p>
+
+<pre>
+#include &lt;ncurses.h&gt;
+
+void initscreen(void)
+{
+    initscr();
+    raw();
+    noecho();
+    keypad(stdscr, TRUE);
+}
+
+int main() {
+    int key;
+    initscreen();
+    do {
+        key = getch();
+        printw("%i\n", key);
+        refresh();
+    // 27 is ESC, but 'q' is a failsafe
+    } while ((key != 27) &amp;&amp; (key != 'q'));
+    endwin();
+}
+</pre>
+
+<p>
+<code>switch</code> and <code>case</code>:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+int main() {
+    int x;
+    printf("Enter an int: ");
+    scanf("%i", &amp;x);
+    switch (x) {
+        case 1: printf("one\n");
+                break;
+        case 3: printf("three\n");
+                break;
+        case 6: printf("six\n");
+                break;
+        case 9: printf("nine\n");
+                break;
+        default: printf("not a single-digit");
+                 printf(" power of 3.\n");
+                 break;
+    }
+    printf("all over now.\n");
+}
+</pre>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Create a simple drawing program in ncurses.
+</p>
+
+<ul>
+<li>
+The user should move the cursor around with the keyboard.
+<br>
+(hint: use the "technical details" example to find out what
+<code>getch()</code> returns when you press the arrows)
+
+</li><li>
+If the user presses 1, display a <code>*</code> at the current
+position.  If the user presses 2, display a <code>-</code>.  3
+should produce <code>|</code>, and 0 should produce a space.
+
+</li><li>
+Use <code>switch</code> and <code>case</code> to act on the key
+presses.
+
+</li><li>
+The cursor should not leave some well-defined area (for example,
+50 characters wide and 20 high -- but you need not choose those
+exact numbers).
+
+</li><li>
+If you wanted to store the current display, you would need a
+two-dimensional array of <code>char</code>, but you do not need to
+store it.  The current screen is stored by ncurses, so in this
+case you only need to tell ncurses how to modify the screen.
+<br>
+(that said, you must keep track during the minefield game, so it
+might be good practice to try it here!)
+
+</li>
+</ul>
+
+<br>
+
+<p>
+(optional: add colors to the display -- maybe change the current
+color by pressing letters?)
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+
+
+<br style="clear:both"/>
+
+<div class="minefield">
+You are now ready to work on
+<a href="../mines/mine-5.html">Minefield Exercise 5</a>.
+</div>
+
+
+<p><a href="../index.html">Back to main</a></p>
+
+<!-- footer -->
+<br style="clear:both"/>
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+
+</body>
+

@@ -1,0 +1,4 @@
+70x48 picture
+256 colors, hide 1 bit per color (RGB)
+
+therefore 1 twit (140 chars)

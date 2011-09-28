@@ -1,0 +1,381 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Lab 4</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+<h1>Lab 4 for C programming</h1>
+
+<div class="center">
+Exercises:
+
+<ul style="list-style-type:none;">
+<li class="mines">
+10. <a href="#tic-tac-toe">Tic-Tac-Toe</a>
+</li><li class="mines">
+11. <a href="lab4.html#string-arrays">Strings are arrays</a>
+</li>
+</ul>
+
+</div>
+
+<br style="clear:both"/>
+<a name="tic-tac-toe">
+<h2>Exercise 10: Tic-Tac-Toe</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+This lab combines everything we've done so far.  If you didn't
+understand any of the previous exercises, you may want to ask
+questions about them before beginning this one!
+</p>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Nothing new.
+</p>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Write a tic-tac-toe game (also known as "noughts and crosses",
+"tick tack toe", "X's and O's").  If you're not familiar with the
+game, see <a
+href="http://en.wikipedia.org/wiki/Tic-tac-toe">Wikipedia's page
+on tic-tac-toe</a>, or ask a lab instructor.
+</p>
+
+<ul>
+<li>
+Use your "game board" from exercise 10.
+
+</li><li>
+Modify your "print the game board" function to print out
+<code>.XO</code> as required.
+
+</li><li>
+Your game should be human-vs-computer, and human moves first.
+
+</li><li>
+Computer moves randomly.  Note that it must select an unoccupied
+square; you cannot simply pick a number from 1-9 at random without
+checking!
+
+</li><li>
+Before each player takes a move, print out the current game board.
+You can remove board from the screen by doing
+<code>printf("\n\n\n\n\n\n\n\n\n\n");</code> 2 or 3 times.
+
+</li><li>
+After each player takes a move, you must check to see if anybody
+won the game.
+
+<p>
+(hint: write a function that checks if player X won the game, then
+call this function twice, for player 1 and player 2)
+<br>
+(another hint: there are 8 possible winning combinations; a player
+wins if one of 8 combinations of 3 square all have his mark.  You
+can either write out all 8 combinations in full, or use three
+<code>for</code> loops -- test the three vertical wins, three
+horizontal wins, and two diagonal wins.)
+<br>
+(final hint: begin work on this point by changing the rules of the
+game.  Pretend that you can only win by going horizontally or
+diagonally across the middle.  Solve this problem first; once you
+have it working for the "fake rules", just add in the other 6
+winning combinations.)
+</p>
+
+</li>
+</ul>
+
+<br>
+<p>
+(optional: instead of having the computer move randomly, try to
+make it play intelligently.)
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+<br style="clear:both"/>
+<a name="string-arrays">
+<h2>Exercise 11: Strings are Arrays of Characters</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+You may recall that in Lab 1, we defined strings variables
+as:
+</p>
+
+<pre>
+char animal[100] = "cat";
+</pre>
+
+<p>
+As you may guess now, we were actually creating an array of
+characters.
+</p>
+
+<br>
+
+<p>
+You may have noticed that we can print out a string without
+needing to specify the total number of characters:
+</p>
+
+<pre>
+char animal[100] = "ferocious kitten";
+printf("The %s sleeps!", animal);
+</pre>
+
+<p>
+The above code will print out
+"<code>The&nbsp;ferocious&nbsp;kitten&nbsp;sleeps</code>", even
+though the char array <code>animal</code> contains 100 chars.
+This is because the final character is a special ascii-null character:
+'<code>\0</code>' (added automatically by the compiler in this
+case).
+</p>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Dealing with strings:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt; // extra include!
+
+int main() {
+    char animal[100] = "ferocious kitten";
+
+    // length of the string
+    int length = strlen(animal);
+
+    int i;
+    for (i=0; i&lt;length; i++) {
+        printf("%c", animal[i]);
+    }
+    printf("\n");
+    getchar();
+}
+</pre>
+
+<p>
+We can also copy strings.
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+
+int main ()
+{
+    char orig[100]= "Cats are awesome";
+    char next[100];
+
+    // 99 is the maximum number of chars
+    strncpy(next,orig,99);
+
+    printf("%s\n", next);
+    getchar();
+}
+</pre>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+The Coleman-Liau Index test[1] is an easily-computable estimation of
+the difficulty of reading some text.  It gives an approximate
+"grade level" (in US school system: grade 1 is for students 5-6
+years old, and the numbers increase linearly until grade 12).
+</p>
+
+<div class="centeredImage">
+<img src="coleman-liau.png">
+</div>
+
+<div class="warning">
+In the above formula, "character" means "letter" -- for the
+purposes of that formula, spaces and periods do not count as
+characters.
+</div>
+
+<br>
+<blockquote>
+<blockquote>
+[1] Coleman, M.; and Liau, T. L. (1975); <em>A computer readability
+formula designed for machine scoring,</em> Journal of Applied
+Psychology, Vol. 60, pp. 283-284.
+<br><a
+href="http://web.ebscohost.com/ehost/detail?vid=4&hid=107&sid=78804692-ddc3-4c3c-844b-22341130ee5d%40sessionmgr12&bdata=JnNpdGU9ZWhvc3QtbGl2ZQ%3d%3d#db=pdh&AN=apl-60-2-283#db=pdh&AN=apl-60-2-283">
+Original journal paper (campus access only)
+</a>
+</blockquote>
+</blockquote>
+
+<p>
+Write a program that calculates the Coleman-Liau Index of some text.
+</p>
+
+<ul>
+<li>
+Perform the actual calculation in a function which accepts
+<code>char&nbsp;text[]</code> as input and returns the
+Coleman-Liau grade level.
+
+</li><li>
+If the calculated grade is less than 1, set it to 1 instead of
+returning a lower number.
+
+</li><li>
+You may assume that the text:
+
+<ul>
+<li>
+begins with a word
+
+</li><li>
+ends with a period
+
+</li><li>
+contains no numbers or non-letters
+
+</li><li>
+there is one space between words, and one space after a period (other
+than the final period).
+
+</li><li>
+each sentence ends with a period; no exclaimation marks or
+question marks are used.
+
+</li>
+</ul>
+
+<p>
+(hint: what is the relationship between the number of periods,
+number of spaces, and the words+sentences in the text?)
+<br>
+(another hint: how can you count the number of periods and spaces
+in the text?)
+</p>
+</li>
+
+</li><li>
+Test it with the following three exerpts.  For these definitions,
+you <em>may ignore</em> the code style requirement that lines
+should be less than 80 characters long.  When you cut&amp;paste
+this into your <code>.c</code> file, you might need to ensure that
+it all goes onto one line.
+
+<ol>
+<li>
+<pre>
+char text[100] = "I like cats. Cats like me. Miao miao miao. Dogs are
+bad. Bad dogs bad.";
+</pre>
+(words of wisdom)
+
+<br>
+(hint: the above fragment has 70 characters, 51 letters, 15 words,
+14 spaces, 5 periods, 5 sentences, and a calculated CLI of -5.6,
+which we change to be grade 1.)
+
+</li><li>
+<pre>
+char text[500] = "Tomorrow, and tomorrow, and tomorrow, Creeps in this
+petty pace from day to day, To the last syllable of recorded time; And
+all our yesterdays have lighted fools The way to dusty death. Out, out,
+brief candle. Life's but a walking shadow, a poor player That struts and
+frets his hour upon the stage And then is heard no more. It is a tale
+Told by an idiot, full of sound and fury Signifying nothing."
+</pre>
+(Macbeth: Act 5, Scene 5, lines 19-28)
+
+</li><li>
+
+<pre>
+char text[1000] = "Existing computer programs that measure readability
+are based largely upon subroutines which estimate number of syllables,
+usually by counting vowels. The shortcoming in estimating syllables is
+that it necessitates keypunching the prose into the computer. There is
+no need to estimate syllables since word length in letters is a better
+predictor of readability than word length in syllables. Therefore, a new
+readability formula was computed that has for its predictors letters per
+hundred words and sentences per hundred words. Both predictors can be
+counted by an optical scanning device, and thus the formula makes it
+economically feasible for an organization such as the US Office of
+Education to calibrate the readability of all textbooks for the public
+school system."
+</pre>
+(abstract of Coleman-Liau journal paper.)
+
+</li>
+</ol>
+
+</li>
+</ul>
+
+<br>
+
+<p>
+(optional: research and implement the Automated Readibility Index
+(ARI).  Compare those results with the Coleman-Liau results.)
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+<p><a href="lab5.html">Move on to Lab 5</a></p>
+
+
+<p><a href="../index.html">Back to main</a></p>
+
+<!-- footer -->
+<br style="clear:both"/>
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+
+</body>
+

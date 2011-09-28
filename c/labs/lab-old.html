@@ -1,0 +1,485 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Lab 6</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+
+<br style="clear:both"/>
+<a name="timing-static">
+<h2>Exercise 11: Timing and <code>static</code> global variables</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+To keep track of time, computers need something to measure it
+against.  In C on the lab computers, we get the number of seconds
+since 00:00:00 UTC on 1 January 1970.
+</p>
+
+<p>
+As you might imagine, this produces a fairly large number -- it
+exceeds the bounds of a normal <code>int</code>.  We therefore use
+a <code>long&nbsp;int</code>, which has twice the number of bits
+of a normal <code>int</code>.  Our <code>time.h</code> library
+also defines a special data type to store the time value:
+<code>time_t</code>.  On our computers, this is the same as a
+<code>long&nbsp;int</code>.
+</p>
+
+<br>
+
+<p>
+We have seen how to pass information to and from functions with
+arguments and return values.  Another way to share information is
+via <code>static</code> global variables.  These variables are
+valid within the entire <code>.c</code> file.
+</p>
+
+<div class="info">
+Using global variables is generally bad programing practice,
+because it increases the complexity of programs, which in turn
+make it harder to debug.  However, they are required for your
+second-year computer architecture course, so we present them here.
+</div>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Getting the time:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;time.h&gt;  // extra include
+
+int main() {
+    time_t now;
+    now = time(NULL);
+
+    long int a = now;
+    printf("%li\n", now);
+}
+</pre>
+
+<p>
+Static variable:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+static int shared_x;
+
+void f() {
+    int x = 3;
+    shared_x = x + 1;
+}
+
+void g() {
+   shared_x++;
+}
+
+int main() {
+    f();
+    g();
+    printf("%i\n", shared_x);
+}
+</pre>
+
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Modern computers can perform an amazing number of computations in
+a second.  But are all computations the same?  Let's measure the
+time it takes to do: <code>+ - * /</code> for <code>int</code>.
+</p>
+
+<ul>
+<li>
+Get the time before and after some computations.  You'll need to
+repeat the computation many times in order for it to take more
+than a second.  Start with 10^8.
+<br>
+(hint: can an <code>int</code> store 100000000 ?  You might need
+to use a different type of variable for your <code>for</code>
+loop, or else use two <code>for</code> loops!)
+
+</li><li>
+Write a separate function for each arithmetic operator (4
+functions in total).
+
+</li><li>
+Use <code>static</code> variables to store the highest and lowest
+times.
+
+</li><li>
+Print the highest and lowest times.  Do all arithmetic operations
+take the same amount of time?
+<br><br>
+Note: you don't need to print out <em>which</em> arithmetic
+operation was the fastest or slowest; you only need to print the
+overall highest and lowest times.
+
+</li>
+</ul>
+
+<br>
+
+<p>
+(optional: repeat this experiment with <code>float</code> instead
+of <code>int</code>.)
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+<br style="clear:both"/>
+
+
+
+
+<br style="clear:both"/>
+<a name="ncurses">
+<h2>Exercise 14: <code>ncurses.h</code></h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+So far we have seen the boring <code>printf</code>, which does not
+allow us to move the cursor around.  Using the additional ncurses
+<em>library</em>, we can print to arbitrary places on the screen.
+</p>
+
+<p>
+Since this is an additional library, not part of the standard C
+libraries, we must tell the computer to include the library.  The
+<code>#include&nbsp;&lt;ncurses.h&gt;</code> tells the computer to
+add the <code>.h</code> header file, but this unfortunately does
+not tell the computer to add the <em>compiled</em> library to the
+<em>linking</em> process.  To do the latter, we must add
+<code>-lncurses</code> to our <code>gcc</code> command.
+</p>
+
+<p>
+</p>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Here is a minimal program with <code>ncurses.h</code> which does
+not print anything.
+</p>
+
+<div class="warning">
+To compile it, you <em>must</em> add a <code>-lncurses</code> to
+your command-line:
+
+<pre>
+gcc -o drawing.exe drawing.c -lncurses
+</pre>
+</div>
+
+<pre>
+#include &lt;ncurses.h&gt;
+
+// you don't need to understand this function
+void initscreen(void)
+{
+    initscr();
+    raw();
+    noecho();
+    keypad(stdscr, TRUE);
+}
+
+int main(int argc, char *argv[])
+{
+    initscreen();
+
+    // insert stuff here
+
+
+
+    // ensure the screen is drawn
+    refresh();
+
+    // wait for a keypress
+    int key = getch();
+    endwin();
+}
+</pre>
+
+<p>
+The previous example only waited for a keypress.  Try adding the
+below code fragment to print out a few characters.  What do the
+numbers do?  Which is horizontal, and which is vertical?
+</p>
+
+<pre>
+// print characters.  Note the single quotes!
+mvaddch(5, 1, 'a');
+mvaddch(1, 5, 'b');
+mvaddch(9, 20, '*');
+mvaddch(0, 0, '_');
+</pre>
+
+<p>
+We can also print out strings:
+</p>
+
+<pre>
+// print a string: note the double quotes!
+mvprintw(5, 5, "kittenz rock!");
+</pre>
+
+<p>
+To move the curor independently of printing something, or to print
+a character or string without moving the cursor, do:
+</p>
+
+<pre>
+move(10, 3);
+addch('G');
+printw("Bad dogs are bad.");
+</pre>
+
+</div>
+
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+The <a href="http://en.wikipedia.org/wiki/Flag_of_Scotland">Flag
+of Scotland</a> (also known as "Saint Andrew's Cross" and "the
+Saltire") has a blue background with a white diagonal cross.
+</p>
+
+<div class="centeredImage">
+<img src="saltire.png">
+</div>
+
+<p>
+Write a program which draws this in ncurses.
+</p>
+
+<ul>
+<li>
+Colours would be nice, but are not required.  Use stars
+<code>*</code> for the background, and spaces for the cross.
+
+</li><li>
+(hint: begin by filling the background, then draw the cross on top
+of it)
+
+</li>
+</ul>
+
+
+<br>
+
+<p>
+(optional: the background should be blue ("Pantone 300", or
+#0065bd in RGB), and the cross should be white.  Look up how to
+use colours in ncurses online)
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+
+<br style="clear:both"/>
+<a name="recursion">
+<h2>Exercise 15: Recursion</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+To understand recursion, you must first understand recursion.
+</p>
+
+<p>
+I therefore won't explain anything here.
+</p>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Here's a popular children's song in North America (no, I don't
+know why this gets taught to 6-year olds).  Note that recursion is
+fairly pointless in this example (just use a <code>for</code>
+loop!), but it serves as a simple example of a function calling
+itself.
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+void bottles(int x) {
+    printf("%i bottles of beer on the", x);
+    printf(" wall, %i bottles of beer", x);
+    printf("!\nTake one down, ");
+    x--;
+    printf("pass it around,\n");
+
+    // stopping condition
+    if (x == 0) {
+        printf("no more bottles of ");
+        printf("beer on the wall.\n");
+        return;  // quit
+    }
+    printf("%i bottles of ", x); 
+    printf("beer on the wall.\n\n");
+    bottles(x);  // recursion
+}
+
+int main() {
+    bottles(9);
+}
+</pre>
+
+<p>
+Euclid's algorithm for calcuating the greatest common divisor.
+Try following the program on paper (i.e. figure out exactly what
+each variable is, keep track of all the function calls, etc).  You
+may find it helpful to uncomment the DEBUG printf.
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+// Euclid's algorithm
+int gcd(int a, int b) {
+    //printf("DEBUG: gcd(%i, %i)\n", a, b);
+
+    // stopping condition
+    if (b==0) {
+        return a;  // quit
+    } else {
+        return gcd(b, a % b);  // recursion
+    }
+}
+
+int main() {
+    int x = 57;
+    int y = 76;
+    int g = gcd(x,y);
+    printf("Great Common Divisor of ");
+    printf("%i and %i is: %i\n", x, y, g);
+}
+</pre>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<h5>Option 1: boring</h5>
+
+<p>
+Recall the Fibonacci sequence from Exercise 9 <a
+href="lab3.html#arrays">Arrays</a>.  Write a function which takes
+one input (<code>n</code>) and returns the <code>n</code>th
+numbers in the Fibonaci sequence -- <em>without</em> using an
+array to store all the intermediate values.
+</p>
+
+<ul>
+<li>
+Remember that <code>fib(0)&nbsp;=&nbsp;0</code> and
+<code>fib(1)&nbsp;=&nbsp;1</code>.
+
+</li><li>
+All numbers&gt;1 are defined as the sum of the previous two
+numbers.
+
+</li>
+</ul>
+
+
+<h5>Option 2: fun, but hard</h5>
+
+<p>
+The <em>Cantor ternary set</em> is a mathematical construct which
+helped lay the foundations of topology.  It is constructed by
+taking a line segment and removing the middle third:
+</p>
+
+<div class="centeredImage">
+<img src="cantor.png">
+</div>
+
+<p>
+In beautiful text rendering, it looks like this:
+</p>
+
+<pre class="example">
+*********************************************************************************
+***************************                           ***************************
+*********         *********                           *********         *********
+***   ***         ***   ***                           ***   ***         ***   ***
+* *   * *         * *   * *                           * *   * *         * *   * *
+</pre>
+
+<p>
+Write a program which draws the first 5 iterations of the Cantor ternary
+set (as shown above).
+</p>
+
+<ul>
+<li>
+Your recursive function must return a string.  You can either create a
+<code>struct</code> to hold this (as we did in <a
+href="lab5.html#struct">Combining variables with
+<code>struct</code></a>), or return the strings directly not covered in
+labs yet).
+
+</li><li>
+You will need to copy text from one array into another (not covered in
+labs yet).
+
+</li><li>
+It might be useful to keep track of the width of each line section as a
+global variable (not passed during the recursion).
+
+</li><li>
+Despite all these warnings, it's a really fun exercise, so don't be
+discouraged!  You'll learn a lot if you try it.  :)
+
+</li>
+</ul>
+
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+

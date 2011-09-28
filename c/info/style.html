@@ -1,0 +1,332 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Comments</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+
+<h1>Good Programming Style</h1>
+
+<div class="left">
+<h3>Curly braces</h3>
+
+<p>
+Use them.  All the time.  Even if not strictly necessary.
+</p>
+
+<p>
+Bad:
+</p>
+
+<pre class="bad">
+if (x==1)
+    printf("x is one.\n");
+</pre>
+
+<p>
+Good:
+</p>
+
+<pre>
+if (x==1) {
+    printf("x is one.\n");
+}
+</pre>
+
+</div>
+
+<div class="right">
+<h3>Indentation</h3>
+
+<p>
+As long as you follow the rule about <em>curly braces</em>,
+indentation is trivial:
+</p>
+
+<ol>
+<li>
+Begin at the left-hand side.
+</li><li>
+For each a opening <code>{</code>, add one level of indentation.
+</li><li>
+For each closing <code>}</code>, remove one level of indentation.
+</li>
+</ol>
+
+<p>
+A "level of indentation" could be one tab, 8 spaces, 4 spaces, or
+2 spaces (consistently throughout the whole file).
+
+<p>
+Bad:
+</p>
+
+<pre class="bad">
+int main() {
+  int i, x;
+for (i=0; i&lt;10; i++)
+     {
+     if (i==3)
+{
+            x = 39;       }
+}}
+</pre>
+
+
+<p>
+Good:
+</p>
+
+<pre>
+int main() {
+    int i, x;
+    for (i=0; i&lt;10; i++) {
+        if (i==3) {
+            x = 39;
+        }
+    }
+}
+</pre>
+
+<p>
+Also good:
+</p>
+
+<pre>
+int main()
+{
+    int i, x;
+    for (i=0; i&lt;10; i++)
+    {
+        if (i==3)
+        {
+            x = 39;
+        }
+    }
+}
+</pre>
+
+<p>
+Also good:  (default <code>emacs</code> style, not used elsewhere)
+</p>
+
+<pre>
+int main()
+{
+    int i, x;
+    for (i=0; i&lt;10; i++)
+      {
+        if (i==3)
+          {
+            x = 39;
+          }
+      }
+}
+</pre>
+
+</div>
+
+
+<div class="left">
+<h3>Line length</h3>
+
+<p>
+Avoid having statements so long that the lines "wrap around".  A
+good rule of thumb is to not exceed 80 characters on each line.
+</p>
+
+<p>
+When writing <code>printf</code> statements, this might mean that
+you need to split the desired output into two (or more) separate
+<code>printf</code> statements.
+</p>
+
+<p>
+If a function is too long for one line, you can continue it on the
+next line, but the second line should be indented somewhat.
+</p>
+
+<p>
+Bad:
+</p>
+
+<pre class="bad">
+if (x==1) {
+    if (y==1) {
+        z = calcStuff(x, y, "a bunch of text",
+abc, aVariableWithALongName, anotherVariable);
+    }
+}
+</pre>
+
+<p>
+Good:
+</p>
+
+<pre>
+if (x==1) {
+    if (y==1) {
+        z = calcStuff(x, y,
+                      "a bunch of text", abc,
+                      aVariableWithALongName,
+                      anotherVariable);
+    }
+}
+</pre>
+
+
+</div>
+
+
+<br style="clear:both"/>
+
+<div class="left">
+<h3>Variable and Function names</h3>
+
+<p>
+The computer doesn't care what names you use, but choosing good
+names can make your code a lot easier to read and write -- as well
+as eliminating the need for comments.  For example, what does this
+code do?
+</p>
+
+<pre class="bad">
+x = x * 1.609344;
+</pre>
+
+<p>
+Well, obviously it multiplies <code>x</code> by a constant
+value... but <em>why</em> are we doing that?  Adding a comment
+would help, but the code would be even more clear if changed the
+variable name:
+</p>
+
+<pre class="bad">
+// converts from miles to km.
+distance = distance * 1.609344;
+</pre>
+
+<p>
+However, this still isn't perfect.  What if we accidently wrote
+this line twice, in different parts of our code?  What if we
+wanted to convert from km to miles instead?  This is much more
+clear, and we don't need any comment:
+</p>
+
+<pre>
+distance_km = distance_miles * 1.609344;
+</pre>
+
+<br>
+
+<p>
+A similar thing applies to functions.  What does this function do?
+You might need to think about it for a bit:
+</p>
+
+<pre class="bad">
+float f(float one, float two) {
+    return sqrt(one*on + two*two);
+}
+</pre>
+
+<p>
+Here's the same function, with better names:
+</p>
+
+<pre>
+float hypotenuse(float a, float b) {
+    return sqrt(a*a + b*b);
+}
+</pre>
+
+</div>
+
+
+
+<div class="right">
+<h3>Comments</h3>
+
+<p>
+Learning how to write good comments is like learning how to write
+good poetry: textbooks and lectures won't help much.  The only
+<em>real</em> way to learn is to read other people's code+comments,
+write your own code+comments, go away for a year, then read the
+stuff you wrote and wince.
+</p>
+
+<p>
+I've spent hours trying to figure out code I wrote six months ago,
+cursing myself all the while.  It's really fun (not!) when you
+can't figure out how your own program works.  It seemed so obvious
+at the time, but after a few months... :(
+</p>
+
+<br>
+
+<p>
+That said, you don't have the luxury of waiting a year before
+re-reading your code.  So here's a few comment guidelines:
+</p>
+
+<ul>
+<li>
+<strong>Comments should explain <em>why</em> the code does
+something, not what it does.</strong> This is the most common
+suggestion given to new programmers.
+<br>
+Programmers can read code; we don't need a comment to tell us the
+exact arithmetic steps in:
+
+<pre>
+V = 4.0 / 3.0 * math.pi * pow(r,3)
+</pre>
+
+But it might be useful to have a comment telling us that this
+calculates the volume of a sphere with radius <code>r</code>.
+
+</li><li>
+<strong>Comments should add semantic value.</strong>  This really
+just boils down to the same as the previous idea.  Adding a
+comment like this:
+
+<pre class="bad">
+int v = 3;  // sets v to be 3
+</pre>
+
+doesn't add anything new.  But if the comment was "the velocity of
+an unladen swallow", then the comment adds some <em>new
+knowledge</em> that wasn't obvious from the code.
+
+</li><li>
+<strong>Help the reader understand the code.</strong>
+
+</li>
+</ul>
+
+
+</div>
+
+
+
+<!-- footer -->
+<br style="clear:both"/>
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+</body>
+

@@ -1,0 +1,17 @@
+main.c
+username.c	// keyboard input
+
+board.c		// for, while, array, random
+timer.c		// time, global?!?
+
+adjacent.c	// for, array, binary flags
+drawscreen.c	// for, array, binary flags, ncurses
+		// use: addch(c);
+
+stamp.c		// for, while, array, recursion
+
+play.c		// ncurses, switch/case, general complexity
+
+result.c	// structures, file i/o    -- go last?
+
+

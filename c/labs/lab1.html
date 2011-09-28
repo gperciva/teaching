@@ -1,0 +1,828 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Lab 1</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+<h1>Lab 1 for C programming</h1>
+
+<div class="info">
+<!--
+<p>
+Instructions for using <code>gcc</code> and <code>cygwin</code>
+are on <a href="../info/programming-labs.html">programming in the
+labs</a>.
+</p>
+-->
+
+<p>
+Tips for programming are on <a href="../info/programming-howto.html">How
+to Think about Programming</a>.
+</p>
+
+</div>
+
+<div class="center">
+Exercises:
+
+<ul style="list-style-type:none;">
+<li>
+1. <a href="lab1.html#print-text">Printing text</a>
+</li><li>
+2. <a href="lab1.html#declare-print-variables">Declaring and
+printing variables</a>
+</li><li>
+3. <a href="lab1.html#keyboard-input">Keyboard input</a>
+</li><li>
+4. <a href="lab1.html#functions">Functions</a>
+</li>
+</ul>
+</div>
+
+<div class="info">
+Material like this:
+
+<pre>
+foo = bar(baz);
+</pre>
+
+is a code example which can be copy-and-pasted directly into a
+<code>.c</code> file.  Some of these examples will be an entire
+standalone file; other examples will be an <em>exerpt</em> which
+must be placed in the appropriate context.
+</div>
+
+
+<br style="clear:both"/>
+<a name="print-text">
+<h2>Exercise 1: "Hello, world!" and friends</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+By convention, the first thing to learn in a new programming
+language is to print the text "<code>Hello,&nbsp;world!</code>".
+Although text isn't very exciting by itself, the ability to
+output text is vital for debugging (fixing programs).
+</p>
+
+<p>
+Most programming languages, including C, indicate text with
+"double quotation marks": the first <code>"</code> indicates the
+beginning of text.  The computer then treates everything until the
+next <code>"</code> as text.
+</p>
+
+<p>
+This causes problems if you want to print an actual " symbol in
+the output.  For that reason, we use <em>escape sequences</em> to
+represent symbols which are difficult (or impossible) to indicate
+with plain text.
+</p>
+
+<p>
+In addition to telling a compiler how to create an executable
+file, source code should also tell future programmers why the code
+does what it does.  If anything in the code is unclear, a
+programmer should add <em>comments</em> which explain the
+situation.  More information about comments is on the <a
+href="../info/style.html">good programming style</a> page.
+
+</p>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Printing text (complete example):
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+int main() {
+    printf("Hello, world!");
+
+    // wait for a keypress
+    getchar();
+}
+</pre>
+
+<p>
+Selected <em>escape sequences</em>
+(<a href="../info/constructs.html#esc_seq">more escape sequences</a>):
+</p>
+
+<blockquote>
+<table>
+  <tr><th>Sequence</th><th>Name</th></tr>
+  <tr><td>\n</td><td>New line</td></tr>
+  <tr><td>\t</td><td>Horizontal tab</td></tr>
+  <tr><td>\\</td><td>Back slash</td></tr>
+  <tr><td>\'</td><td>Single quotation mark</td></tr>
+  <tr><td>\"</td><td>Double quotation mark</td></tr>
+</table>
+</blockquote>
+
+<p>
+There are two ways of adding comments (code exerpt):
+</p>
+
+<pre>
+// this is a single-line comment
+/* this type of comment can span multiple
+   lines; everything is a comment until
+   the
+   computer sees the ending */
+</pre>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Write a short self-introduction (not necessarily truthful!), and a
+list of items you would buy if given 1, 10, 100, or 1000 pounds.
+Example output:
+</p>
+
+<pre class="example">
+Greetings!  I am \Sir Percival\ of the Round Table, hailing from
+Vancouver, Canada.  My fair city lies approximately 4,500 miles to
+the West.  In my country, we say `eh?' a lot.
+
+Free money, you say?  Well, let's see...
+        Pounds   Purchase
+        1        A packet of tea biscuits.
+        10       Second-hand DVDs of "Still Game", so I can learn Glasgow patter.
+        100      An external hard drive for my laptop.
+        1000     A visit to my family next Christmas.
+</pre>
+
+<p>
+Your program should:
+</p>
+
+<ul>
+<li>
+Print a message similar to the above example.
+
+</li><li>
+No line should be longer than 80 characters -- you will need to
+use multiple <code>printf()</code> statements.
+
+</li><li>
+Use <em>all</em> these escape sequences: <code>\n \t \\ \'
+\"</code>
+
+</li><li>
+Use <em>both</em> types of comments: <code>// /*...*/</code>
+
+</li>
+</ul>
+
+
+<br>
+
+<p>
+(optional: make it funny.  We'll like you more.  You won't get any
+marks for being funny, but hey, you'll make a friend!  Looking at
+first-year programming exercises gets <em>really</em> boring.)
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+
+<br style="clear:both"/>
+<a name="declare-print-variables">
+<h2>Exercise 2: Variables and (simple) Math</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+Computers would be boring if they didn't do any computation, and
+variables make computation a lot easier.
+</p>
+
+<p>
+Variables must be <em>declared</em> before you can use them.  This
+tells the computer to reserve a piece of memory to store the
+variable's value.
+</p>
+
+<p>
+The computer doesn't care what you call the variable (within
+reason -- see <a
+href=../info/constructs.html#identifiers>identifier</a> for the exact
+requirements), but having descriptive variable names will make
+your programs much easier to work on.
+</p>
+
+<p>
+For the next few weeks, we will use two types of numeric
+variables: <code>int</code> (an integer), and <code>float</code>
+(a floating-point, i.e. decimal, number).
+</p>
+
+<p>
+There is another type of variable, which is very rarely used by
+itself: <code>char</code>.  This represents one <em>ASCII</em>
+character; each value (between <code>0</code> and
+<code>127</code>) represents an entry in the <a
+href="../info/ascii.html">ASCII table</a>.
+</p>
+
+<br>
+
+<p>
+Text variables are called <em>strings</em>, short for "a string of
+characters".  Technically, they are stored as an <em>array</em> of
+characters, but we will return to this in the second lab lab.
+For now, we will not do any modifications of strings.
+</p>
+
+<p>
+For reasons which we will discuss in a later lab, you can get an
+array of a particular variable type by adding
+<code>[</code><em>x</em><code>]</code> to the variable name, where
+<em>x</em> is the number of variables.  For <em>other</em> reasons
+which we will discuss later, a string's length must be <em>1
+more</em> than the number of characters you want it to hold.
+</p>
+
+<div class="info">
+To get a string of 99 characters (recommended), write:
+
+<pre>
+char&nbsp;string_variable[100];
+</pre>
+
+</div>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+Declaring and printing variables, and basic math:
+
+<pre>
+#include &lt;stdio.h&gt;
+
+int main() {
+    int x;
+    printf("x is currently %i", x);
+    printf(", which is completely random!\n");
+    printf("  (we probably don't want this)\n\n");
+    x = 3;
+
+    float y = 4.1;
+    printf("y is currently %f.\n", y);
+    printf("Make that shorter: %.2f.\n", y);
+    printf("Make that longer: %.8f.\n\n", y);
+
+    int z;
+    z = x/y;
+    z = x + z * y - y;
+    printf("Why does z = %i?\n\n", z);
+
+    printf("We can print multiple ");
+    printf("variables: %i %f %i\n\n", x, y, z);
+
+    char a = 71;
+    printf("What about this one: %c\n", a);
+
+    // wait for a keypress
+    getchar();
+}
+</pre>
+
+<div class="info">
+Examine the above program carefully -- there is a
+lot of good information in it!  Try changing the values of
+variables, and examine the new output.
+</div>
+
+We can also declare and print strings.
+
+<pre>
+#include &lt;stdio.h&gt;
+
+int main() {
+    char name[100] = "Graham";
+    printf("Hi there!  %s greets you!", name);
+
+    // wait for a keypress
+    getchar();
+}
+</pre>
+
+<div class="warning">
+For now we will only declare and print strings; we won't modify
+them until the second lab.
+</div>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Save your introduction/story program from Exercise 1 with a new
+file name: we will be modifying it, but you don't want to lose all
+your hard work.
+</p>
+
+<p>
+Modify the new version of your introduction/story so that your program:
+</p>
+
+<ul>
+<li>
+Declare at least one int.
+</li><li>
+Declare at least one float.
+</li><li>
+Declare at least one char[100].
+</li><li>
+Use some math to change the value of a variable.
+</li><li>
+Prints at least one int (not necessarily the first one you
+declared).
+</li><li>
+Prints at least one float (not necessarily the first one you
+declared).
+</li><li>
+Prints at least one string (exactly the one(s) you declared).
+</li><li>
+You may not use any numbers within the "double-quotes" of a
+<code>printf</code> statement -- use variable substitution 
+
+</li>
+</ul>
+
+<p>
+(hint: converting units is an easy way to get some math in there.
+Change between miles + km, pounds + euros, pounds + kg, human
+years + cat years, etc.  You may need to rewrite part of your
+self-introduction to introduce some units.)
+</p>
+
+<div class="info">
+Think about your variable names.  Don't write something like:
+
+<pre>
+distance = distance * 1.609344
+</pre>
+
+Instead, give them more descriptive names, like
+
+<pre>
+distance_km = distance_miles * 1.609344
+</pre>
+
+(<a href="../info/style.html">Read more about good style</a>)
+
+</div>
+
+
+<br>
+
+<p>
+(optional: invent a new measurement (like "centi-flipsies") and
+some fancy symbols from the <a
+href=../info/constructs.html#operators>table of operators</a> to
+convert into them.)
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+<br style="clear:both"/>
+<a name="keyboard-input">
+<h2>Exercise 3: Keyboard input</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+Reading numbers from the keyboard is fairly straightforward:
+declare the variable (reserve space in memory), then read data
+into that variable (the space in memory).
+</p>
+
+<p>
+The <code>&amp;</code> symbol means "the location of memory
+pointed to by the following variable".  Memory management in C is
+not straightforward, so we postpone this discussing until a later
+lab.  For now, just remember that you need this symbol in front of
+a <em>numeric</em> variable in your <code>scanf</code> statement.
+</p>
+
+<br>
+
+<p>
+Reading text is not quite as simple as numbers.  As discussed in
+Exercise 2, we must tell the computer the maximum number of
+characters.  This maximum value must be passed to the
+<code>scanf</code> function with <code>"%99s"</code>.
+</p>
+
+<div class="warning">
+Specifying the maximum size of keyboard input is
+<em>critically</em> important.  Failure to specify the maximum
+size will allow the keyboard user to <em>overwrite random pieces
+of memory</em>.  This can lead to random crashes and security
+flaws.  Approximately 50% of all computer security holes come from
+this problem, which is ridiculously easy to fix.
+</div>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Reading ints and floats:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+int main() {
+    int a;
+    printf("Enter an integer: ");
+    scanf("%i", &a);
+    printf("a = %i\n", a);
+
+    float b;
+    printf("Enter a float: ");
+    scanf("%f", &b);
+    printf("b = %f\n", b);
+
+    // wait for a keypress
+    getchar();
+    // we need two of them because of scanf!
+    getchar();
+}
+</pre>
+
+<p>
+Reading strings from the keyboard is more complicated.  For
+reasons that we will discuss in a later lab, we <em>MUST</em>
+specify a maximum size to the <code>%s</code> scanf command.  This
+is done with <code>%99s</code> (if the variable's size is
+<code>100</code> -- remember that the size must be <em>1 more</em>
+than the number of characters we want to hold!).
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+int main() {
+    // the sizes must match!
+    char text[100];
+    // no & for this variable
+    scanf("%99s", text);
+
+    printf("%s\n", text);
+
+    // wait for a keypress
+    getchar();
+    // we need two of them because of scanf!
+    getchar();
+}
+</pre>
+
+<div class="info">
+Unlike the <code>int</code> and <code>float</code>, we must
+<em>not</em> use a <code>&amp;</code> in front of a
+<code>char[]</code> variable in a <code>scanf</code>.
+</div>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+<em>Mad libs</em> (similar to "ad-lib") is a popular party game in
+North America.  Somebody writes a story, but removes a few nouns,
+adjectives, and verbs.  Other people must supply words to replace
+them (often with a clue, such as "an animal name" or "a movement
+verb"), without knowing the context in which they would be used.
+The result is nonsensical and sometimes funny.  For example:
+</p>
+
+<pre class="example">
+One day, a ________________ went to _______ and _____________ a ______.
+            name of animal           place       verb (past)     noun
+
+(other people supply: "polar bear", "Russia", "ate", and "house".)
+</pre>
+
+<p>
+Write a program which implements a mad-lib game:
+</p>
+
+<ul>
+<li>
+Unlike traditional mad-libs, your story must use numeric values
+(e.g., "price in pounds, number of people") in addition to text.
+
+</li><li>
+Declare at least one int, float, and string.  The variable names
+must provide clues about their function, i.e.
+
+<pre>
+char noun_animal_name[100];
+int time_minutes;
+</pre>
+
+</li><li>
+Ask the user to supply values for these variables.
+
+</li><li>
+Read the values from the keyboard input.
+
+</li><li>
+Convert at least one numeric variable into a different value.
+
+</li><li>
+Print out a madlib (including numeric values).
+
+</li>
+</ul>
+
+<br>
+
+<p>
+(optional: make it funny)
+</p>
+
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+<br style="clear:both"/>
+<a name="functions">
+<h2>Exercise 4: Functions</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+You are familiar with functions in mathematics -- you've handled
+functions like g(x)&nbsp;=&nbsp;x^2&nbsp;+&nbsp;2x&nbsp;-&nbsp;3.
+In this case, the function <em>returns</em> a value.  The returned
+value is computed based on the input.  You have also seen
+functions with multiple inputs:
+h(x,y)&nbsp;=&nbsp;5x&nbsp;-&nbsp;6x&nbsp;+&nbsp;x*y.
+</p>
+
+<p>
+We use functions like this in programming.  In C, we need to
+specify the type of variable being returned -- <code>int</code> or
+<code>float</code>.  We also need to specify the type of input
+variables.
+</p>
+
+<p>
+We also sometimes use
+functions which do not return any values -- these are useful if we
+want to repeat a few commands, or simply for program organization.
+These functions are called <code>void</code> functions.
+</p>
+
+<div class="info">
+Functions must be declared before ("higher in the <code>.c</code>
+file") they are used.
+</div>
+
+<br>
+
+<p>
+Note that each function has its own <em>scope</em> of variables.
+A function cannot refer to a variable which was declared in the
+<code>int main()</code> function.  In fact, you can re-use the
+same variable name in different functions!
+</p>
+
+<p>
+This is the time we have seen variable scope, but we can
+illustrate the problem even without functions.  Consider the
+following example -- it will not compile.  The
+<code>int&nbsp;x</code> is defined inside an extra code block
+<code>{&nbsp;...&nbsp;}</code>.  The scope of variable
+<code>x</code> only lasts for that code block; referring to this
+variable outside of that scope will produce a compiler error.
+</p>
+
+<pre class="bad">
+int main() {
+    {
+        int x = 0;
+    }
+    x = 1;
+}
+</pre>
+
+<div class="info">
+This is one reason why indentation is useful in source code.
+</div>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Simple function:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+float g(float x) {
+    return x*x + 2*x - 3;
+}
+
+int main() {
+    float a = 3.2;
+    float b = g(a);
+    printf("g(%f) = %f\n", a, b);
+
+    printf("g(5) = %f\n", g(5));
+
+    // wait for a keypress
+    getchar();
+}
+</pre>
+
+<div class="info">
+Note the different variables names in the above example!
+</div>
+
+<p>
+Various functions:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+int catYears(int human_years) {
+    float y = human_years / 7.0;
+    // this would be a good place for a comment
+    // why did I write the next line?
+    int rounded = y+0.5;
+    return rounded;
+}
+
+float sumOfSquares(float a, float b) {
+    return a*a + b*b;
+}
+
+void p(int years, float c, char animal[100]) {
+    printf("If I were a %s, I'd be ", animal);
+    printf("%i years old.\n\n", years);
+    printf("The sum of squares ");
+    printf("was %f units.\n", c);
+}
+
+int main() {
+    int my_age = 18;
+    float x = 3.3;
+    char animal[100] = "cat";
+
+    float years_a = catYears(my_age);
+    float sum = sumOfSquares(x,7.4);
+
+    p(years_a, sum, animal);
+
+    // wait for a keypress
+    getchar();
+}
+</pre>
+
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+As electrical engineering students, you are familiar with Ohm's
+Law (<em>V&nbsp;=&nbsp;IR</em>) and calculating the value of
+resistors in series (<em>R&nbsp;=&nbsp;R1+R2</em>) and parallel
+(<em>1/R&nbsp;=&nbsp;1/R1&nbsp;+&nbsp;1/R2</em>).  Consider the
+following circuit:
+</p>
+
+<div class="centeredImage">
+<img src="resistors.png" width=80%>
+</div>
+
+<p>
+Write a program to calculate the overall current in this circuit.
+</p>
+
+<ul>
+<li>
+You <em>must</em> use 3 functions: <code>ohm_law(...)</code>,
+<code>series(...)</code>, and <code>parallel(...)</code>.  A 4th
+function <code>parallel_three(...)</code> is optional.  Do not
+write functions like <code>sum_r1_r2(...)</code>.
+
+</li><li>
+Calculate the current for:
+
+<pre>
+int r1=100, r2=200, r3=300, r4=400, r5=500, r6=600, r7=700;
+</pre>
+
+<p>
+(you may copy&paste this into your <code>.c</code> file)
+<p>
+
+<p>
+The answer should be 124.6 mA.
+</p>
+
+</li><li>
+Calculate the current for:
+
+<pre>
+int r1=123, r2=234, r3=345, r4=456, r5=567, r6=678, r7=789;
+</pre>
+
+<p>
+The answer should be 107.6 mA.
+</p>
+
+</li><li>
+You may find it helpful to use intermediate variables, and to
+print debugging information.
+
+</li>
+</ul>
+
+<br>
+
+<p>
+(optional: you can call functions as inputs to other functions,
+i.e.
+
+<pre>
+z = f( g(x,y), h(x,y) );
+</pre>
+
+Using this, calculate the current from voltage and Rx values in a
+single line.)
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+
+<p><a href="lab2.html">Move on to Lab 2</a></p>
+
+<!-- footer -->
+<br style="clear:both"/>
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+
+</body>
+

@@ -1,0 +1,588 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Lab 2</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+<h1>Lab 2 for C programming</h1>
+
+<div class="center">
+Exercises:
+
+<ul style="list-style-type:none;">
+<li>
+5. <a href="#if"><code>if</code> conditionals</a>
+</li><li>
+6. <a href="#while-loops"><code>while</code> loops</a>
+</li><li class="mines">
+7. <a href="#for-loops"><code>for</code> loops</a>
+</li><li>
+</li>
+</ul>
+</div>
+
+
+<br style="clear:both"/>
+<a name="if">
+<h2>Exercise 5: <code>if</code> conditionals</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+The logic of an <code>if</code> statement is fairly simple.  If
+the statement is true, the <em>code block</em> (indicated by a
+statement or the contents of a <code>{...}</code> block) is run.
+A closely relared command is the <code>if ... else</code>, which
+acts precisely as you would expect.
+</p>
+
+<div class="warning">
+Here are two cautions to avoid common problems.
+</div>
+
+<ol>
+<li>
+In C, <code>x = 1</code> and <code>x == 1</code> do completely
+different things:
+
+<ul>
+<li>
+The single <code>=</code> is an <em>assignment</em> operator: it
+changes to the value of <code>x</code> to be <code>1</code>.
+
+</li><li>
+The double <code>==</code> is the <em>comparison</em> operator: it
+returns true if <code>x</code> is equal to <code>1</code>.
+
+</li>
+</ul>
+
+</li><li>
+If you forget to use the <code>{ ... }</code> code block, then it
+will be very easy to make a mistake later on.  The computer will
+happily execute statements which you did not think would be
+running.  This is illustrated at the bottom of the "condititonal"
+example.
+
+</li>
+</ol>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Conditional:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+int main()
+{
+    int x = 3;
+
+    if (x == 4) {
+        // this line will not be printed
+        printf("x is equal to 4.\n");
+    }
+
+    // one of these two lines will be printed
+    if ((x &gt; 10) &amp;&amp; (1 != 0)) {
+        printf("Expression is true.\n");
+        printf("x is greater than 10.\n");
+    } else {
+        printf("Expression is false.\n");
+        printf("x is not greater than 10.\n");
+    }
+
+    // something weird happens here!
+    if (x &gt; 10)
+        printf("Expression is true.\n");
+        printf("x is greater than 10.\n");
+
+    getchar();
+}
+</pre>
+
+<p>
+The logical operators (not&nbsp;<code>!</code>)
+(and&nbsp;<code>&amp;&amp;</code>) (or&nbsp;<code>||</code>) are
+particularly useful with <code>if</code>.  Occasionally the
+exclusive or&nbsp;<code>^</code> is useful.
+Parentheses&nbsp;<code>()</code> are highly encouraged when using
+logical operators.
+</p>
+
+<p>
+Generating a random number:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;  // extra includes!
+#include &lt;time.h&gt;
+
+/* Get a random number from 0 to 0.9999999
+   (you don't need to understand this function)
+   ***** DON'T MODIFY THIS FUNCTION *****
+ */
+float getRand() {
+    return rand() / (RAND_MAX+1.0);
+}
+
+int main() {
+    srand( time(NULL) ); // init random
+    getRand(); // kick-start the random numbers
+
+    float number = getRand();
+    printf("Random number: %f\n", number);
+    getchar();
+}
+</pre>
+
+<div class="info">
+<code>getRand()</code> requires extra <code>#include</code>
+files!
+</div>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Create a "guessing game" program.  Your program should:
+</p>
+
+<ul>
+<li>
+Make the computer pick a random number to be the answer.  It
+should be an <code>int</code> between 1 and 32 (inclusive).
+
+</li><li>
+Use the <code>getRand()</code> function, but <em>do not modify
+it</em>.  Instead, you should take the value it returns (a
+<code>float</code> between 0&nbsp;and&nbsp;0.999...) and do some
+math to transform that into an <code>int</code> between
+1&nbsp;and&nbsp;32).
+
+</li><li>
+Write a <em>function</em> for the user's guess.  This function
+must:
+
+<ul>
+<li>
+have one integer argument (<code>int correct_answer</code>),
+</li><li>
+read an <code>int</code> from the keyboard,
+</li><li>
+check the user's int against the correct answer,
+</li><li>
+output the appropriate message ("correct" / "too high" / "too
+low"),
+</li><li>
+returns a <code>1</code> if the user's guess was correct, and
+<code>0</code> if the user's guess was wrong.
+</li>
+</ul>
+
+</li><li>
+Give the user 5 chances to guess the right answer.
+<br>
+(hint: you have already written a function that checks a guess.
+What happens if you copy&amp;paste that function call 5 times?)
+
+</li><li>
+End the game if the user is correct, or if he's used up all 5
+chances.  Print either a "you win" or "you lose", as appropriate.
+
+</li><li>
+You may <em>not</em> use any loops for this program.
+
+</li>
+</ul>
+
+</p>
+
+<br>
+
+<p>
+(optional: instead of guessing an <code>int</code>, ask players to
+guess a <code>float</code>.  Then, instead of trying to guess
+exactly the right number, the players win if they guess a number
+within <code>0.1</code> of the correct value.)
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+<br style="clear:both"/>
+<a name="while-loops">
+<h2>Exercise 6: While loops</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+The simplest loops in C are <code>while</code> loops.  These loops
+are very similar to <code>if</code> statments.  The difference is
+that there is not <code>else</code> statement included in a
+<code>while</code> loop, and the <code>{ ... }</code> code block
+will be repeated as long as the statement is true.
+</p>
+
+<div class="info">
+There is no built-in <code>true</code> statement in C, so we use
+<code>1</code> for true and <code>0</code> for false.
+</div>
+
+<div class="warning">
+To stop an infinite loop, use <code>ctrl-c</code>
+</div>
+
+<br>
+
+<p>
+A closely-related form is the <code>do ... while</code> loop.
+Examine the code presented -- is there any difference in the
+output?  Try setting <code>int&nbsp;i=10;</code>
+</p>
+
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Infinite loops are fun:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+int main()
+{
+    while (1) {
+        printf("Infinite loop is infinite.\n");
+    }
+    getchar();
+}
+</pre>
+
+<p>
+Non-infinite loops are more useful:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+int main()
+{
+    int i = 0;
+    while (i &lt; 10) {
+        printf("The loop has repeated ");
+        printf("%i times.\n", i);
+        i++;
+    }
+    getchar();
+}
+</pre>
+
+<p>
+Another form of loop:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+int main()
+{
+    int i = 0;
+    do {
+        printf("The loop has repeated ");
+        printf("%i times.\n", i);
+        i++;
+    } while (i &lt; 10);
+    getchar();
+}
+</pre>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Save your guessing game from Exercise 5 with a new file name; we
+will be modifying it, but you don't want to lose all your hard
+work.
+</p>
+
+<p>
+Modify your guessing game:
+</p>
+
+<ul>
+<li>
+Instead of giving the user X chances, keep on offering guesses
+until the user is correct.
+
+</li><li>
+Keep track of the number of gueses, and tell the player how many
+guesses it took.
+
+</li><li>
+After the first game is finished, start a new game with a
+different answer to guess.  Keep track of the number of guesses
+the player needed to win.
+
+</li><li>
+After the second (and later) games are finished, tell the player
+their score (number of guesses) and the best score (the fewest
+number of guesses).  If the player's score is better, store it as
+the best score.
+
+</li><li>
+Keep on repeating until the player wins with 4 or fewer guesses.
+(or until the player hits <code>ctrl-c</code>)
+
+</li>
+</ul>
+
+<br>
+
+<p>
+(optional: randomly change the rules -- instead of always going
+from 1 to 32, let the computer randomly decide to do 100 to 131,
+-97 to -66, etc.  If you change the size of the range, you can't
+compare high scores for different games.  However, you could
+program the computer to randomly select "all numbers divisible by
+4 between 32 and 156" and the like.)
+</p>
+
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+
+
+<br style="clear:both"/>
+<a name="for-loops">
+<h2>Exercise 7: For loops</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+A loop that counts up (or down) is the most common type of loop,
+so most programming languages have a short-cut: the
+<code>for</code> loop.
+</p>
+
+<p>
+This loop squishes the initial setting, conditional "do we
+continue", and ending "how to change the variable" into a single
+line.  Given a statement of the form:
+</p>
+
+<pre>
+for (<em>init</em>; <em>run_loop?</em>; <em>after_loop</em>) {
+   ...
+}
+</pre>
+
+<ul>
+<li>
+<em>init</em>: This is executed <strong>once</strong>, at the
+beginning of the entire loop.
+<br>
+Generally will be something like <code>i=0</code>.
+
+</li><li>
+<em>run_loop?</em>: The computer tests this <strong>before
+each</strong> loop.
+<br>
+Generally will be something like <code>i&lt;10</code>.
+
+</li><li>
+<em>after_loop</em>: the computer executes this statement
+<strong>after each</strong> loop.
+<br>
+Generally will be something like <code>i++</code>.
+
+</li>
+</ul>
+
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+The most common form of loop is this:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+int main()
+{
+    int i;
+    for (i=0; i&lt;10; i++) {
+        printf("The loop has repeated ");
+        printf("%i times.\n", i);
+    }
+    getchar();
+}
+</pre>
+
+<p>
+Here's a weird loop:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+int main()
+{
+    int i;
+    for (i=2000; i&gt;0; i=i/2-3) {
+        printf("What is this loop ");
+        printf("doing?  i is %i\n",i);
+    }
+    getchar();
+}
+</pre>
+
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Back in the good old days, there were no fancy graphics in
+computer games; we used text to represent everything.  Your task
+is to draw a room from a family of games called
+<em>Roguelikes</em> -- the player (represented by the
+<code>@</code> symbol) must explore a dungeon.
+</p>
+
+<pre class="example">
+2x2 room, player at 0,1:
++--+
+|..|
+|@.|
++--+
+
+5x3 room, player at 1,2:
++-----+
+|.....|
+|.....|
+|.@...|
++-----+
+
+14x8 room, player at 8,5:
++--------------+
+|..............|
+|..............|
+|..............|
+|..............|
+|..............|
+|........@.....|
+|..............|
+|..............|
++--------------+
+</pre>
+
+<p>
+Your task is to write a function (with extra "helper" functions)
+to draw such a room.
+</p>
+
+<ul>
+<li>
+How big are the rooms?  What is the coordinate system?
+
+</li><li>
+Your <code>int main()</code> must contain only:
+
+<pre>
+int main() {
+    drawRoom(2,2,0,1);
+    drawRoom(5,3,1,2);
+    drawRoom(14,8,8,5);
+    getchar();
+}
+</pre>
+
+</li><li>
+In addition to <code>drawRoom()</code>, write <em>three extra</em>
+functions.  The first draw a horizontal <code>+----+</code> line,
+the second draws a line without the player <code>|....|</code>,
+and the third draws the line with the player <code>|..@.|</code>.
+The <code>drawRoom</code> function should call those other helper
+functions when appropriate.
+<br>
+(examples of the three extra functions are not drawn to scale)
+
+</li><li>
+Use <code>for</code> loops.  You may <em>not</em> use
+<code>if</code> or <code>while</code> in this exercise.
+
+</li>
+</ul>
+
+<br>
+
+<p>
+(optional: combine this exercise with keyboard input -- let the
+player move around in the room, bump into walls, etc.  Ask the
+user to turn on the <em>numlock</em> key and to press
+<code>enter</code> after every move, then you can read his moves by
+reading ints from the keyboard.  Use a <code>while</code> loop for
+this movement.)
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+
+<p><a href="lab3.html">Move on to Lab 3</a></p>
+
+<!-- footer -->
+<br style="clear:both"/>
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+
+</body>
+

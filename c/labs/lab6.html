@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Lab 6</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+<h1>Lab 6 for C programming</h1>
+
+<div class="center">
+Exercises:
+
+<ul style="list-style-type:none;">
+<li class="mines">
+14. <a href="lab6.html#pointers">Pointers</a>
+</ul>
+</div>
+
+<br style="clear:both"/>
+<a name="pointers">
+<h2>Exercise 14: Pointers</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+Pointers: stuff from lecture notes.
+</p>
+
+<br>
+
+<p>
+To keep track of time, computers need something to measure it
+against.  In C on the lab computers, we get the number of seconds
+since 00:00:00 UTC on 1 January 1970.
+</p>
+
+<p>
+As you might imagine, this produces a fairly large number -- it
+exceeds the bounds of a normal <code>int</code>.  We therefore use
+a <code>long&nbsp;int</code>, which has twice the number of bits
+of a normal <code>int</code>.  Our <code>time.h</code> library
+also defines a special data type to store the time value:
+<code>time_t</code>.  On our computers, this is the same as a
+<code>long&nbsp;int</code>.
+</p>
+
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Swapping data with pointers:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+void swap(int *px, int *py) {
+    int temp = *px;
+    *px = *py;
+    *py = temp;
+}
+
+int main() {
+    int x = 1;
+    int y = 2;
+    printf("initial: %i %i\n", x, y);
+    swap( &amp;x, &amp;y);
+    printf("swapped: %i %i\n", x, y);
+}
+</pre>
+
+<div class="info">
+Watch out for the <code>*</code> and <code>&amp;</code>
+</div>
+
+<p>
+Getting the time:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;time.h&gt;  // extra include
+
+int main() {
+    time_t now;
+    now = time(NULL);
+
+    long int a = now;
+    printf("%li\n", now);
+}
+</pre>
+
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Calling <code>time(NULL)</code> gives you a large integer.  Use
+this value to calculate today's year, date, hours, and minutes.
+</p>
+
+<ul>
+<li>
+Simplifying assumption: we pretend that each year has exactly 365
+days.  The 15th of March is therefore day 83 in year 2011.
+(use that date to figure out today's "day number")
+<br>
+(hint: how many seconds are there in a day?)
+
+</li><li>
+You <em>cannot</em> use <code>struct</code> for this assignment.
+
+</li><li>
+You <em>cannot</em> use any time-based functions from the standard
+library such as <code>asctime</code> or <code>strftime</code>.
+
+</li><li>
+You <em>must</em> use one function to calculate the year and day
+(pass in the total seconds, and a reference to the year and day).
+
+</li><li>
+You <em>must</em> use a separate function to calculate the hours
+and minutes.  (again, pass the total seconds, and a reference to
+the hours and minutes)
+</li><li>
+You <em>must</em> use a separate function to print the time; this
+function can only take as arguments the year, day, hour, and
+minutes.
+
+</li>
+</ul>
+
+<br>
+<p>
+(optional: handle leap-years correctly, and print the month as
+well)
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+
+
+
+<p><a href="../index.html">Back to main</a></p>
+
+<!-- footer -->
+<br style="clear:both"/>
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+
+</body>
+

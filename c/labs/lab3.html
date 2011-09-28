@@ -1,0 +1,423 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Lab 3</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+<h1>Lab 3 for C programming</h1>
+
+<div class="center">
+Exercises:
+
+<ul style="list-style-type:none;">
+<li>
+8. <a href="#arrays">Arrays</a>
+</li><li class="mines">
+9. <a href="#two-d-arrays">Two-dimensional arrays</a>
+</li>
+</ul>
+</div>
+
+
+
+
+<br style="clear:both"/>
+<a name="arrays">
+<h2>Exercise 8: Arrays</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+An <em>array</em> is an ordered sequence of values; you cannot
+rearrange values without changing the meaning).  A two-dimensional
+array is just a normal "table".
+</p>
+
+<p>
+In C, arrays are indexed (accessed) starting from <code>0</code>.
+For example,
+</p>
+
+<pre>
+int array[4] = {3, -2, 987, 12};
+</pre>
+
+<p>
+creates an array in memory, storing each value at the appropriate
+index:
+</p>
+
+<blockquote>
+<table border="1" cellpadding="2" cellspacing="2">
+<tr><td>Index</td><td>0</td><td>1</td><td>2</td><td>3</td></tr>
+<tr><td>Value</td><td>3</td><td>-2</td><td>987</td><td>12</td></tr>
+</table>
+</blockquote>
+
+<br>
+
+<p>
+The array's size can only be specified when you create it.  If you
+want to store more information in that array, you need to create a
+new (bigger) array, then copy information from the old array to
+the new array.
+</p>
+
+<br>
+
+<p>
+Due to the way C handles arrays and pointers (coming later), you
+can modify an array inside a function without needing to return
+anything.  The function needs to know the array's size, though!
+</p>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Initializing and displaying:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+int main() {
+    int array[8] = {1, 2, 8, 3, -5, -1, 1};
+
+    int i;
+    // display the array
+    for (i=0; i&lt;8; i++) {
+        printf("%i ", array[i]);
+    }
+    printf("\n");
+
+    // change the array
+    for (i=0; i&lt;8; i++) {
+        array[i] = 2 * array[i] - 1;
+    }
+
+    // display the array again
+    for (i=0; i&lt;8; i++) {
+        printf("%i ", array[i]);
+    }
+    printf("\n");
+    getchar();
+}
+</pre>
+
+<p>
+Arrays and functions:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+void printArray(int arr[], int size) {
+    int i;
+    for (i=0; i&lt;size; i++) {
+        printf("%i ", arr[i]);
+    }
+    printf("\n");
+}
+
+void changeArray(int arr[], int size) {
+    int i;
+    for (i=0; i&lt;size; i++) {
+        arr[i] = arr[i] * arr[i] + 3;
+    }
+}
+
+int main() {
+    int array[8] = {1, 2, 8, 3, -5, -1, 1};
+    printArray(array, 8);
+    changeArray(array, 8);
+    printArray(array, 8);
+    getchar();
+}
+</pre>
+
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+The Fibonacci numbers are a famous sequence of numbers.  They
+begin with <code>0</code> and <code>1</code>, and then the next
+value in the sequence is the sum of the previous two values.
+</p>
+
+<pre class="example">
+0 1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987 1597 2584 4181 6765
+</pre>
+
+<p>
+(fib[8] is 21 -- remember to start counting from 0!)
+</p>
+
+<p>
+Write a program that calculates the Fibonacci sequence.
+</p>
+
+<ul>
+<li>
+Make a function that accepts n, which is the number of integers to
+generate.
+
+</li><li>
+Declare an array, initialize it with only the <em>first two</em>
+Fibonacci numbers, then calculate the rest.
+
+</li><li>
+Display the sequence for n=10 and n=20.
+
+</li><li>
+Try generating output for n=50.  If anything goes wrong in this
+step, <em>you don't need to fix it</em>.  Just add a comment
+explaining what happens, and why.
+
+</li>
+</ul>
+
+<!--
+<br>
+<p>
+(optional: instead of using Fibonacci, use another mathematical
+sequence.)
+</p>
+-->
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+<br style="clear:both"/>
+<a name="two-d-arrays">
+<h2>Exercise 9: Two-Dimensional Arrays</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+Just like a one-dimensional array is an ordered sequence of
+values, a two-dimensional array is an ordered sequence of
+one-dimensional arrays.  By convention, we think of these 1-D
+arrays as being stacked vertically.
+</p>
+
+<blockquote>
+<table border="1" cellpadding="5" cellspacing="5">
+  <tbody>
+    <tr>
+      <td>Array Number</td><td>Array</td>
+          </tr>
+    <tr>
+          <td>0</td><td>
+<table border="1" cellpadding="2" cellspacing="2">
+
+  <tbody>
+    <tr>
+      <td>1-D array</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td>
+    </tr>
+  </tbody>
+</table>
+</td>
+    </tr>
+    <tr>
+          <td>1</td><td>
+<table border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td>1-D array</td><td>3</td><td>7</td><td>2</td><td>1</td><td>4</td>
+    </tr>
+  </tbody>
+</table>
+</td>
+    </tr>
+    <tr>
+          <td>2</td><td>
+<table border="1" cellpadding="2" cellspacing="2">
+    <tr>
+      <td>1-D array</td><td>4</td><td>2</td><td>8</td><td>5</td><td>6</td>
+    </tr>
+</table>
+</td>
+    </tr>
+  </tbody>
+</table>
+</blockquote>
+
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Using 2-D arrays:
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+
+// we MUST specify the size for a 2-D array
+// (unless you use pointers)
+void printArray(int values[5][3]) {
+    int i, j;
+    for (i=0; i&lt;5; i++) {
+        for (j=0; j&lt;3; j++) {
+            printf("%i ", values[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int main() {
+    int array[5][3];
+    int i, j;
+
+    // fill array with some values
+    for (i=0; i&lt;5; i++) {
+        for (j=0; j&lt;3; j++) {
+            array[i][j] = 3*i + j;
+        }
+    }
+    printArray(array);
+    getchar();
+}
+</pre>
+
+<div class="info">
+C does not check that you are only accessing an array within the 
+bounds of the array.  If you ask for <code>array[-1][-1]</code> 
+then the computer will tell you what was at that memory location,
+even though that memory does not belong to that variable!
+</div>
+
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Write a program which creates a "game board".  We will use this in
+the next exercise to write a tic-tac-toe game (also known as
+"noughts and crosses", "tick tack toe", "X's and O's").  If you're
+not familiar with the game, see <a
+href="http://en.wikipedia.org/wiki/Tic-tac-toe">Wikipedia's page
+on tic-tac-toe</a>, or ask a lab instructor.
+</p>
+
+</p>
+
+<ul>
+<li>
+Your game board should be 3x3.  Each square in the board can
+either be empty (print a dot "<code>.</code>"), or have an "X":
+
+<pre>
+. X .
+X . .
+. . .
+</pre>
+
+</li><li>
+You must use a two-dimensional array (you can't have variables
+like
+<code>int&nbsp;squareUpperLeft,&nbsp;squareBottomMiddle;</code>&nbsp;...)
+
+</li><li>
+The board begins complete clear (all blank squares
+"<code>.</code>")
+
+</li><li>
+The player may select any square by entering a number from the
+<em>computer keypad</em>.  (your program should read it as an
+<code>int</code>, and you may assume that it is between 1 and 9
+inclusive)
+
+</li><li>
+Before each player takes a move, print out the current game board.
+You can remove board from the screen by doing
+<code>printf("\n\n\n\n\n\n\n\n\n\n");</code> 2 or 3 times.
+
+</li><li>
+If the player tries to select a square that is currently occupied,
+print a warning message and ask them to choose again.
+
+</li><li>
+Continue playing the game until all squares are filled.
+
+</li><li>
+Hints: create formulae to deal with "number &lt;=&gt; row and
+column" for these three cases:
+
+<pre>
+(a)         (b)           (c)
+easy        mobile        computer keypad
+0 1 2       1 2 3         7 8 9              &lt; row 0
+3 4 5       4 5 6         4 5 6              &lt; row 1
+6 7 8       7 8 9         1 2 3              &lt; row 2
+
+^ ^ ^       ^ ^ ^         ^ ^ ^
+0 1 2       0 1 2         0 1 2
+column      column        column
+</pre>
+
+<ul>
+<li>
+You may find the division <code>/</code> and modulus <code>%</code>
+(or "remainder") operators useful.
+</li><li>
+Solve case (a) first.
+
+</li><li>
+After solving (a), figure out how to transform the numbers in (b)
+into the numbers in (a). 
+
+</li><li>
+Do the same for (c) into (b).
+
+</li>
+</ul>
+
+</li>
+</ul>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+<p><a href="lab4.html">Move on to Lab 4</a></p>
+
+<!-- footer -->
+<br style="clear:both"/>
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+
+</body>
+

@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Sample exam question</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+
+<h1>Sample example question</h1>
+
+<div class="info">
+The following question has badly-written code -- it would be much
+easier to understand with better variable names, even without
+adding any comments.  However, you should be able to understand
+even poorly-written code!
+</div>
+
+
+<div class="task">
+<h3>40 marks out of 100</h3>
+
+<p>
+What does this code do?  Do not write details about every line;
+instead, give a general summary of the overall program.  Your
+answer should be <em>1-2 sentences</em>.
+</p>
+
+<p>
+In addition, under what circumstances will this program behave
+badly?  Will it produce incorrect output, or crash?  If it
+crashes, how could the crash be avoided?
+</p>
+
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#define STRSZ 100
+struct Res {
+    int c;
+    int w;
+    int l;
+};
+int main (int argc, char *argv[]) {
+    if (argc &lt; 2) {
+        printf("No filename given\n");
+        exit(1);
+    }
+    FILE *fp;
+    if ((fp=fopen(argv[1], "r")) == NULL) {
+        fprintf(stderr, "Failed to open testfile\n");
+        exit(1);
+    }
+    struct Res res;
+    res.c = res.w = res.l = 0;
+    char *l = malloc(STRSZ*sizeof(char));
+    int s;
+    while ( fgets(l, 99, fp) != NULL) {
+        res.l++;
+        res.c += strlen(l);
+    }
+    rewind(fp);
+    while ( fscanf(fp, "%s", l) == 1) res.w++;
+    free(l);
+    fclose(fp);
+    printf(" %i  %i %i %s\n", res.l, res.w, res.c, argv[1]);
+    return 0;
+}
+</pre>
+
+</div>
+
+
+
+<!-- footer -->
+<br style="clear:both"/>
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+</body>
+
