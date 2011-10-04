@@ -181,7 +181,7 @@ same directory as your <code>.py</code> file.
 import numpy
 import scipy.io.wavfile
 # the double ** is a power operator, i.e. 2^15
-convert_16_bit = float(2**15)
+convert_16_bit = float( (2**15) - 1 )
 
 sample_rate, samples = scipy.io.wavfile.read(
     "a440-1second.wav")
