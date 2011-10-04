@@ -328,6 +328,32 @@ for i in range(8):
     print counter.get_next()
 </pre>
 
+<p>
+More useful example -- read this one carefully!
+</p>
+
+<pre>
+class CounterOne:
+    x = 0
+    increment_value = 0
+
+    # this function *must* be called __init__()
+    def __init__(self, increment_value):
+        # you *must* write "self"
+        self.increment_value = increment_value
+
+    def get_next(self):
+        # you *must* write "self"
+        y = 0.1 * (self.x)
+        self.x = self.x + self.increment_value
+        return y
+
+# pass in increment_value
+counter = CounterOne(4)
+for i in range(8):
+    print counter.get_next()
+</pre>
+
 
 </div>
 
