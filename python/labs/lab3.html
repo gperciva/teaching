@@ -166,6 +166,19 @@ convert the samples back into <code>int16</code> before writing
 the wavfile.
 </p>
 
+<p>
+Now, the wav file used in this example is a mono, 16-bit sample
+one, and the largest and smallest numbers that can be stored in
+16 binary digits are respectively 32767 and -32768. It'll make
+life <i>much</i> easier with essentially no loss of quality if
+we pretend the range is actually &plusmn;32767, i.e.
+2<sup>15</sup>-1, when we scale values for writing into the
+sound file. However, when <i>reading from</i> a sound file,
+we'll use a scaling factor of &plusmn;32768 because there's
+always a chance that some dangerous geek has actually stored
+a value of -32768 in it.
+</p>
+
 </div>
 
 <div class="right">
@@ -181,18 +194,18 @@ same directory as your <code>.py</code> file.
 import numpy
 import scipy.io.wavfile
 # the double ** is a power operator, i.e. 2^15
-convert_16_bit = float( (2**15) - 1 )
+convert_16_bit = float(2**15)
 
 sample_rate, samples = scipy.io.wavfile.read(
     "a440-1second.wav")
 print "Data type is:", samples.dtype
 
 # scale to -1.0 -- 1.0
-samples = samples / convert_16_bit
+samples = samples / (convert_16_bit + 1.0)
 print "Data type is now:", samples.dtype
 
 # change the file
-samples = samples * 0.5
+samples = samples * 0.25
 
 # scale to -32768 -- 32767
 samples = numpy.int16( samples * convert_16_bit )
