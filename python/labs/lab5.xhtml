@@ -1,0 +1,258 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+         "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>Audio Programming Lab 5</title>
+<link rel="stylesheet" href="../eeip1.css" />
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+<h1>Audio Programming Lab 5</h1>
+
+<div class="center">
+Exercises:
+
+<ul style="list-style-type:none;">
+<li class="mines">
+13. Small Angle Interpolation
+</li><li class="mines">
+14. 
+</li>
+</ul>
+</div>
+
+
+<br style="clear:both"/>
+<a name="string-arrays" />
+<h2>Exercise 12: </h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+As well as programming a large computer for
+audio output, it's often useful to be able to
+minimise the time and storage spent generating
+a sine-wave. Some devices contain very low
+power processors but might still need to
+implement audio-frequency oscillators; others
+may need to generate sine-waves at very high
+frequency sample rates. It is now possible to
+build FM receivers using software-only IF
+processing (at 10.7MHz) on a relatively modest
+dsp chip.
+</p>
+
+<p>
+The size of the look-up table, even in its
+quarter-cycle version, would be regarded by
+hardware designers as a profligate waste of
+memory, when a simple piece of trig can cut
+the storage requirement dramatically.
+</p>
+
+<p style="padding-left: 3em">
+sin(<i>A</i>+<i>B</i>) = sin<i>A</i>cos<i>B</i>
+    + cos<i>A</i>sin<i>B</i><br />
+sin(<i>x</i>) &asymp; <i>x</i>;
+cos(<i>x</i>) &asymp; 1 - <i>x</i><sup>2</sup>
+(for small <i>x</i>).
+</p>
+
+<p>
+Here's the clever bit: let's store a smaller
+number of entries in the look-up table, and use
+the identity above to interpolate between them.
+So <i>A</i> will be a "big" angle (cos and
+sine obtained from the table)
+and <i>B</i> will be the difference
+between the value which can be obtained by the
+table lookup and the angle we need. A is a "small"
+angle, so the approximations can be used to
+calculate the final value.
+</p>
+
+<p>
+Do the Maths Homework to find out how much of the
+table can be thrown away without compromising
+the accuracy of the result.
+</p>
+
+</div>
+
+<div class="right">
+<h3>Maths homework</h3>
+
+<p>
+Before investing effort in coding up an interpolated
+solution, we'd better find out exactly how much storage
+can be saved from the look-up table.
+</p>
+
+<ul>
+<li>
+The interpolation described begins to fail as the
+angle increases. If we're using 16-bit audio
+and <i>A</i>=0, find how the largest <i>B</i>
+before the error exceeds 0.5bit (1/65536) by solving
+<br/>
+&emsp;&emsp;sin<i>A</i>cos<i>B</i>
+    + cos<i>A</i>sin<i>B</i> = 1/65536<br />
+
+</li>
+
+<li>
+How many samples are there between 0 and <i>B</i>
+radians in your original look-up table?
+</li>
+
+<li>
+Is the answer different if <i>A</i> = &pi;?
+</li>
+</ul>
+
+<h3>Reference: Newton's Method</h3>
+<p>
+You can find the (most) differentiable polynomials
+iteratively using Newton's method. (Hint: it's easy
+to code in Python if you get bored using a calculator)
+</p>
+<math xmlns="http://www.w3.org/1998/Math/MathML"
+      title="x_{n+1}=x_n-{f(x_n)}/{f'(x_n)} ">
+  <mstyle mathcolor="black"
+          fontfamily="serif"
+          displaystyle="true">
+    <msub>
+      <mi>x</mi>
+      <mrow>
+        <mi>n</mi>
+        <mo>+</mo>
+        <mn>1</mn>
+      </mrow>
+    </msub>
+    <mo>=</mo>
+    <msub>
+      <mi>x</mi>
+      <mi>n</mi>
+    </msub>
+    <mo>-</mo>
+    <mfrac>
+      <mrow>
+        <mrow>
+
+          <mi>f</mi>
+
+          <mrow>
+            <mo>(</mo>
+            <msub>
+              <mi>x</mi>
+              <mi>n</mi>
+            </msub>
+            <mo>)</mo>
+          </mrow>
+        </mrow>
+      </mrow>
+      <mrow>
+        <mrow>
+          <mi>f</mi>
+          <mo>'</mo>
+        </mrow>
+        <mrow>
+          <mo>(</mo>
+          <msub>
+            <mi>x</mi>
+            <mi>n</mi>
+          </msub>
+          <mo>)</mo>
+        </mrow>
+      </mrow>
+    </mfrac>
+  </mstyle>
+</math>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Modify the oscillator class you have to use a smaller
+look-up table and interpolation.
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+<br style="clear:both"/>
+<a name="string-arrays" />
+<h2>Exercise 13: </h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+</p>
+
+</div>
+
+<div class="right">
+<h3>Maths homework</h3>
+
+<p>
+</p>
+
+<ul>
+<li>
+
+</li><li>
+</li>
+</ul>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+</p>
+
+<ul>
+<li>
+</li><li>
+</li>
+</ul>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+
+
+
+<p><a href="../index.html">Back to main</a></p>
+
+<!-- footer -->
+<br style="clear:both"/>
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+
+</body>
+</html>
