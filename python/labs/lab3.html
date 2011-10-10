@@ -366,6 +366,24 @@ for i in range(8):
     print counter.get_next()
 </pre>
 
+<p>
+Appending arrays:
+</p>
+
+<pre>
+import numpy
+
+# empty right now
+big_buffer = numpy.zeros(0)
+
+extra_stuff = numpy.zeros(2)
+big_buffer = numpy.append(big_buffer, extra_stuff)
+
+extra_stuff = numpy.zeros(2)
+big_buffer = numpy.append(big_buffer, extra_stuff)
+
+print big_buffer
+</pre>
 
 </div>
 
