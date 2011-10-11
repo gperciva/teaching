@@ -19,7 +19,7 @@ Exercises:
 <li class="mines">
 13. Small Angle Interpolation
 </li><li class="mines">
-14. 
+14. A Recursive Oscillator
 </li>
 </ul>
 </div>
@@ -27,7 +27,7 @@ Exercises:
 
 <br style="clear:both"/>
 <a name="string-arrays" />
-<h2>Exercise 12: </h2>
+<h2>Exercise 13: Small Angle Interpolation</h2>
 
 <div class="left">
 <h3>Background</h3>
@@ -58,7 +58,7 @@ the storage requirement dramatically.
 sin(<i>A</i>+<i>B</i>) = sin<i>A</i>cos<i>B</i>
     + cos<i>A</i>sin<i>B</i><br />
 sin(<i>x</i>) &asymp; <i>x</i>;
-cos(<i>x</i>) &asymp; 1 - <i>x</i><sup>2</sup>
+cos(<i>x</i>) &asymp; 1 - <i>x</i><sup>2</sup>/2
 (for small <i>x</i>).
 </p>
 
@@ -194,12 +194,277 @@ look-up table and interpolation.
 
 <br style="clear:both"/>
 <a name="string-arrays" />
-<h2>Exercise 13: </h2>
+<h2>Exercise 14: A Recursive Oscillator</h2>
 
 <div class="left">
 <h3>Background</h3>
 
 <p>
+As described in Chapter 2 of
+<a
+href="http://markov.music.gla.ac.uk/MusicE4A/mcm.pdf">mcm.pdf</a>
+the position of poles and zeros in Laplacian space
+characterises a system response. Poles on the left
+half of the <i>s</i>-plane represent a damped
+oscillatory response to an impulse stimulus, and
+poles on the right indicate unstable responses.
+</p>
+
+<p>
+Discrete-time systems are characterised by the positions
+of poles and zeros in the <i>z</i>-plane. Poles inside the
+unit circle characterise damped responses, and poles
+outside it unstable ones.
+</p>
+
+<p>
+If we could build a discrete-time system with poles on
+the unit circle at the appropriate frequency, it would
+be possible to create an oscillator with a single
+pair of poles (representing a second-order system).
+</p>
+
+<p>
+The <i>z</i>-transform is as follows:
+</p>
+
+<math title="X(z) = sum_(n \ge 0)x[n]z^(-n) "
+      xmlns="http://www.w3.org/1998/Math/MathML"
+      style="padding-left:5em;">
+  <mstyle mathcolor="black" fontfamily="serif" displaystyle="true">
+    <mi>X</mi>
+    <mrow>
+      <mo>(</mo>
+      <mi>z</mi>
+      <mo>)</mo>
+    </mrow>
+    <mo>=</mo>
+    <munder>
+
+      <mo>&sum;</mo>
+
+      <mrow>
+        <mi>n</mi>
+        <mo>&ge;</mo>
+        <mn>0</mn>
+      </mrow>
+    </munder>
+    <mi>x</mi>
+    <mrow>
+      <mo>[</mo>
+      <mi>n</mi>
+      <mo>]</mo>
+    </mrow>
+    <msup>
+      <mi>z</mi>
+      <mrow>
+        <mo>-</mo>
+        <mi>n</mi>
+      </mrow>
+    </msup>
+  </mstyle>
+</math>
+
+<p>
+An oscillator has a conjugate pair of poles on the
+unit circle. Moving the poles from <i>z</i>=1
+to <i>z</i>=-1 increases the frequency of oscillation
+from 0Hz to the Nyquist frequency. Note that as the
+angle around the circle is increased further still,
+the poles appear to swap over and move back towards
+<i>z</i>=1, which is exactly the behaviour of the
+alias frequency which would be generated if an
+attempt was made to represent a frequency higher than
+half the sample rate.
+</p>
+
+<p>
+The transfer function of a system with poles
+at <i>a<sub>n</sub></i> and zeros at <i>b<sub>n</sub></i>
+in the <i>z</i>-plane can be written out as
+follows:
+</p>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML"
+      style="padding-left:5em;"
+      title="{:(H(z),=,(Y(z))/(X(z))), (,=,(A(z-a_1)(z-a_2)\ldots)/((z-b_1)(z-b_2)\ldots)), (,=,(sum_(n=0)^(n_z)u_n z^(-n))/(1-sum_(n=1)^(n_p)v_n z^(-n))):} ">
+  <mstyle mathcolor="black" fontfamily="serif" displaystyle="true">
+    <mrow>
+      <mtable columnalign="left">
+        <mtr>
+          <mtd>
+            <mi>H</mi>
+            <mrow>
+              <mo>(</mo>
+              <mi>z</mi>
+              <mo>)</mo>
+            </mrow>
+          </mtd>
+          <mtd>
+            <mo>=</mo>
+          </mtd>
+          <mtd>
+
+            <mfrac>
+              <mrow>
+                <mi>Y</mi>
+                <mrow>
+                  <mo>(</mo>
+                  <mi>z</mi>
+                  <mo>)</mo>
+                </mrow>
+              </mrow>
+              <mrow>
+                <mi>X</mi>
+                <mrow>
+                  <mo>(</mo>
+                  <mi>z</mi>
+                  <mo>)</mo>
+                </mrow>
+              </mrow>
+            </mfrac>
+
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd/>
+          <mtd>
+            <mo>=</mo>
+          </mtd>
+          <mtd>
+            <mfrac>
+              <mrow>
+                <mi>A</mi>
+                <mrow>
+                  <mo>(</mo>
+                  <mi>z</mi>
+                  <mo>-</mo>
+                  <msub>
+                    <mi>a</mi>
+                    <mn>1</mn>
+                  </msub>
+                  <mo>)</mo>
+                </mrow>
+                <mrow>
+                  <mo>(</mo>
+                  <mi>z</mi>
+                  <mo>-</mo>
+                  <msub>
+                    <mi>a</mi>
+                    <mn>2</mn>
+                  </msub>
+                  <mo>)</mo>
+                </mrow>
+                <mo>...</mo>
+              </mrow>
+              <mrow>
+                <mrow>
+                  <mo>(</mo>
+                  <mi>z</mi>
+                  <mo>-</mo>
+                  <msub>
+                    <mi>b</mi>
+                    <mn>1</mn>
+                  </msub>
+                  <mo>)</mo>
+                </mrow>
+                <mrow>
+                  <mo>(</mo>
+                  <mi>z</mi>
+                  <mo>-</mo>
+                  <msub>
+                    <mi>b</mi>
+                    <mn>2</mn>
+                  </msub>
+                  <mo>)</mo>
+                </mrow>
+                <mo>...</mo>
+              </mrow>
+            </mfrac>
+          </mtd>
+        </mtr>
+        <mtr>
+          <mtd/>
+          <mtd>
+            <mo>=</mo>
+          </mtd>
+          <mtd>
+            <mfrac>
+              <mrow>
+                <mrow>
+                  <munderover>
+                    <mo>&sum;</mo>
+                    <mrow>
+                      <mi>n</mi>
+                      <mo>=</mo>
+                      <mn>0</mn>
+                    </mrow>
+                    <mrow>
+                      <msub>
+                        <mi>n</mi>
+                        <mi>z</mi>
+                      </msub>
+                    </mrow>
+                  </munderover>
+                </mrow>
+                <msub>
+                  <mi>u</mi>
+                  <mi>n</mi>
+                </msub>
+                <msup>
+                  <mi>z</mi>
+                  <mrow>
+                    <mo>-</mo>
+                    <mi>n</mi>
+                  </mrow>
+                </msup>
+              </mrow>
+              <mrow>
+                <mn>1</mn>
+                <mo>-</mo>
+                <mrow>
+                  <munderover>
+                    <mo>&sum;</mo>
+                    <mrow>
+                      <mi>n</mi>
+                      <mo>=</mo>
+                      <mn>1</mn>
+                    </mrow>
+                    <mrow>
+                      <msub>
+                        <mi>n</mi>
+                        <mi>p</mi>
+                      </msub>
+                    </mrow>
+                  </munderover>
+                </mrow>
+                <msub>
+                  <mi>v</mi>
+                  <mi>n</mi>
+                </msub>
+                <msup>
+                  <mi>z</mi>
+                  <mrow>
+                    <mo>-</mo>
+                    <mi>n</mi>
+                  </mrow>
+                </msup>
+              </mrow>
+            </mfrac>
+          </mtd>
+        </mtr>
+      </mtable>
+    </mrow>
+  </mstyle>
+</math>
+
+<p>
+Considering the definition of the <i>z</i>-transform,
+it is clear that division by <i>z</i> is equivalent
+to a delay of one sample in time. The rearrangement
+into the quotient of two polynomials in
+<i>z</i><sup>-1</sup> therefore realises the
+oscillator directly.
 </p>
 
 </div>
@@ -208,14 +473,46 @@ look-up table and interpolation.
 <h3>Maths homework</h3>
 
 <p>
+Perform the following preliminary design for a 440Hz
+oscillator using a second-order (two-delay) section
+as follows.
 </p>
 
 <ul>
 <li>
-
-</li><li>
+Draw a diagram of the pole positions necessary
+to realise the oscillator at the sample rate you
+are using.
+</li>
+<li>
+Write down the transfer response by substituting
+the pole positions into <i>b<sub>n</sub></i>
+in the transfer function.
+</li>
+<li>
+Multiply out the numerator and hence determine the
+values of <i>v<sub>n</sub></i>. (Sanity check: the
+poles are conjugates so if there is any imaginary
+part left, you've got it wrong). You will have to
+divide the top and bottom by a power of <i>z</i>
+to get terms with negative exponents.
+</li>
+<li>
+Recalling that
+for an arbitrary signal <i>s</i>[<i>n</i>],
+<i>z<sup>-1</sup>S</i>(<i>z</i>) is the
+<i>z</i>-transform of <i>s</i>[<i>n</i>-1],
+determine the oscillator output given its
+previous two outputs.
 </li>
 </ul>
+
+<p>
+This all sounds quite daunting, but it isn't hard
+after you've worked through what's happening once.
+Read Chapter&nbsp;2 of <a
+href="http://markov.music.gla.ac.uk/MusicE4A/mcm.pdf">mcm.pdf</a> for more detail.
+</p>
 
 </div>
 
@@ -225,11 +522,33 @@ look-up table and interpolation.
 <h3>Your task...</h3>
 
 <p>
+Implement a Python class for an oscillator which
+uses its previous two outputs to generate
+the next output. In DSP, this is called a
+"recursive oscillator" because previous results
+are used to generate a new result; this does not
+mean that the Python code has to be recursive.
 </p>
 
 <ul>
 <li>
-</li><li>
+Draw a data-flow diagram for the oscillator,
+labelling the multiply and add operations.
+</li>
+<li>
+Write the necessary Python to generate the oscillation
+and use it to replace the oscillator class you wrote for
+the previous exercises. You will need to convince
+the oscillator that it has been running forever.
+In <code>__init__</code>, it's OK to "cheat"
+by calling the sine function a couple
+of times to set the previous samples (actually,
+you only need to call it once if you take 0 as
+the previous output).
+</li>
+<li>
+How does the memory and CPU load of this algorithm
+compare with the look-up table solutions?
 </li>
 </ul>
 
