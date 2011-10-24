@@ -58,7 +58,7 @@ the storage requirement dramatically.
 sin(<i>A</i>+<i>B</i>) = sin<i>A</i>cos<i>B</i>
     + cos<i>A</i>sin<i>B</i><br />
 sin(<i>x</i>) &asymp; <i>x</i>;
-cos(<i>x</i>) &asymp; 1 - <i>x</i><sup>2</sup>/2
+cos(<i>x</i>) &asymp; 1 + <i>x</i><sup>2</sup>/2
 (for small <i>x</i>).
 </p>
 
@@ -99,9 +99,11 @@ angle increases. If we're using 16-bit audio
 and <i>A</i>=0, find how the largest <i>B</i>
 before the error exceeds 0.5bit (1/65536) by solving
 <br/>
-&emsp;&emsp;(sin<i>A</i>)(1-<i>B</i><sup>2</sup>)
-    + Bcos<i>A</i> = 1/65536<br />
-
+&emsp;|sin(<i>A</i>+<i>B</i>) - &xi;| = 1/2<sup>16</sup>
+<br />
+&emsp;&emsp;where &xi; =
+               (sin<i>A</i>)(1+<i>B</i><sup>2</sup>)
+                 + <i>B</i>cos<i>A</i>
 </li>
 
 <li>
@@ -112,6 +114,13 @@ radians in your original look-up table?
 <li>
 Is the answer different if <i>A</i> = &pi;?
 </li>
+
+<li>
+How does the situation change if we ignore the
+<i>x</i><sup>2</sup> term and simply take
+cos(<i>x</i>)&asymp;1 for small <i>x</i>?
+</li>
+
 </ul>
 
 <h3>Reference: Newton's Method</h3>
