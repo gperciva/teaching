@@ -2,23 +2,23 @@
 "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-<title>Prep lab 5</title>
+<title>Lab 6</title>
 <link rel="stylesheet" href="../eeip1.css">
 </head>
 <body>
 
 <a href="../index.html">Back to main</a>
 
-<h1>Prep lab 5 for C programming</h1>
+<h1>Audio Programming Lab 6</h1>
 
 <div class="center">
 Exercises:
 
 <ul style="list-style-type:none;">
 <li class="mines">
-12. 
+15. Complex Arithmetic; Frequency Response
 </li><li class="mines">
-13. 
+16. 
 </li>
 </ul>
 </div>
@@ -26,28 +26,75 @@ Exercises:
 
 <br style="clear:both"/>
 <a name="string-arrays">
-<h2>Exercise 12: </h2>
+<h2>Exercise 15: Complex Arithmetic; Frequency Response</h2>
 
 <div class="left">
 <h3>Background</h3>
 
 <p>
+In the last lab, we constructed oscillators by placing
+poles on the unit circle in the <i>z</i>-plane.
+This concept can be extended by providing the
+objects we build with an input, and implementing
+them with poles (and zeros) <em>inside</em> the
+unit circle. 
+</p>
+
+<p>
+To calculate the frequency response of such a system,
+we can follow the procedure described in the
+"Subtractive Synthesis" chapter of
+<a
+href="http://markov.music.gla.ac.uk/MusicE4A/mcm.pdf">mcm.pdf</a>. This describes an easily-rememered graphical
+method to calculate the magnitude and phase of a
+system's transfer function given the position of the
+poles and zeros. In summary:
+<ol>
+<li>Take a position on the unit-circle corresponding to
+the frequency of the input signal.</li>
+</li>Construct vectors from each pole to that position.</li>
+<li>Calculate the <em>vector product</em> of these vectors,
+producing the result <b>P</b></li>
+<li>Repeat the procedure for for the <em>zeros</em>
+yeilding <b>Z</b>. Remember that to make a causal system,
+you probably ended up with zeros at the origin.</li>
+<li>The frequency response is the result of the vector
+division of <b>Z</b> by <b>P</b></li>
+</ol>
 </p>
 
 </div>
 
 <div class="right">
 <h3>Maths homework</h3>
-
 <p>
+To be able to calculate frequency responses and design
+filters easily, it is important to be fluent at vector
+arithmetic, so the the prep for this section contains
+a bit of practice at that. You should be able to do
+these sums "by hand" (which, these days, means using a
+calulator which can only do real numbers).
 </p>
 
-<ul>
-<li>
+<p> Work out the following sums, expressing the
+results in polar form:
+<ol>
+<li>(4&ang;&pi;/3)(3&ang;&pi;/2)</li>
+<li>(-2&ang;&pi;/3)&sup3;</li>
+<li>(2+<i>j</i>3)(1.5&ang;-3&pi;/2)</li>
+<li><i>j</i>(1+<i>j</i>)</li>
+<li>(3&ang;-&pi;/4)(-2&ang;-3&pi;/2)</li>
+<li>(3&ang;&pi;/2)&divide;(4&ang;&pi;/3)</li>
+</ol>
+</p>
 
-</li><li>
-</li>
-</ul>
+<p>
+If a system is running at a sample rate of 44100Hz, 
+has poles at <i>z</i>&nbsp;=&nbsp;0.995&ang;&plusmn;&pi;/10 and
+zeros at <i>z</i>&nbsp;=&nbsp;0.9&ang;&plusmn;&pi;/10,
+at what frequency does it have maximum gain? And what is
+that gain?
+</p>
 
 </div>
 
@@ -57,13 +104,9 @@ Exercises:
 <h3>Your task...</h3>
 
 <p>
+...will be advertised here shortly...
 </p>
 
-<ul>
-<li>
-</li><li>
-</li>
-</ul>
 
 <h4>... show your work to a demonstrator</h4>
 </div>
