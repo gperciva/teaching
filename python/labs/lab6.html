@@ -203,6 +203,19 @@ function a bunch of times so you have your data to plot.
 You can define the poles and zeros as either python lists or numpy
 arrays.  They can be defined directly in the code; no need to
 handle user input.
+
+<pre>
+def frequency_response(poles, zeros):
+    print poles
+    print zeros
+    # calculate response for a bunch of alpha,
+    # then plot them
+
+poles = numpy.array([0.995, 0.31415, 0.995, -0.31415])
+zeros = numpy.array([0.9, 0.31415, 0.9, -0.31415])
+frequency_response(poles, zeros)
+</pre>
+
 </li><li>
 you should have a single <code>frequency_response(poles,
 zeros)</code> function.
