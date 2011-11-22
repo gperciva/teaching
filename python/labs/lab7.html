@@ -15,10 +15,12 @@
 Exercises:
 
 <ul style="list-style-type:none;">
-<li class="mines">
-12. 
-</li><li class="mines">
-13. 
+<li>
+17. Filtering (given coefficients)
+</li><li>
+18. Butterworth
+</li><li>
+19. Chebyshev
 </li>
 </ul>
 </div>
@@ -26,12 +28,13 @@ Exercises:
 
 <br style="clear:both"/>
 <a name="string-arrays">
-<h2>Exercise 12: </h2>
+<h2>Exercise 17: </h2>
 
 <div class="left">
 <h3>Background</h3>
 
 <p>
+filters change the signal.
 </p>
 
 </div>
@@ -40,6 +43,9 @@ Exercises:
 <h3>Maths homework</h3>
 
 <p>
+On paper, write out the values for a second-order filter, at the
+output of each delay and the output of the entire filter.
+Coefficients will be given in class.
 </p>
 
 <ul>
@@ -57,11 +63,35 @@ Exercises:
 <h3>Your task...</h3>
 
 <p>
+There's a few sub-tasks.  Do them in order, and it would be good
+to get them checked by Nick or Graham at each step.
 </p>
 
 <ul>
 <li>
+Noise generation: filters aren't so fascinating on a sine wave, so
+make a class that generates white noise.  This is like your
+sine-wave oscillator classes, but instead of returning an array of
+the next 2048 samples of a sine wave, you return 2048 samples of
+random values.
+<br>
+<br>
+for fun: after doing white noise, make some other colors of noise,
+like pink, brown, grey, blue, violet, orange, or black noise.
+(<a href="http://en.wikipedia.org/wiki/Colors_of_noise">wikipedia:
+colros of noise</a>)
 </li><li>
+write a Delay class.  This class will contain a
+<code>process(audio_buffer)</code> function, which will output the
+input shifted by N samples.  N should be passed in via the
+constructor.  You will need an internal buffer of size N to store
+values between each function call.
+</li><li>
+write a Filter class.  For now, you may hard-code the filter
+coefficients in the <code>__init__()</code> function (i.e. you do
+not need to pass them as arguments).
+<br><br>
+coefficients will be given out in class.
 </li>
 </ul>
 
