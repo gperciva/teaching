@@ -15,9 +15,9 @@
 Exercises:
 
 <ul style="list-style-type:none;">
-<li>
+<li class="mines">
 15. Complex Arithmetic
-</li><li>
+</li><li class="mines">
 16. Frequency Response
 </li>
 </ul>
@@ -183,21 +183,30 @@ that gain?
 <h3>Your task...</h3>
 
 <p>
-Make some plots of the frequency response for 2 or 3 systems of
+Make some plots of the magnitude frequency response for the following systems of
 poles and zeros.  This requires you to write a function to figure
 out the frequency response at a particular point, then call that
 function a bunch of times so you have your data to plot.
 </p>
 
 <p>
-numbers coming later.
+If you're feeling cheeky, you could plot the phase response too, on the same graph.
 </p>
 
-<ul>
-<li>
-</li><li>
+<p>
+System sample rate 44100Hz.
+<ol>
+<li><!-- Peak at 1kHz, zero response at DC and 22050Hz -->
+    Poles at 0.99&ang;&plusmn;0.1425; zeros at &plusmn;1.
 </li>
-</ul>
+<li><!-- Resonator with sharpish peak at 440Hz. Not too sharp though,
+         otherwise it'll be invisible on the graph -->
+    Poles at 0.99&ang;&plusmn;0.62689; zeros at 0.9, same angles.
+<li><!-- As above, but a notch instead of a peak -->
+    As above, but with the poles and zeros exchanged.
+</li>
+</ol>
+</p>
 
 <h4>... show your work to a demonstrator</h4>
 </div>
