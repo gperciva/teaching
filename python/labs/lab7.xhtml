@@ -152,8 +152,79 @@ Write down the transfer function for this system in the form
 </math>
 <p>
 Expand this out to obtain the numerator and denominator as
-polynomials in <i>z</i><sup>-1</sup>.
+polynomials in <i>z</i><sup>-1</sup>, resulting in this form:
 </p>
+<math title="G{:1+a_1z^{:-1:}+a_2z^{:-2:}:}/{:1+b_1z^{:-1:}+b_2z^{:-2:}:} "
+      xmlns="http://www.w3.org/1998/Math/MathML"
+      style="padding-left:5em;">
+  <mstyle mathcolor="black" fontfamily="serif" displaystyle="true">
+    <mi>G</mi>
+    <mfrac>
+      <mrow>
+        <mn>1</mn>
+        <mo>+</mo>
+        <msub>
+          <mi>a</mi>
+          <mn>1</mn>
+        </msub>
+        <msup>
+          <mi>z</mi>
+          <mrow>
+            <mo>-</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>+</mo>
+        <msub>
+          <mi>a</mi>
+          <mn>2</mn>
+        </msub>
+        <msup>
+          <mi>z</mi>
+          <mrow>
+            <mo>-</mo>
+            <mn>2</mn>
+          </mrow>
+        </msup>
+      </mrow>
+      <mrow>
+        <mn>1</mn>
+        <mo>+</mo>
+        <msub>
+          <mi>b</mi>
+          <mn>1</mn>
+        </msub>
+        <msup>
+          <mi>z</mi>
+          <mrow>
+            <mo>-</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+        <mo>+</mo>
+        <msub>
+          <mi>b</mi>
+          <mn>2</mn>
+        </msub>
+        <msup>
+          <mi>z</mi>
+          <mrow>
+            <mo>-</mo>
+            <mn>2</mn>
+          </mrow>
+        </msup>
+      </mrow>
+    </mfrac>
+  </mstyle>
+</math>
+<p>
+This can be implemented using a <em>second order</em>,
+<em>bi-quadratic</em> section like this:
+</p>
+<object data="biquad.svg" type="image/svg+xml"
+        style="padding-left:10mm;
+               width:70mm; height:50mm">
+</object>
 <p>
 On paper, write out the values for a second-order filter, at the
 output of each delay and the output of the entire filter.
