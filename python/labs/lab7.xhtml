@@ -1,9 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
-"http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+         "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <title>Lab 7: Filtering</title>
-<link rel="stylesheet" href="../eeip1.css">
+<link rel="stylesheet" href="../eeip1.css" />
 </head>
 <body>
 
@@ -25,7 +26,6 @@ Exercises:
 
 
 <br style="clear:both"/>
-<a name="string-arrays">
 <h2>Exercise 17: </h2>
 
 <div class="left">
@@ -67,10 +67,96 @@ changes as the freqency sweeps across the frequency range of interest.
 <h3>Maths homework</h3>
 
 <p>
+Look at the coefficients from the <a href="lab6.html#ex16homework">Exercise 16
+Maths Homework</a>
+</p>
+
+<p>
+Write down the transfer function for this system in the form
+</p>
+<math title="{:(z-z_1)(z-z_2)...(z-z_n):}/{:(z-p_1)(z-p_2)...(z-p_n) "
+      xmlns="http://www.w3.org/1998/Math/MathML"
+      style="padding-left:5em;">
+  <mstyle mathcolor="black" fontfamily="serif" displaystyle="true">
+    <mfrac>
+      <mrow>
+        <mrow>
+          <mo>(</mo>
+          <mi>z</mi>
+          <mo>-</mo>
+          <msub>
+            <mi>z</mi>
+            <mn>1</mn>
+          </msub>
+          <mo>)</mo>
+        </mrow>
+        <mrow>
+          <mo>(</mo>
+          <mi>z</mi>
+          <mo>-</mo>
+          <msub>
+            <mi>z</mi>
+            <mn>2</mn>
+          </msub>
+          <mo>)</mo>
+        </mrow>
+        <mo>...</mo>
+        <mrow>
+          <mo>(</mo>
+          <mi>z</mi>
+          <mo>-</mo>
+          <msub>
+            <mi>z</mi>
+            <mi>n</mi>
+          </msub>
+          <mo>)</mo>
+        </mrow>
+      </mrow>
+      <mrow>
+        <mrow>
+          <mo>(</mo>
+          <mi>z</mi>
+          <mo>-</mo>
+          <msub>
+            <mi>p</mi>
+            <mn>1</mn>
+          </msub>
+          <mo>)</mo>
+        </mrow>
+        <mrow>
+          <mo>(</mo>
+          <mi>z</mi>
+          <mo>-</mo>
+          <msub>
+            <mi>p</mi>
+            <mn>2</mn>
+          </msub>
+          <mo>)</mo>
+        </mrow>
+        <mo>...</mo>
+        <mrow>
+          <mo>(</mo>
+          <mi>z</mi>
+          <mo>-</mo>
+          <msub>
+
+            <mi>p</mi>
+
+            <mi>n</mi>
+          </msub>
+          <mo>)</mo>
+        </mrow>
+      </mrow>
+    </mfrac>
+  </mstyle>
+</math>
+<p>
+Expand this out to obtain the numerator and denominator as
+polynomials in <i>z</i><sup>-1</sup>.
+</p>
+<p>
 On paper, write out the values for a second-order filter, at the
 output of each delay and the output of the entire filter.
-Use the coefficients from the <a href="lab6.html#ex16homework">Exercise 16
-Maths Homework</a>
 </p>
 
 </div>
@@ -92,8 +178,8 @@ make a class that generates white noise.  This is like your
 sine-wave oscillator classes, but instead of returning an array of
 the next 2048 samples of a sine wave, you return 2048 samples of
 random values.
-<br>
-<br>
+<br/>
+<br/>
 for fun: after doing white noise, make some other colors of noise,
 like pink, brown, grey, blue, violet, orange, or black noise.
 (<a href="http://en.wikipedia.org/wiki/Colors_of_noise">wikipedia:
@@ -108,7 +194,7 @@ values between each function call.
 write a Filter class.  For now, you may hard-code the filter
 coefficients in the <code>__init__()</code> function (i.e. you do
 not need to pass them as arguments).
-<br><br>
+<br/><br/>
 coefficients will be given out in class.
 </li>
 </ul>
@@ -118,7 +204,6 @@ coefficients will be given out in class.
 
 
 <br style="clear:both"/>
-<a name="string-arrays">
 <h2>Exercise 13: </h2>
 
 <div class="left">
@@ -171,16 +256,22 @@ coefficients will be given out in class.
 <br style="clear:both"/>
 
 <p>
-<a rel="license"
-href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
-alt="Creative Commons License" style="border-width:0"
-src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
-/></a>Unless otherwise noted, all materials on these pages
-are licenced under a <a rel="license"
-href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
-Commons Licence</a>.
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">
+  <img
+     alt="Creative Commons License" style="border-width:0"
+     src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+  />
+  </a>
+  Unless otherwise noted, all materials on these pages
+  are licenced under a
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">
+  Creative
+  Commons Licence
+  </a>.
 </p>
 
 
 </body>
-
+</html>
