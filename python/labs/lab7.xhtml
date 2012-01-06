@@ -242,34 +242,51 @@ There are a few sub-tasks.  Do them in order, and it would be good
 to get them checked by Nick or Graham at each step.
 </p>
 
-<ul>
-<li>
+<h4>Sub-goal 1</h4>
+<p>
 Noise generation: filters aren't so fascinating on a sine wave, so
 make a class that generates white noise.  This is like your
 sine-wave oscillator classes, but instead of returning an array of
 the next 2048 samples of a sine wave, you return 2048 samples of
 random values.
-<br/>
-<br/>
+</p><p>
 for fun: after doing white noise, make some other colors of noise,
 like pink, brown, grey, blue, violet, orange, or black noise.
 (<a href="http://en.wikipedia.org/wiki/Colors_of_noise">wikipedia:
-colros of noise</a>)
-</li><li>
-write a Delay class.  This class will contain a
-<code>process(audio_buffer)</code> function, which will output the
-input shifted by N samples.  N should be passed in via the
+colors [<i>sic</i>] of noise</a>)
+</p><p>
+Check the spectrum of the noise is what you expect by plotting
+the FFT of your noise generator's(') output(s). Hint: numpy provides
+a routine to take the
+<a href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.fft.rfft.html#numpy.fft.rfft">FFT of real values</a> which you might find
+useful.
+</p>
+<h4>Sub-goal 2</h4>
+<p>Write a Delay class.  This class will contain a
+<code>process(audio_sample)</code> function, which will return its
+arguments delayed by up to N samples.  N should be passed in via the
 constructor.  You will need an internal buffer of size N to store
 values between each function call.
-</li><li>
-write a Filter class.  For now, you may hard-code the filter
+</p><p>
+For example:
+</p><p>
+<code>
+d = Delay(2)<br/>
+d.process(2.0)<br/>
+[2.0, 0]<br/>
+d.process(3.5)<br/>
+[3.5, 2.0]<br/>
+d.process(-1.0)<br/>
+[-1.0, 3.5]<br/>
+</code>
+</p>
+<h4>Sub-goal 3</h4>
+<p>Write a Filter class.  For now, you may hard-code the filter
 coefficients in the <code>__init__()</code> function (i.e. you do
 not need to pass them as arguments).
-<br/><br/>
-coefficients will be given out in class.
-</li>
-</ul>
-
+</p><p>
+Use the coefficients of the filter in Example 16 to test it.
+</p>
 <h4>... show your work to a demonstrator</h4>
 </div>
 
