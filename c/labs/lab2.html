@@ -15,12 +15,14 @@
 Exercises:
 
 <ul style="list-style-type:none;">
-<li>
-5. <a href="#if"><code>if</code> conditionals</a>
+<li class="mines">
+5. <a href="#random">Random numbers and <code>#include</code></a>
 </li><li>
-6. <a href="#while-loops"><code>while</code> loops</a>
+6. <a href="#if"><code>if</code> conditionals</a>
 </li><li class="mines">
-7. <a href="#for-loops"><code>for</code> loops</a>
+7. <a href="#while-loops"><code>while</code> loops</a>
+</li><li>
+8. <a href="#for-loops"><code>for</code> loops</a>
 </li><li>
 </li>
 </ul>
@@ -28,8 +30,146 @@ Exercises:
 
 
 <br style="clear:both"/>
+<a name="random">
+<h2>Exercise 5: Random numbers</h2>
+
+<div class="left">
+<h3>Background</h3>
+
+<p>
+Unless you are reading a research paper in engineering or computer
+science, when people write "random number" with regards to
+computers, they really mean
+"pseudorandom number".  The basic problem is that if you start
+from a single value (known as the <em>random seed</em>), and do a
+series of mathematical operations on it, you will not get an
+actual random number -- every time you start from the same random
+seed, you will get the same number!
+</p>
+
+<p>
+To quote one of the giants in computer science,
+
+<blockquote>
+"Anyone who attempts to generate random numbers by deterministic
+means is, of course, living in a state of sin."
+<br>
+- John von Neumann
+</blockquote>
+</p>
+
+<p>
+However, pseudorandom numbers are good enough for this course.
+</p>
+
+</div>
+
+<div class="right">
+<h3>Technical details</h3>
+
+<p>
+Generating a random number:
+</p>
+
+<div class="info">
+<code>getRand()</code> requires extra <code>#include</code>
+files!
+</div>
+
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;  // extra includes!
+#include &lt;time.h&gt;
+
+/* Get a random number from 0 to 0.9999999
+   (you don't need to understand this function)
+   ***** DON'T MODIFY THIS FUNCTION *****
+ */
+float getRand() {
+    return rand() / (RAND_MAX+1.0);
+}
+
+int main() {
+    srand( time(NULL) ); // init random
+    getRand(); // kick-start the random numbers
+
+    float number = getRand();
+    printf("Random number: %f\n", number);
+    getchar();
+}
+</pre>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Write a "dice rolling" game.  You are probably familiar with
+6-sided dice, but some games use dice with 4, 6, 8, 10, 20, and
+100 sides!
+</p>
+
+<ul>
+<li>
+Make the computer pick a random number for a 6-sided die and a
+20-sided die.
+
+</li><li>
+Use the <code>getRand()</code> function, but <em>do not modify
+it</em>.
+
+</li><li>
+Write an <code>int rollDie(...)</code> function to get a random
+value.
+
+<ul>
+<li>
+have one integer argument for the value of the die (<code>int number_of_sides</code>),
+</li><li>
+call the <code>getRand()</code> function.
+</li><li>
+take the value it returns (a <code>float</code> between
+0&nbsp;and&nbsp;0.999...) and do some math to transform that into
+an <code>int</code> between
+1&nbsp;and&nbsp;<code>number_of_sides</code> inclusive).
+
+</li><li>
+return the number.
+
+</li>
+</ul>
+
+</li><li>
+Your <code>int main()</code> must contain only:
+
+<pre>
+int main() {
+    srand( time(NULL) ); // init random
+    getRand(); // kick-start the random numbers
+
+    int value = 0;
+    value = rollDie(6);
+    printf("6-sided die: %i\n", value);
+
+    value = rollDie(20);
+    printf("20-sided die: %i\n", value);
+
+    getchar();
+}
+</li>
+</ul>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+
+<br style="clear:both"/>
 <a name="if">
-<h2>Exercise 5: <code>if</code> conditionals</h2>
+<h2>Exercise 6: <code>if</code> conditionals</h2>
 
 <div class="left">
 <h3>Background</h3>
@@ -121,38 +261,6 @@ Parentheses&nbsp;<code>()</code> are highly encouraged when using
 logical operators.
 </p>
 
-<p>
-Generating a random number:
-</p>
-
-<pre>
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;  // extra includes!
-#include &lt;time.h&gt;
-
-/* Get a random number from 0 to 0.9999999
-   (you don't need to understand this function)
-   ***** DON'T MODIFY THIS FUNCTION *****
- */
-float getRand() {
-    return rand() / (RAND_MAX+1.0);
-}
-
-int main() {
-    srand( time(NULL) ); // init random
-    getRand(); // kick-start the random numbers
-
-    float number = getRand();
-    printf("Random number: %f\n", number);
-    getchar();
-}
-</pre>
-
-<div class="info">
-<code>getRand()</code> requires extra <code>#include</code>
-files!
-</div>
-
 </div>
 
 <br style="clear:both"/>
@@ -229,7 +337,7 @@ within <code>0.1</code> of the correct value.)
 
 <br style="clear:both"/>
 <a name="while-loops">
-<h2>Exercise 6: While loops</h2>
+<h2>Exercise 7: While loops</h2>
 
 <div class="left">
 <h3>Background</h3>
@@ -383,7 +491,7 @@ program the computer to randomly select "all numbers divisible by
 
 <br style="clear:both"/>
 <a name="for-loops">
-<h2>Exercise 7: For loops</h2>
+<h2>Exercise 8: For loops</h2>
 
 <div class="left">
 <h3>Background</h3>

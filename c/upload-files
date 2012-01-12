@@ -1,3 +1,5 @@
 rsync -r *.html *.css info labs \
-  gperciva@percival-music.ca:percival-music.ca/teaching/c/
+  'campus\0903190p'@userweb.eng.gla.ac.uk:html/0903190p/
+#rsync -r *.html *.css info labs \
+#  gperciva@percival-music.ca:percival-music.ca/teaching/c/
 
