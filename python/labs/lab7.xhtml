@@ -357,6 +357,68 @@ Filtering to a specification</h2>
 <h3>Background</h3>
 
 <p>
+Filters designed to specification rely on determining the
+required order and type which will best satisfy the requirements
+in hand.
+</p>
+
+<p>
+The following types of filters are commonly used as prototypes:
+<dl>
+<dt>Bessel or Bessel-Thomson Filters</dt>
+<dd>
+Phase linear (i.e. constant group delay) filters. Because
+the delay is constant at all frequencies, the phase coherence
+(shape) of the waveform is preserved. This is the optimal
+phase response but the cut-off rate of these filters, 
+to say the least, could be better.
+In audio processing, one is generally less concerned
+with phase accuracy (except in very high-end audio applications).
+</dd>
+
+<dt>Butterworth Filters</dt>
+<dd>
+The "default choice" in many situations, combining ease of
+design with respectable performance. Maximally sharp transition
+between pass and stop bands given that the pass-band has a
+maximally flat <u>amplitude</u> response.
+</dd>
+
+<dt>Tchebysheff type I filters</dt>
+<dd>
+Improved sharpness of cut-off over Butterworth designs
+achieved by allowing a maximum ripple in the pass-band.
+Even a small amount of ripple (0.5dB or even 0.1dB) can
+improve performance considerably, although phase response
+is worsened. Harder to design than Butterworth filters,
+although computer design techniques makes this considerably less
+of a problem. Also harder to spell: often written "Chebyshev"
+(acutally named after the Russian mathematician 
+<a href="http://en.wikipedia.org/wiki/Pafnuty_Chebyshev">Пафну́тий
+Льво́вич Чебышёв</a> (approximately "Pafnuty Lvovich Chebyshev")
+</dd>
+
+<dt>Chebyshov type II filters</dt>
+<dd>
+As Chebysheff type I, but the pass-band is flat and ripple
+allowed in the stop-band.
+</dd>
+
+<dt>Elliptic filters</dt>
+<dd>
+The fastest possible transition between pass- and stop-bands,
+obtained by allowing ripple in both. Traditionally very difficult
+to design, requiring the use of elliptic integrals, but now
+frequently used (see "Your Task" below).
+</dd>
+</dl>
+</p>
+
+<p>
+With all of this development having been put into analogue
+filter design, one of the best ways of constructing a digital
+filter "to spec" is to start off with the analogue design
+and then to transform it into the digital domain. 
 </p>
 
 </div>
@@ -365,14 +427,81 @@ Filtering to a specification</h2>
 <h3>Maths homework</h3>
 
 <p>
-</p>
-
+The design process for a digital filter based on one
+of the "classical" polynomials is covered in detail in the
+<a href="http://markov.music.gla.ac.uk/MusicE4A/mcm.pdf">Making Computer Music</a> PDF file. In (extreme) summary,
 <ul>
 <li>
-
+Design the desired filter in low-pass form with a cut-off
+frequency of &omega;=2&pi;f=1.
 </li><li>
+Calculate the bi-linear warp factor at the desired cut-off
+frequency at the given sample rate. Taking this into account,
+calculate the LaPlace low-pass form of the transfer function.
+</li><li>
+Transform the low-pass filter into the desired filter type
+if necessary.
+</li><li>
+Apply the bi-linear transform by making the substituion<br />
+<math title="s \larr 2/T (1-z^{-1})/(1+z^{-1})"
+      xmlns="http://www.w3.org/1998/Math/MathML"
+      style="padding-left:5em;">
+  <mstyle mathcolor="black" fontfamily="serif" displaystyle="true">
+    <mi>s</mi>
+    <mo>&larr;</mo>
+
+    <mfrac>
+      <mn>2</mn>
+      <mi>T</mi>
+    </mfrac>
+
+    <mfrac>
+      <mrow>
+        <mn>1</mn>
+        <mo>-</mo>
+        <msup>
+          <mi>z</mi>
+          <mrow>
+            <mo>-</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+      </mrow>
+      <mrow>
+        <mn>1</mn>
+        <mo>+</mo>
+        <msup>
+          <mi>z</mi>
+          <mrow>
+            <mo>-</mo>
+            <mn>1</mn>
+          </mrow>
+        </msup>
+      </mrow>
+    </mfrac>
+  </mstyle>
+</math><br/>
+This "un-warps" the freqency response and yields a
+filter of the desired characteristics.
+</li><li>
+Extract a gain term <i>G</i> so that the both the numerator
+and denominator polynomials are of the form 1+...
+</li><li>
+Implement the filter directly, by factorisation into cascaded
+bi-quadratic sections, or other manipulation.
 </li>
-</ul>
+</ul> 
+</p>
+
+<p>
+To practise this process using a simple filter design.
+calulate the coefficients of a 1kHz low-pass, second-order
+Butterworth filter operating at 48000Hz sample rate.
+The calculation is much simplified if you normalise
+the sample rate to 1Hz (<i>T</i>=1) and adjust the
+cutoff frequency appropriately (keeping it the same
+proportion of the Nyquist rate).
+</p>
 
 </div>
 
@@ -382,13 +511,28 @@ Filtering to a specification</h2>
 <h3>Your task...</h3>
 
 <p>
+The algebra necessary to design higher-order filters isn't
+particularly difficult but is very tedious. For this reason,
+you might think it likely that functions have been written
+to calculate the polynomial coefficients and/or pole-zero
+placements necessary to realise a filter of given type
+and specification. And you would be right.
 </p>
 
-<ul>
-<li>
-</li><li>
-</li>
-</ul>
+<p>
+Read and understand the documentation of the python
+<a href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.iirdesign.html#scipy.signal.iirdesign">scipy.signal.iirdesign()</a>
+function. Use it to generate a filter which delivers an agressive
+high-pass response removing frequencies below 1.5kHz.
+</p>
+
+<p>
+Implement the filter you have designed, and test it both with
+white noise and by listening to what it does to a voice signal.
+You may implement the filter directly, or by using a standard
+filter function (for example,
+<a href="http://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.lfilter.html#scipy.signal.lfilter">scipy.signal.lfilter()</a>
+</p>
 
 <h4>... show your work to a demonstrator</h4>
 </div>
