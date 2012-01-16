@@ -7,3 +7,6 @@ class Delay:
      result = self.state + inp[:-self.n]
      self.state = inp[self.n + 1:]
      return result
+   def process(self, inp):
+     self.state = [inp] + self.state[:-1]
+     return self.state
