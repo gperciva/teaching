@@ -17,16 +17,75 @@ Exercises:
 
 <ul style="list-style-type:none;">
 <li>
-17. Filtering with pole and zero placement in the <i>z</i>-plane.
+17. Manipulating buffers.
 </li><li>
-18. Filtering to a specification.
+18. Filtering with pole and zero placement in the <i>z</i>-plane.
+</li><li>
+19. Filtering to a specification.
 </li>
 </ul>
 </div>
 
+<br style="clear:both"/>
+<h2>Exercise 17<br/>Manipulating buffers.</h2>
+
+<p>
+In this short exercise, we'll practice writing classes
+which can manipulate buffers <i>as a whole</i>
+</p>
+
+<p>
+Remember that a class definition tells the computer
+how to create <em>objects</em> which are <i>instances
+of a class</i>. Each object has a <em>constructor</em>
+which initialises its state, and (usually) several
+<em>methods</em> which can be thought of as functions
+which operate on the object, or perform operations on
+supplied data using the object
+</p>
+
+<div class="task">
+<h3>Delay class and Gain classes</h3>
+<p>
+We'll write a <code>Delay</code> class. A delay object
+is told how many samples delay (<code>n</code>)
+it should introduce. Then, when its <code>delay</code>
+method is passed an array of
+floating-point samples, it returns an array
+of the same size as the input
+with the contents delayed by <code>n</code> samples.
+Subsequent calls to the <code>delay</code> method
+return the remaining <code>n</code> samples from the
+previous input followed by all but <code>n</code>
+samples from the current input. Overall, across multiple calls,
+the first <code>n</code> samples of the output
+are set to zero, and the last <code>n</code>
+input samples are discarded.
+</p>
+<p>
+For example:<br/>
+<code>
+>>> d = Delay(2)<br/>
+>>> d.delay([1,2,3,4,5])<br/>
+[0, 0, 1, 2, 3]<br/>
+>>> d.delay([-1,-2,-3,-4,-5])<br/>
+[4, 5, -1, -2, -3]<br/>
+</code>
+</p>
+<p>
+Also write a class <code>Gain</code> which returns the
+samples in the input buffer scaled by a specified amount.
+</p>
+<p>
+Plot the result of using Delay and Gain classes on a sine
+wave. Plot the original waveform on the same axes for
+comparison.
+</p>
+</div>
 
 <br style="clear:both"/>
-<h2>Exercise 17: </h2>
+<h2>Exercise 18<br/>Filtering with pole and zero placement
+in the <i>z</i>-plane.</h2>
 
 <div class="left">
 <h3>Background</h3>
