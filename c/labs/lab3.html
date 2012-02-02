@@ -336,8 +336,10 @@ X . .
 </pre>
 
 </li><li>
-You must use a two-dimensional array (you can't have variables
-like
+You <em>must</em> use a two-dimensional array to represent the
+game board in memory.
+<br>
+(you can't have variables like
 <code>int&nbsp;squareUpperLeft,&nbsp;squareBottomMiddle;</code>&nbsp;...)
 
 </li><li>
@@ -363,7 +365,12 @@ print a warning message and ask them to choose again.
 Continue playing the game until all squares are filled.
 
 </li><li>
-Hints: create formulae to deal with "number &lt;=&gt; row and
+You <em>must</em> create formulae to deal with "number &lt;=&gt;
+row and column".  You <em>may not</em> use <code>if</code>
+statements or a <code>switch...case</code> statement.
+
+</li><li>
+Hint: create formulae to deal with "number &lt;=&gt; row and
 column" for these three cases:
 
 <pre>
