@@ -200,7 +200,7 @@ sample_rate, samples = scipy.io.wavfile.read(
 print "Data type is:", samples.dtype
 
 # scale to -1.0 -- 1.0
-samples = samples / (convert_16_bit + 1.0)
+samples = samples / convert_16_bit
 print "Data type is now:", samples.dtype
 
 # change the file
