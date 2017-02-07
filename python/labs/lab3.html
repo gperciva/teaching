@@ -9,7 +9,7 @@
 
 <a href="../index.html">Back to main</a>
 
-<h1>Lab 3 for C programming</h1>
+<h1>Lab 3 for audio programming</h1>
 
 <div class="center">
 Exercises:
@@ -37,7 +37,7 @@ Exercises:
 
 <p>
 An <em>array</em> is an ordered sequence of values; you cannot
-rearrange values without changing the meaning).  A two-dimensional
+rearrange values without changing the meaning.  A two-dimensional
 array is just a normal "table".
 </p>
 
@@ -74,7 +74,7 @@ Initializing and displaying:
 import numpy
 # initialize all positions with 0
 arr = numpy.zeros(8)
-print arr
+print(arr)
 </pre>
 
 <p>
@@ -197,18 +197,18 @@ convert_16_bit = float(2**15)
 
 sample_rate, samples = scipy.io.wavfile.read(
     "a440-1second.wav")
-print "Data type is:", samples.dtype
+print("Data type is:", samples.dtype)
 
 # scale to -1.0 -- 1.0
 samples = samples / (convert_16_bit + 1.0)
-print "Data type is now:", samples.dtype
+print("Data type is now:", samples.dtype)
 
 # change the file
 samples = samples * 0.25
 
 # scale to -32768 -- 32767
 samples = numpy.int16( samples * convert_16_bit )
-print "Data type is now:", samples.dtype
+print("Data type is now:", samples.dtype)
 
 scipy.io.wavfile.write("quieter.wav",
     sample_rate, samples)
@@ -305,7 +305,7 @@ class CounterOne:
 # note the capitalization (convention)
 counter = CounterOne()
 for i in range(8):
-    print counter.get_next()
+    print(counter.get_next())
 </pre>
 
 <p>
@@ -337,7 +337,7 @@ else:
 # the code here doesn't know if it's
 # using CounterOne or CounterTwo!
 for i in range(8):
-    print counter.get_next()
+    print(counter.get_next())
 </pre>
 
 <p>
@@ -363,7 +363,7 @@ class CounterOne:
 # pass in increment_value
 counter = CounterOne(4)
 for i in range(8):
-    print counter.get_next()
+    print(counter.get_next())
 </pre>
 
 <p>
@@ -382,7 +382,7 @@ big_buffer = numpy.append(big_buffer, extra_stuff)
 extra_stuff = numpy.zeros(2)
 big_buffer = numpy.append(big_buffer, extra_stuff)
 
-print big_buffer
+print(big_buffer)
 </pre>
 
 </div>

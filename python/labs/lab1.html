@@ -9,7 +9,7 @@
 
 <a href="../index.html">Back to main</a>
 
-<h1>Lab 1 for C programming</h1>
+<h1>Lab 1 for python programming</h1>
 
 <div class="info">
 <p>
@@ -101,7 +101,7 @@ Printing text (complete example):
 </p>
 
 <pre>
-print "hello world!"
+print("hello world!")
 </pre>
 
 <p>
@@ -126,9 +126,9 @@ Comments:
 <pre>
 # this is a comment
 
-print "hello"
+print("hello")
 
-# print "this will not be printed"
+# print("this will not be printed")
 </pre>
 
 </div>
@@ -237,24 +237,24 @@ Declaring and printing variables, and basic math:
 
 <pre>
 x = 3
-print "x is currently", x
+print("x is currently", x)
 
 y = 4.001
-print "y is currently", y
-print "Make that shorter: %.1f" % (y)
-print "Make that longer: %.8f" % (y)
+print("y is currently", y)
+print("Make that shorter: {:.1f}".format(y))
+print("Make that longer: {:.8f}".format(y))
 
 z = x/y
 z = x + z*y - y
-print "Why does z = %i ?\n" % (z)
+print("Why does z = {} ?\n".format(z))
 
 animal_name = "cat"
 cute_name = "kitty"
 combo = cute_name + animal_name
-print "We can do \"math\" on strings: %s" % (combo)
+print("We can do \"math\" on strings: {}".format(combo))
 
-print "We can print multiple",
-print "variables: %i %f %i %s\n" % (x, y, z, cute_name)
+print("We can print multiple")
+print("variables: {} {} {} {}\n".format(x, y, z, cute_name))
 </pre>
 
 <div class="info">
@@ -356,7 +356,7 @@ Reading strings:
 <pre>
 print "Enter an animal name:"
 animal_name = raw_input()
-print "You typed: %s" % (animal_name)
+print("You typed: ", animal_name)
 </pre>
 
 <p>
@@ -365,7 +365,7 @@ the string into an integer or float.
 </p>
 
 <pre>
-print "Enter your age (as an integer):"
+print("Enter your age (as an integer):")
 user_input = raw_input()
 age = int(user_input)
 
@@ -373,7 +373,7 @@ print "Enter a float:"
 user_input = raw_input()
 weight = float(user_input)
 
-print "You typed: %i, %f" % (age, weight)
+print("You typed: {}, {}".format(age, weight))
 </pre>
 
 <div class="info">
@@ -525,10 +525,10 @@ def sum_of_squares(a, b):
     return a*a + b*b
 
 def p(years, c, animal):
-    print "If I were a %s, I'd be" % (animal),
-    print "%i years old.\n" % (years)
-    print "The sum of squares",
-    print "was %f units.\n" % (c)
+    print("If I were a {}, I'd be".format(animal),
+          "{} years old.\n".format(years))
+    print("The sum of squares",
+          "was {} units.\n".format(c))
 
 my_age = 18
 x = 3.3
