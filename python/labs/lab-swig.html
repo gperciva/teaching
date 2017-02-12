@@ -1,0 +1,411 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Getting Ready I - SWIG</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+<h1>
+	Getting Ready for the Grand Challenge I<br/>
+	Calling C(++) from Python
+</h1>
+
+<div class="center">
+Exercises:
+
+<ul style="list-style-type:none;">
+<li class="mines">
+17. A Very Simple Example
+</li><li class="mines">
+16. Frequency Response
+</li>
+</ul>
+</div>
+
+
+<br style="clear:both"/>
+<a name="string-arrays">
+<h2>Exercise 17: A Very Simple Example</h2>
+
+<div class="left">
+<h3>Background</h3>
+<p>
+Python isn't the fastest language. It's certainly great
+for rapid prototyping and cuts development time by a
+great deal, but at run time it's slow, and can't easily make
+use of multiple cores you find even in telephones, let
+alone desktop workstations. C(++) on the other hand is
+more difficult to develop, but offers potentially huge
+speed advantages by being "close to the metal".
+There will very probably come a time when at least the speed-critical
+part of your Python needs to be faster, or you might just
+want to call one of the function libraries developed in
+C(++) over the last 4 decades.
+</p>
+
+<p>
+Python is written in C, so of course it's possible to
+extend it by writing new functionality in C(++).
+However, calling a C(++) function from Python or using
+a C++ class as a Python one requires a lot of boiler-plate
+code because of the differences between the languages.
+Just think about them:
+<table>
+	<tr><th></th><th>Python</th><th>C(++)</th></tr>
+	<tr><th>Types</th><td>Dynamic</td><td>Static, Strict</td></tr>
+	<tr><th>Allocation</th><td>On demand</td><td>Explict</td></tr>
+	<tr><th>Memory Management</th><td>Garbage collection</td><td>RAII, explicit or end-of-scope deletion</td></tr>
+</table>
+Every call to a C(++) function from Python needs to take
+these differences into consideration, and that makes for
+a lot of tedious, error prone work to connect the two
+together. Who allocates memory for the variables passed
+between the Python and C(++) contexts? Who frees that memory?
+How do we check that the right version of the C(++) function
+is being called and that the types agree?
+</p>
+
+<p>
+Fortunately, Python is designed to make things as painless
+as possible, to the extent that almost all of the boiler-plate
+can be generated automatically by a Simple Wrapper Interface Generator
+program. One of these programs is called (guess...) SWIG.
+</p>
+
+<p>
+Our game plan is as follows:
+<ol>
+	<li>Write a function in C++.</li>
+	<li>Write a test harness for it in C++;
+		compile and link them;
+		make sure the function works.</li>
+	<li>Write an interface specification file
+		explaining to SWIG what the function does.</li>
+	<li>Parse the i-file with SWIG to generate the wrapper code.</li>
+	<li>Link the wrapper and your original C++ object files
+		to produce a shared library.</li>
+	<li>Start Python, import the shared library
+		just line any regualar Python module, and enjoy.</li>
+</p>
+</div>
+
+<div class="right">
+<h3>Command Reminders and References</h3>
+
+<p>
+You'll aready know that you can compile a C++ program using the 
+GNU compiler with the following command
+<pre class="example">
+g++ -o &lt; output_file_name&gt; \
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;input_file_names&gt; \
+&nbsp;&nbsp;&nbsp;&nbsp;-I&lt;include_file_path&gt; \
+&nbsp;&nbsp;&nbsp;&nbsp;-L&lt;library_path&gt; -l&lt;library&gt;
+</pre>
+and that unless you specify otherwise with the <em>-o</em> flag,
+the program is written into a file called <em>a.out</em>
+(assembler output). Of course, you can leave the flags you don't
+need out, and the include file and library search paths will have
+sensible defaults if the compiler has been properly installed.
+</p>
+
+<p>
+To work with SWIG you'll need to know
+about these other compiler options:
+<table>
+	<tr><th>&#8209;c</th><td>Compile only: don't link.
+			Produces an output file with the same name
+			but a <em>.o</em> extension (by default).</td></tr>
+	<tr><th>&#8209;fPIC</th><td>Produce Position Independent Code,
+			i.e. code which may be loaded at any memory address
+			without modification, and is therefore suitable to
+			be used in a shared library.</td></tr>
+	<tr><th>&#8209;shared</th><td>Link the named object files
+			resolving as many references as possibe producing
+			a shared object library (extension <em>.so</em>).
+</table>
+</p>
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+<div class="info">
+	In this elementary example, I'm going to give you
+	all the code. You will have to understand it thoroughly.
+	You won't be able to write your own unless you do.
+	That means every single operator, statement and
+	preprocessor directive in what follows must be absolutely
+	clear to you.
+</div>
+<p>
+Write two c++ files. In one, write a function which prints
+"Hello, " followed by its argument. Then write a test file
+with a main function in it to make sure your C function behaves
+as you wish it to behave. For example, here's the header file:
+<pre class="code">
+// File: simple_hello.h
+//
+// Print a greeting.
+//
+
+#include <string>
+
+void hw(std::string who = std::string("World"));
+</pre>
+here's the implementation:
+<pre>
+// File: simple_hello.cxx
+//
+// Implementation of the Hello function suite in C++
+
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+#include "simple_hello.h"
+
+void hw(std::string who)
+{
+        std::cout &lt;&lt; "Hello, " &lt;&lt; who &lt;&lt; std::endl;
+}
+</pre>
+and here's the evaluation program:
+<pre>
+// File: simple_hello_test.cxx
+
+#include &lt;iostream&gt;
+
+#include "simple_hello.h"
+
+using namespace std;
+
+int main(int argc, char *argv[])
+{
+        cout &lt;&lt; "Calling hw()\n";
+        hw();
+        cout &lt;&lt; "Calling hw(argv[0])\n";
+        hw(argv[0]);
+	return 0;
+}
+</pre>
+</p>
+
+<p>
+Compile this and test it. Maybe say <br/>
+<code>g++ -o simple_hello simple_hello_test.cxx simple_hello.cxx<br/>
+./simple_hello<br/></code>
+</p>
+
+<p>
+Now we have to bind this to python. First write an interface file.
+In very simple cases like this, you can instruct SWIG simply to
+parse the C(++) header file and work out what's going on for itself.
+Let's call our python module <em>simple_hello</em>. A suitable
+interface file might contain:
+<pre>
+/* File: simple_hello.i */
+
+/* Name our python module */
+%module simple_hello
+
+/* We'll be using C++ standard library strings */
+%include &lt;std_string.i&gt;
+
+/* Put the literal code needed at the top of the output file */
+%{
+#define SWIG_FILE_WITH_INIT
+#include "simple_hello.h"
+%}
+
+/* Parse the c++ header file and generate the output file */
+%include "simple_hello.h"
+</pre>
+Note that the awfully nice SWIG people have already provided
+interface files for much of the C++ standard library, including
+the C++ string type. We take the opportunity to put two
+C preprocessor directives at the top of the wrapper file;
+as we get more advanced, we can add extra python-specific
+functionality to the wrapper, but for now these two lines are
+all you need. They are simply copied into the output file.
+We then parser our "library" header file and prodeuce the
+C++ code.
+</p>
+
+<p>
+To generate the wrapper code for our <em>simple_hello</em> module
+you need to say<br/>
+<code>swig -c++ -python simple_hello.i</code><br/>
+which tells swig to enable C++ processing, use Python as the
+target language, and to perform the actions required by the
+interface file. This will generate a file called <em>simple_hello_wrap.cxx</em>
+which you should feel free to look at. You should never have to edit
+this file (which is just as well!): you can change the interface
+file instead to modify it's behaviour.
+</p>
+
+<p>
+We're almost there now. We have to make position independent object
+files and link them into a shared library, then import that into a
+Python session. Here are the appropriate incantations:
+<code><br/>g++ -fPIC -c simple_hello.cxx<br/>
+g++ -fPIC -c simple_hello_wrap.cxx -I/usr/include/python3.5m<br/>
+g++ -shared simple_hello_wrap.o simple_hello.o -o _simple_hello.so<br/></code>
+Note the leading underscore character on the filename of the
+shared object, and that I told the C++ compiler to look in
+Python's include directory for the necessary header files
+to connect with the Python interpreter. The include directory
+might be different on the machine you're using.
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+<br style="clear:both"/>
+<a name="string-arrays">
+<h2>Exercise 16: frequency response</h2>
+<a name="ex16homework"></a>
+<div class="left">
+<h3>Background</h3>
+
+<p>
+A few labs ago, we constructed oscillators by placing
+poles on the unit circle in the <i>z</i>-plane.
+This concept can be extended by providing the
+objects we build with an input, and implementing
+them with poles (and zeros) <em>inside</em> the
+unit circle. 
+</p>
+
+<p>
+To calculate the frequency response of such a system,
+we can follow the procedure described in the
+"Subtractive Synthesis" chapter of
+<a
+href="http://markov.music.gla.ac.uk/AP_Sandpit/mcm.pdf">mcm.pdf</a>. This describes an easily-rememered graphical
+method to calculate the magnitude and phase of a
+system's transfer function given the position of the
+poles and zeros. In summary:
+<ol>
+<li>Take a position on the unit-circle corresponding to
+the frequency of the input signal.</li>
+</li>Construct vectors from each pole to that position.</li>
+<li>Calculate the <em>vector product</em> of these vectors,
+producing the result <b>P</b></li>
+<li>Repeat the procedure for for the <em>zeros</em>
+yeilding <b>Z</b>. Remember that to make a causal system,
+you probably ended up with zeros at the origin.</li>
+<li>The frequency response is the result of the vector
+division of <b>Z</b> by <b>P</b></li>
+</ol>
+</p>
+
+</div>
+
+<div class="right">
+<h3>Maths homework</h3>
+
+<p>
+Consider
+a system is running at a sample rate of 44100Hz, 
+having two poles at
+<i>z</i>&nbsp;=&nbsp;0.995&ang;&plusmn;&pi;/10, and two
+zeros at <i>z</i>&nbsp;=&nbsp;0.9&ang;&plusmn;&pi;/10.
+</p>
+
+<p>
+What is the frequency response at alpha = 0.25 ?
+</p>
+
+<p>
+At what frequency does it have maximum gain? And what is
+that gain?
+</p>
+
+</div>
+
+<br style="clear:both"/>
+
+<div class="task">
+<h3>Your task...</h3>
+
+<p>
+Make some plots of the magnitude frequency response for the following systems of
+poles and zeros.  This requires you to write a function to figure
+out the frequency response at a particular point, then call that
+function a bunch of times so you have your data to plot.
+</p>
+
+<p>
+You should have a single <code>frequency_response(poles,
+zeros)</code> function.
+</p>
+
+<ul>
+<li>
+You can define the poles and zeros as either python lists or numpy
+arrays.  They can be defined directly in the code; no need to
+handle user input.
+
+<pre>
+def frequency_response(poles, zeros):
+    print poles
+    print zeros
+    # calculate response for a bunch of alpha,
+    # then plot them
+
+poles = numpy.array([0.995, 0.31415, 0.995, -0.31415])
+zeros = numpy.array([0.9, 0.31415, 0.9, -0.31415])
+frequency_response(poles, zeros)
+</pre>
+
+<p>
+If you're feeling cheeky, you could plot the phase response too, on the same graph.
+</p>
+
+<p>
+System sample rate 44100Hz.
+
+<ol>
+<li><!-- Peak at 1kHz, zero response at DC and 22050Hz -->
+    Poles at 0.99&ang;&plusmn;0.1425; zeros at &plusmn;1.
+</li>
+<li><!-- Resonator with sharpish peak at 440Hz. Not too sharp though,
+         otherwise it'll be invisible on the graph -->
+    Poles at 0.99&ang;&plusmn;0.62689; zeros at 0.9, same angles.
+<li><!-- As above, but a notch instead of a peak -->
+    As above, but with the poles and zeros exchanged.
+</li>
+</ol>
+</p>
+
+<h4>... show your work to a demonstrator</h4>
+</div>
+
+
+
+
+
+<p><a href="../index.html">Back to main</a></p>
+
+<!-- footer -->
+<br style="clear:both"/>
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+
+</body>
+
