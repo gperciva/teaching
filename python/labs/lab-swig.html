@@ -270,6 +270,14 @@ to connect with the Python interpreter. The include directory
 might be different on the machine you're using.
 </p>
 
+<div class="info">
+	If you have a very old C++ compiler, you might have to
+	encourage it to use the modern standard by adding the
+	flags <code>&#8209;&#8209;std=c++0x</code>
+	or <code>&#8209;&#8209;std=c++11</code>.
+	The C++ produced by SWIG relies on modern language features.
+</div>
+
 <p>
 You should have covered the use of build tools in an earlier
 programming class. Once you've understood what's going on,
@@ -306,7 +314,7 @@ strings are represented as null-terminated character arrays,
 and passed around the programmer as pointers to their
 first character. Indeed, the declaration
 <br/><code>char* s = "Hi";</code>
-is really just a shorthand for
+<br/>is really just a shorthand for
 <br/><code>char* s = {'H', 'i', '\0'};</code>
 <br/> The C "string" doesn't even have a method to determine
 its length; it's just a pointer, not an object.
@@ -318,15 +326,99 @@ as a "string".
 
 <p>
 The solution that SWIG offers to this is the application
-of "Typemaps".
+of "Typemaps". A Typemap tells SWIG to generate some specific
+code when the variable maps a type template. Most specific
+templates are considered first (and they can include the
+name of the variable), so it's possible to specify how
+a variable is to be treated on a case-by-case basis.
+Writing the Typemap requires a fairly intimate kowledge
+of SWIG and the Python run-time, but the numpy authors
+have provided an interface file for their package, so we
+are in the happy position of only ever having to use those
+which we're given.
 </p>
+
+<p>
+Finally, it's worth noting that as well as functions, SWIG
+will convert wrappers for C++ classes wholesale if required.
+The wrapped class in the C++ appears as a regular Python
+class, and all of its public methods are accessible from
+Python.
+</p>
+
 </div>
 
 <div class="right">
+	<h3>Using Supplied numpy nd-array Typemaps</h3>
+	<p>
+	To make use of the Typemaps provided to support
+	numpy nd-arrays through SWIG, it's necessary to
+	include in your interface file the instructions
+	to read numpy's interface file and initialise
+	the necessary array-support code. The first two
+	stanzas of the following code fragment achieve
+	this.
+	</p>
+	<pre class="code">
+%include &lt;numpy.i&gt;
+
+%init %{
+import_array();
+%}
+
+%apply (double* IN_ARRAY1, int DIM1) {
+  (const double* in, std::size_t in_size)
+};
+%apply (double* INPLACE_ARRAY1, int DIM1) {
+  (double* out, std::size_t out_size)
+};
+        </pre>
+	<p>
+	The final two stanzas apply the numpy array Typemaps to
+	functions which have the named arguments and types. You
+	have to understand that numpy.i is designed to pass arrays
+	using the convention of supplying a pointer to the first
+	element and the length of the dimension.
+	The first <code>%apply</code> instructs functions with the
+	formal parameter list <code>(double* in, int in_size)</code>
+	to be treated as if described in the Typemaps IN_ARRAY1
+	and DIM1. So supplying a <em>single nd-array argument</em>
+	in the Python call invokes the C function with <em>two</em>
+	arguments: a pointer to the first element and the size of
+	the first (only) dimension. To know that, you have to read
+	the manual.
+	</p>
+	<p>
+	numpy.i provides a choice of signiatures for arrays of up
+	to 4D. To pass a 2D array, for example, you might use the
+	signiature
+	<code>(DATA_TYPE* IN_ARRAY2, int DIM1, int DIM2)</code>
+	where DATA_TYPE can be one of the supported types (that includes
+	almost any simple type you can think of).
+	</p>
+	<p>
+	Notice that the IN_ARRAY can't be modified: the C(++) type
+	which it is applied to is represented by a const pointer.
+	If you want to modify the Python array with the C function,
+	you must use a INPLACE_ARRAY1, INPLACE_ARRAY2, etc.
+	Python often returns more than one value with calls like
+	<code>a,b=myfunction(x)</code>, but C(++) usually achieves
+	this by having pointers (or references) passed to the function.
+	If you code already uses numpy, and the return values are all
+	of the same type, an INPLACE array might be used to return
+	them. There is also the ARGOUTVIEWM_ARRAYx template to allow
+	properly memory-managed views of public arrays in your C++:
+	check out the documentation. However, if you want to return
+	multiple values, you might ask yourself whether you shouldn't
+	do the Pythonic thing and return a tuple.
+	</p>
+	<hr/>
 	<h3>Reference Documents</h3>
 	<p>The full story on
 	<a href="http://www.swig.org/Doc1.3/Typemaps.html">SWIG
 		Typemaps</a>.</p>
+	<p><a href="https://docs.scipy.org/doc/numpy/reference/swig.interface-file.html">Documentation</a>
+	for the numpy SWIG interface specification.</p>
 
 </div>
 
@@ -334,56 +426,115 @@ of "Typemaps".
 
 <div class="task">
 <h3>Your task...</h3>
-
 <p>
-Make some plots of the magnitude frequency response for the following systems of
-poles and zeros.  This requires you to write a function to figure
-out the frequency response at a particular point, then call that
-function a bunch of times so you have your data to plot.
+First of all, provide the implementation for the
+class described below. Then implement the resonator
+you built in python using C++ from scratch.
 </p>
 
 <p>
-You should have a single <code>frequency_response(poles,
-zeros)</code> function.
+To illustrate the techniques involved, I've made a couple
+of functions which calculate the minimum, maximum and sum
+of an 1D numpy array of doubles. The calculation is done
+in C++.
 </p>
 
-<ul>
-<li>
-You can define the poles and zeros as either python lists or numpy
-arrays.  They can be defined directly in the code; no need to
-handle user input.
+<p>
+The functions are gratuitously wrapped in a class, for no
+other reason than to show the calling convention. They are
+static functions so they belong to the class and you don't
+have to instantiate an object to use them. <code>mms_t</code>
+calculates the maximum, minimum and sum and returns them
+as a tuple (actually a Python list). <code>mms_a</code>
+returns the values in a numpy array which the caller is
+responsible for creating.
+</p>
 
-<pre>
-def frequency_response(poles, zeros):
-    print poles
-    print zeros
-    # calculate response for a bunch of alpha,
-    # then plot them
+<p>
+Here is the header file.
+</p>
 
-poles = numpy.array([0.995, 0.31415, 0.995, -0.31415])
-zeros = numpy.array([0.9, 0.31415, 0.9, -0.31415])
-frequency_response(poles, zeros)
+<pre class="code">
+// File: min_max_sum.h
+//
+// Given an array of double, return its minumum and
+// maximum values and the sum of its contents in
+// diverse and amusing ways.
+//
+
+#include &lt;cstddef&gt;
+
+class MMS {
+public:
+        // return the min, max and sum of the given array.
+        // SWIG will arrange for this to be returned as a tuple.
+        static void mms_t(const double* in, std::size_t in_size,
+                          double* min, double* max, double* sum);
+
+        // return the min, max and sum of the given numpy array 'in'.
+        // SWIG will write the values into the give numpy array, 'out'.
+        static void mms_a(double* out, std::size_t out_size,
+                          const double* in, std::size_t in_size);
+};
+</pre>
+<p>
+And here is the interface specification
+</p>
+<pre class="code">
+/* File: min_max_sum.i */
+
+/* Name our python module */
+%module min_max_sum
+
+/* Put the literal code needed at the top of the output file */
+%{
+#define SWIG_FILE_WITH_INIT
+#include "min_max_sum.h"
+%}
+
+/* The typemaps interface file lets us use the *OUTPUT Typemap.
+   This will enable us to use pointers to variables as return results.
+   If more than one *OUTPUT is matched, a tuple gets constructed. */
+%include &lt;typemaps.i&gt;
+
+/* Use the numpy interface for ndarrays. See the warning below */
+%include &lt;numpy.i&gt;
+
+%init %{
+import_array();
+%}
+
+/* Match the arguments of our various C++ methods */
+%apply (double* IN_ARRAY1, int DIM1) { (const double* in, std::size_t in_size) };
+%apply double *OUTPUT { double* min, double* max, double* sum };
+%apply (double* INPLACE_ARRAY1, int DIM1) { (double* out, std::size_t out_size) };
+
+/* Parse the c++ header file and generate the output file */
+%include "min_max_sum.h"
+
+</pre>
+<p>
+Just to prove it works, here's a session running on Nick's laptop:
+</p>
+<pre class="example">
+&gt;&gt;&gt; from min_max_sum import MMS
+&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; result = np.zeros(3)
+&gt;&gt;&gt; MMS.mms_t(np.array([1,4,3,7]))
+[1.0, 7.0, 15.0]
+&gt;&gt;&gt; MMS.mms_a(result,np.array([1,4,3,7]))
+&gt;&gt;&gt; result
+array([  1.,   7.,  15.])
 </pre>
 
-<p>
-If you're feeling cheeky, you could plot the phase response too, on the same graph.
-</p>
-
-<p>
-System sample rate 44100Hz.
-
-<ol>
-<li><!-- Peak at 1kHz, zero response at DC and 22050Hz -->
-    Poles at 0.99&ang;&plusmn;0.1425; zeros at &plusmn;1.
-</li>
-<li><!-- Resonator with sharpish peak at 440Hz. Not too sharp though,
-         otherwise it'll be invisible on the graph -->
-    Poles at 0.99&ang;&plusmn;0.62689; zeros at 0.9, same angles.
-<li><!-- As above, but a notch instead of a peak -->
-    As above, but with the poles and zeros exchanged.
-</li>
-</ol>
-</p>
+<div class="info">
+	Some Linux distributions of python3-numpy don't
+	package the <em>numpy.i</em> interface file.
+	This is a bug.
+	If your copy of SWIG complains about not being
+	able to find numpy.i, you'll have to download one
+	and put it in the same directory as your code.
+</div>
 
 <h4>... show your work to a demonstrator</h4>
 </div>
