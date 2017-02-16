@@ -129,6 +129,18 @@ about these other compiler options:
 </table>
 <hr/>
 <p>
+The <code>python3-config</code> command is your friend.
+If you want to know which include files to use compile
+your SWIG wrapper, <code>python3-config &#8209;&#8209;includes</code>
+will tell you.
+Type it at the prompt and see what it says.
+Try <code>ldflags</code> instead of <code>includes</code>.
+Remember you can get output of a command
+such as this included in the command you type using either
+<code>` cmd `</code> or <code>$( cmd )</code>.
+</p>
+<hr/>
+<p>
 The <a href="">SWIG documentation</a> is very comprehensive,
 although aimed at expert users. Check out the
 <a href="http://www.swig.org/exec.html">Executive Summary</a>.
@@ -162,7 +174,7 @@ as you wish it to behave. For example, here's the header file:
 // Print a greeting.
 //
 
-#include <string>
+#include &lt;string&gt;
 
 void hw(std::string who = std::string("World"));
 </pre>
@@ -202,6 +214,18 @@ int main(int argc, char *argv[])
 }
 </pre>
 </p>
+
+<div class="info">
+	If you are using a machine which has its Python environment
+	and numpy installations in non-standard places, you'll need
+	to do a bit of extra spade work. For example, the machines
+	in the lab have anaconda installed, which you'll want to use
+	in preference to their standard Python environment.
+	Make sure the computer looks there first for executables
+	with<br/>
+	<code>export PATH=/local/anaconda/32/bin/:$PATH</code><br/>
+	You only have to issue this command once per session.
+</div>
 
 <p>
 Compile this and test it. Maybe say <br/>
@@ -261,7 +285,7 @@ We're almost there now. We have to make position independent object
 files and link them into a shared library, then import that into a
 Python session. Here are the appropriate incantations:
 <code><br/>g++ -fPIC -c simple_hello.cxx<br/>
-g++ -fPIC -c simple_hello_wrap.cxx -I/usr/include/python3.5m<br/>
+g++ -fPIC -c simple_hello_wrap.cxx $( python3-config &#8209;&#8209;includes )<br/>
 g++ -shared simple_hello_wrap.o simple_hello.o -o _simple_hello.so<br/></code>
 Note the leading underscore character on the filename of the
 shared object, and that I told the C++ compiler to look in
@@ -431,6 +455,14 @@ First of all, provide the implementation for the
 class described below. Then implement the resonator
 you built in python using C++ from scratch.
 </p>
+
+<div class="info">
+	If you have your own local copy of numpy, tell the C++
+	compiler to use its header files with (e.g.)<br/>
+	<code>export CPLUS_INCLUDE_PATH=/local/anaconda/32/lib/python3.5/site&#8209;packages/numpy/core/include/</code>
+	<br/>That's where anaconda's up-to-the-minute numpy resides
+	on the lab machines.
+</div>
 
 <p>
 To illustrate the techniques involved, I've made a couple
