@@ -21,7 +21,7 @@ Exercises:
 <li class="mines">
 17. A Very Simple Example
 </li><li class="mines">
-16. Frequency Response
+18. SWIG and numpy nd-arrays
 </li>
 </ul>
 </div>
@@ -292,6 +292,16 @@ shared object, and that I told the C++ compiler to look in
 Python's include directory for the necessary header files
 to connect with the Python interpreter. The include directory
 might be different on the machine you're using.
+</p>
+
+<p>
+Sometimes you might need extra linkage flags. For example,
+MacOS requires a whole bunch of stuff to do with frameworks.
+You might try appending <code> $(&nbsp;python3-config&nbsp;--ldflags&nbsp;)</code>
+to the last line if you get linkage errors. On a Mac, you'd
+also normally use the <code>.dylib</code> extension instead
+of <code>.so</code>, and say <code>-dynamiclib</code> instead
+of <code>-shared<code>.
 </p>
 
 <div class="info">
