@@ -99,12 +99,14 @@ Our game plan is as follows:
 <p>
 You'll aready know that you can compile a C++ program using the 
 GNU compiler with the following command
+</p>
 <pre class="example">
-g++ -o &lt; output_file_name&gt; \
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;input_file_names&gt; \
-&nbsp;&nbsp;&nbsp;&nbsp;-I&lt;include_file_path&gt; \
-&nbsp;&nbsp;&nbsp;&nbsp;-L&lt;library_path&gt; -l&lt;library&gt;
+g++&nbsp;-o&nbsp;<em>output_file_name</em>&nbsp;\
+&nbsp;&nbsp;&nbsp;&nbsp;<em>input_file_names</em>&nbsp;\
+&nbsp;&nbsp;&nbsp;&nbsp;-I<em>include_file_path</em>&nbsp;\
+&nbsp;&nbsp;&nbsp;&nbsp;-L<em>library_path</em>&nbsp;-l<em>library</em>
 </pre>
+<p>
 and that unless you specify otherwise with the <em>-o</em> flag,
 the program is written into a file called <em>a.out</em>
 (assembler output). Of course, you can leave the flags you don't
@@ -168,6 +170,7 @@ Write two c++ files. In one, write a function which prints
 "Hello, " followed by its argument. Then write a test file
 with a main function in it to make sure your C function behaves
 as you wish it to behave. For example, here's the header file:
+</p>
 <pre class="code">
 // File: simple_hello.h
 //
@@ -178,7 +181,9 @@ as you wish it to behave. For example, here's the header file:
 
 void hw(std::string who = std::string("World"));
 </pre>
+<p>
 here's the implementation:
+</p>
 <pre>
 // File: simple_hello.cxx
 //
@@ -194,7 +199,9 @@ void hw(std::string who)
         std::cout &lt;&lt; "Hello, " &lt;&lt; who &lt;&lt; std::endl;
 }
 </pre>
+<p>
 and here's the evaluation program:
+</p>
 <pre>
 // File: simple_hello_test.cxx
 
@@ -239,6 +246,7 @@ In very simple cases like this, you can instruct SWIG simply to
 parse the C(++) header file and work out what's going on for itself.
 Let's call our python module <em>simple_hello</em>. A suitable
 interface file might contain:
+</p>
 <pre>
 /* File: simple_hello.i */
 
@@ -257,7 +265,7 @@ interface file might contain:
 /* Parse the c++ header file and generate the output file */
 %include "simple_hello.h"
 </pre>
-Note that the awfully nice SWIG people have already provided
+<p>Note that the awfully nice SWIG people have already provided
 interface files for much of the C++ standard library, including
 the C++ string type. We take the opportunity to put two
 C preprocessor directives at the top of the wrapper file;
@@ -298,7 +306,7 @@ might be different on the machine you're using.
 Sometimes you might need extra linkage flags. For example,
 MacOS requires a whole bunch of stuff to do with frameworks.
 You might try appending <code> $(&nbsp;python3-config&nbsp;--ldflags&nbsp;)</code>
-to the last line if you get linkage errors. On a Mac, you'd
+to the last command above if you get linkage errors. On a Mac, you'd
 also normally use the <code>.dylib</code> extension instead
 of <code>.so</code>, and say <code>-dynamiclib</code> instead
 of <code>-shared</code>.
@@ -365,11 +373,13 @@ code when the variable maps a type template. Most specific
 templates are considered first (and they can include the
 name of the variable), so it's possible to specify how
 a variable is to be treated on a case-by-case basis.
-Writing the Typemap requires a fairly intimate kowledge
+Writing the Typemap requires a fairly intimate knowledge
 of SWIG and the Python run-time, but the numpy authors
 have provided an interface file for their package, so we
 are in the happy position of only ever having to use those
-which we're given.
+which we're given. That's not to say you shouldn't ever
+think of writing your own Typemap. Just be prepared to
+read the manual.
 </p>
 
 <p>
@@ -574,8 +584,9 @@ array([  1.,   7.,  15.])
 	package the <em>numpy.i</em> interface file.
 	This is a bug.
 	If your copy of SWIG complains about not being
-	able to find numpy.i, you'll have to download one
-	and put it in the same directory as your code.
+	able to find numpy.i, you'll have to
+	<a href="numpy.i">download</a>
+       	one and put it in the same directory as your code.
 </div>
 
 <h4>... show your work to a demonstrator</h4>
