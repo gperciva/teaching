@@ -165,7 +165,8 @@ and the last time ask to skip one.
 So what's the benefit of the coroutine approach over using
 an object? The answer is that to program well, you should
 <em>say what you mean</em>. In the case of a single object
-and a single coroutine, the different methods of expression
+and a single coroutine, the difference between
+the two methods of expression
 aren't that obvious. But suppose there were many different
 coroutines which became ready to run at different times
 and that they all had arbitrary, equally important roles
@@ -221,6 +222,71 @@ Now, about Graphic User Interfaces...
 </p>
 <br clear="both" />
 <h2>GUI components: the MVC model</h2>
+<p>
+<div class="right" style="width:12cm;padding:8px">
+<h5>Model View Controller interaction</h5>
+<img src="MVC-basic.svg" style="width:100%"/><br/>
+By Totallybradical - Own work, CC BY-SA 4.0, https://commons.wikimedia.org/w/index.php?curid=56162327
+</div>
+If you've learned one thing from this course, I hope it's
+that you should design your program before writing a single
+line of code. It's therefore appropriate at this juncture
+to review the current thinking behind the design of modern
+GUI systems.
+</p>
+<p>
+GUI programs are generally composed from <em>Widgets</em> (the
+generic name for buttons, text entry fields, spin-boxes,
+sliders and other graphical components) assembled into
+one or more <em>frames</em>. The widgets are positioned
+by a <em>layout manager</em> whose job it is to construct
+their spacing and size in accordance with the style rules
+for the platform on which the program is running.
+</p>
+<p>
+All <em>widget sets</em> will enable the programmer to
+define new widgets, but the choice of a modern and popular
+widget set makes it unlikely that it will ever be necessary
+to do more than enhance the functionality of one of the
+supplied widgets.
+</p>
+<p>
+It is considered to be good design to split the interface up
+into three aspects: the <em>model</em>, <em>view</em>
+and <em>controller</em>.
+</p>
+<ul>
+<li>The model determines the behaviour
+of a widget in response to input and defines the information
+available to the application program. It is independent of
+the user interface. If the idea of the widget were
+reimplemented in a non-graphical way, for example for
+blind users, the model would remain unchanged.</li>
+<li>The view is concerned with the presentation of
+the widget to the user and hence determining to
+an extent what input gestures take effect. The application
+may supply different views depending upon the intended
+platform: on a phone, a photo gallery might move to
+the next image with a swipe, whereas on a workstation
+it may accept a mouse click. The view will not be involved
+in the interpretation of such gestures, only reporting
+them.</li>
+<li>The controller supplies the logic to connect the
+model and the view. It can send commands to the model
+to update its state ("next photo") and when instructed
+buy the model, sends the necessary commands to the view
+to maintain the widget's consistency</li>
+</ul>
+<p>
+Splitting the GUI into these three aspects ensures maximum
+code reuse and enables consistency of behaviour across a
+variety of access methods with as little code modification
+(read "breaking") as possible. The diagram summarises the
+interactions. The widget set will permit us to add ways for
+the widget's controller to let the application program
+know when something has happened.
+</p>
+
 <h4 style="background:#f090e0">...On to some programming</h4>
 </div>
 
@@ -231,7 +297,7 @@ Now, about Graphic User Interfaces...
 
 <div class="left">
 <h3>Background</h3>
-<p>
+<p>http://zetcode.com/gui/pyqt5/
 </p>
 
 </div>
