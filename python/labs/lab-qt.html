@@ -1,0 +1,265 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Getting Ready II - Qt GUI</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+<h1>
+	Getting Ready for the Grand Challenge II<br/>
+	Building a Graphics User Interface using PyQt
+</h1>
+
+<div class="center">
+Exercises:
+
+<ul style="list-style-type:none;">
+<li class="mines">
+19. Thinking about GUIs
+</li><li class="mines">
+20. 
+</li>
+</ul>
+</div>
+
+<div class="task">
+<h3 style="background:#f090e0">Thinking about GUIs...</h3>
+<h2>Objects or co-routines?</h2>
+<p>
+Sometimes, it's important to think hard, and work out if
+what you're writing in your code isn't more for the benefit
+of the computer than for you. This is one of those times.
+</p>
+<p>
+CPUs have hardware support for subroutines. So languages like
+C, which is about as "close to the metal" as you can get
+without assembler, base their whole modus operandi on breaking
+up larger programs into a bunch of subroutines, which 
+pass arguments around and reserve local memory.
+CPUs are built with (one or more) stacks which make
+this easy for the compiler and fast to run. But
+when a program gets bigger, and particularly when
+it has to respond to asynchronous events, this isn't
+necessarily the easiest way to express things.
+</p>
+<p>
+Donald Knuth, a renowned computer scientist, famously
+described subroutines as "special cases of ... coroutines."
+[<i>Knuth, Donald Ervin (1997). Fundamental Algorithms. The Art of Computer Programming. 1
+(3rd ed.). Addison-Wesley. Section 1.4.2: Coroutines, pp. 193–200. ISBN 0-201-89683-4.)</i>]
+So what's a coroutine? Here's an example.
+</p>
+<p>
+Suppose you wish to simulate those ticket dispensers you
+get in up-market delicatessens. Anybody can walk in and
+take a ticket; every time a ticket is dispensed, the number
+is one bigger than the previous ticket. In our software version,
+I'm going to add the facility to skip ahead. Normally we'll
+pass 0 and just get the next number; otherwise we can pass
+a number of tickets to skip (these numbers are lost forever).
+</p>
+<div class="left">
+<h5>Creating an object</h5>
+<pre class="code">
+# Turn counting with an Object
+class TurnCounter:
+
+    # Initialise the sequence counter to 0.
+    def __init__(self):
+        self._seq = 0;
+        
+    # Return the next in seqence,
+    # skipping as required.    
+    def get(self, skip):
+        ticket = self._seq
+        self._seq += 1 + skip
+        return ticket
+</pre>
+<p>
+We'd then create an instance of the object (thus
+initializing its state) and repeatedly call
+<code>get(0)</code> to receive tickets.
+</p>
+<pre class="example">
+In [31]: tc=TurnCounter()
+In [32]: tc.get(0)
+Out[32]: 0
+In [33]: tc.get(0)
+Out[33]: 1
+In [34]: tc.get(1)
+Out[34]: 3
+</pre>
+</div>
+<div class="right">
+<h5>Creating a coroutine</h5>
+<pre>
+# Turn counting with a co-routine
+# (also called a generator object in Python)
+def turn_counter():
+    # Our state variable local to this function
+    _seq = 0
+    
+    while True:
+        # Pass back the sequence count to our
+        # coroutine, and receive the next skip value
+        skip = yield _seq
+        # Do some processing and loop forever
+        _seq += 1 + skip
+</pre>
+<p>
+The clue's in the name: a coroutine isn't subordinate to its caller
+like a subroutine. Subroutines get passed variables, process them
+and return a value. Any information stored in the
+subroutine's local variables is lost when the subroutine
+returns.
+</p>
+<p>
+Coroutines get created, and are allowed to proceed by the routine
+that created them. The coroutine then takes the conn until
+it's ready to pass control back to the original routine
+&mdash; <em>its</em> coroutine &mdash; using the <code>yield</code>
+command.
+</p>
+<p>
+Execution now passes back to the original coroutine until it
+decides to yield control back again. It can do that by invoking
+<code>next()</code> with the coroutine as an argument, or to
+send data to the coroutine, using the coroutine's <code>send()</code>
+method.  <code>send()</code> causes execution to continue after
+the <code>yield</code> command which relinquished it, and with
+the sent value being treated like returned data.
+</p>
+<p>
+The important thing here is that the coroutine's state &mdash; its
+local variables and so forth &mdash; remain intact with the same
+values as they had when the thread of execution was yielded on
+the previous occasion.
+</p>
+<pre class="example">
+In [35]: tc = turn_counter()
+In [36]: tc
+Out[36]: <generator object turn_counter at 0x7f8b2011ddb0>
+In [37]: next(tc)
+Out[37]: 0
+In [38]: tc.send(0)
+Out[38]: 1
+In [40]: tc.send(1)
+Out[40]: 3
+</pre>
+<p>
+Here we create a generator (coroutine) called tc. Python knows
+it's a generator because its <code>def</code>inition contained
+a <code>yield</code> statement. Then we run the coroutine
+to the first <code>yield</code> with <code>next(tc)</code>
+(<code>tc.send(None)</code> would have worked too). We get the
+first ticket as a result. Then we as for two more tickets,
+and the last time ask to skip one.
+</p>
+</div>
+<!--br clear="both"-->
+<p>
+So what's the benefit of the coroutine approach over using
+an object? The answer is that to program well, you should
+<em>say what you mean</em>. In the case of a single object
+and a single coroutine, the different methods of expression
+aren't that obvious. But suppose there were many different
+coroutines which became ready to run at different times
+and that they all had arbitrary, equally important roles
+in the overall program... choosing an object hierarchy and
+deciding which object called which others might well be
+syntactically opaque compared with an egalitarian collection
+of coroutines. Check out Python&nbsp;>=3.4's
+<a href="https://docs.python.org/3/library/asyncio-task.html#coroutines"><code>asyncio</code></a>
+library (and keep reading to the end of
+<a href="https://docs.python.org/3/library/asyncio-task.html#example-chain-coroutines">this
+section</a>) for an example of how coroutines can simply
+and elegantly organise different <strike>sub</strike>co-tasks
+under the auspices of an event loop.
+</p>
+<p>
+No imagine each of the coroutines belonged to different
+graphic objects, each of which needs to communicate with
+other objects at any time the user chooses to interact
+with them. They can do this by communicating though
+a single executive which can <code>gather</code> all
+the information the waiting coroutines may (asynchronously)
+yield. Does that sound like a GUI yet?
+</p>
+<p>
+One last point to make is that what is being described here
+is in no way "parallel processing". It is co-operative
+multitasking. The coroutines get to keep the single
+thread of execution until they yield it up.
+Coroutines don't run in parallel (for example
+on multiple cores of a modern CPU) but neither do they
+impose the considerable overhead of starting a new process,
+allocating resources and resynchronising the machine when
+necessary. You can perform a 4096-point FFT on a single core
+of a modern Intel processor faster than you can force
+two threads on two different cores to synchronise.
+Coroutines permit the expression of complex interactions
+between entities handling asynchronous events in a
+convenient way which is efficient for both the programmer
+and the computer.
+</p>
+<p>
+Coroutines feature big-time "under the hood" of the GUI
+toolkit we're going to use in due course, and if you 
+understand what they do, it will demystify what's going
+on. We'll also fire up a separate thread of execution
+which will jump to C++-space, permitting potentially
+generally parallel execution, but Python makes sure it
+will never execute code concurrently within a single
+instance of its interpreter.
+</p>
+<p>
+Now, about Graphic User Interfaces...
+</p>
+<br clear="both" />
+<h2>GUI components: the MVC model</h2>
+<h4 style="background:#f090e0">...On to some programming</h4>
+</div>
+
+
+<br style="clear:both"/>
+<a name="very-simple-swig">
+<h2>Exercise 17: A Very Simple Example</h2>
+
+<div class="left">
+<h3>Background</h3>
+<p>
+</p>
+
+</div>
+
+<br style="clear:both"/>
+
+
+
+
+
+
+
+<p><a href="../index.html">Back to main</a></p>
+
+<!-- footer -->
+<br style="clear:both"/>
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+
+</body>
+
