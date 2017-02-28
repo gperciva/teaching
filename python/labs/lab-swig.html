@@ -54,12 +54,14 @@ However, calling a C(++) function from Python or using
 a C++ class as a Python one requires a lot of boiler-plate
 code because of the differences between the languages.
 Just think about them:
+</p>
 <table>
 	<tr><th></th><th>Python</th><th>C(++)</th></tr>
 	<tr><th>Types</th><td>Dynamic</td><td>Static, Strict</td></tr>
 	<tr><th>Allocation</th><td>On demand</td><td>Explict</td></tr>
 	<tr><th>Memory Management</th><td>Garbage collection</td><td>RAII, explicit or end-of-scope deletion</td></tr>
 </table>
+<p>
 Every call to a C(++) function from Python needs to take
 these differences into consideration, and that makes for
 a lot of tedious, error prone work to connect the two
@@ -89,7 +91,7 @@ Our game plan is as follows:
 	<li>Link the wrapper and your original C++ object files
 		to produce a shared library.</li>
 	<li>Start Python, import the shared library
-		just line any regualar Python module, and enjoy.</li>
+		just like any regualar Python module, and enjoy.</li>
 </p>
 </div>
 
@@ -166,7 +168,7 @@ as well as the more detailed information about
 	clear to you.
 </div>
 <p>
-Write two c++ files. In one, write a function which prints
+Write two C++ files. In one, write a function which prints
 "Hello, " followed by its argument. Then write a test file
 with a main function in it to make sure your C function behaves
 as you wish it to behave. For example, here's the header file:
@@ -272,7 +274,7 @@ C preprocessor directives at the top of the wrapper file;
 as we get more advanced, we can add extra python-specific
 functionality to the wrapper, but for now these two lines are
 all you need. They are simply copied into the output file.
-We then parser our "library" header file and prodeuce the
+We then parse our "library" header file and produce the
 C++ code.
 </p>
 
@@ -342,7 +344,7 @@ make file in the appendix of the
 
 <p>
 The <a href="#very-simple-swig">simple</a> Hello World program
-in passed a value to a C++ function. It didn't return
+passed a value to a C++ function. It didn't return
 any value, but returning simple built-in types
 (<code>int</code>, <code>float</code>, <code>double</code>
 etc) is handled trivially by SWIG and you can call the function
@@ -353,7 +355,7 @@ entirely as expected, using the return value in Python as normal.
 An issue arises with C(++) types which are semantically
 ambiguous. In C (and C++, although it's frowned upon),
 strings are represented as null-terminated character arrays,
-and passed around the programmer as pointers to their
+and passed around the program as pointers to their
 first character. Indeed, the declaration
 <br/><code>char* s = "Hi";</code>
 <br/>is really just a shorthand for
@@ -448,7 +450,7 @@ import_array();
 	Python often returns more than one value with calls like
 	<code>a,b=myfunction(x)</code>, but C(++) usually achieves
 	this by having pointers (or references) passed to the function.
-	If you code already uses numpy, and the return values are all
+	If your code already uses numpy, and the return values are all
 	of the same type, an INPLACE array might be used to return
 	them. There is also the ARGOUTVIEWM_ARRAYx template to allow
 	properly memory-managed views of public arrays in your C++:
@@ -456,14 +458,23 @@ import_array();
 	multiple values, you might ask yourself whether you shouldn't
 	do the Pythonic thing and return a tuple.
 	</p>
-	<hr/>
-	<h3>Reference Documents</h3>
-	<p>The full story on
-	<a href="http://www.swig.org/Doc1.3/Typemaps.html">SWIG
-		Typemaps</a>.</p>
-	<p><a href="https://docs.scipy.org/doc/numpy/reference/swig.interface-file.html">Documentation</a>
-	for the numpy SWIG interface specification.</p>
 
+	<hr/>
+	
+	<h3>Reference Documents</h3>
+	
+	<ul>
+		<li>
+		The full story on
+		<a href="http://www.swig.org/Doc1.3/Typemaps.html">SWIG
+		Typemaps</a>.
+		</li>
+
+		<li>
+		<a href="https://docs.scipy.org/doc/numpy/reference/swig.interface-file.html">Documentation</a>
+		for the numpy SWIG interface specification.
+		</li>
+	</ul>
 </div>
 
 <br style="clear:both"/>
@@ -479,7 +490,7 @@ you built in python using C++ from scratch.
 <div class="info">
 	If you have your own local copy of numpy, tell the C++
 	compiler to use its header files with (e.g.)<br/>
-	<code>export CPLUS_INCLUDE_PATH=/local/anaconda/32/lib/python3.5/site&#8209;packages/numpy/core/include/</code>
+	<code>export CPLUS_INCLUDE_PATH=/local/anaconda/32/lib/python3.5/site&#8209;packages/numpy/core/include</code>
 	<br/>That's where anaconda's up-to-the-minute numpy resides
 	on the lab machines.
 </div>
@@ -509,7 +520,7 @@ Here is the header file.
 <pre class="code">
 // File: min_max_sum.h
 //
-// Given an array of double, return its minumum and
+// Given an array of doubles, return its minimum and
 // maximum values and the sum of its contents in
 // diverse and amusing ways.
 //
@@ -524,7 +535,7 @@ public:
                           double* min, double* max, double* sum);
 
         // return the min, max and sum of the given numpy array 'in'.
-        // SWIG will write the values into the give numpy array, 'out'.
+        // SWIG will write the values into the given numpy array, 'out'.
         static void mms_a(double* out, std::size_t out_size,
                           const double* in, std::size_t in_size);
 };
