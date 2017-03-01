@@ -160,7 +160,10 @@ first ticket as a result. Then we as for two more tickets,
 and the last time ask to skip one.
 </p>
 </div>
-<!--br clear="both"-->
+<div style="margin-bottom:0.5cm;overflow:hidden;text-align:right;clear:left">
+<p style="display:inline-block;">Read this next ⇗</p>
+<hr/>
+</div>
 <p>
 So what's the benefit of the coroutine approach over using
 an object? The answer is that to program well, you should
@@ -182,7 +185,7 @@ and elegantly organise different <strike>sub</strike>co-tasks
 under the auspices of an event loop.
 </p>
 <p>
-Now imagine each of the coroutines belonged to different
+No imagine each of the coroutines belonged to different
 graphic objects, each of which needs to communicate with
 other objects at any time the user chooses to interact
 with them. They can do this by communicating though
@@ -226,8 +229,7 @@ Now, about Graphic User Interfaces...
 <div class="right" style="width:12cm;padding:8px">
 <h5>Model View Controller interaction</h5>
 <img src="MVC-basic.svg" style="width:100%"/><br/>
-By Totallybradical - Own work, CC BY-SA 4.0,
-<font size=-1><a href="https://commons.wikimedia.org/w/index.php?curid=56162327">https://commons.wikimedia.org/w/index.php?curid=56162327</a></font>
+By Totallybradical - Own work, CC BY-SA 4.0, https://commons.wikimedia.org/w/index.php?curid=56162327
 </div>
 If you've learned one thing from this course, I hope it's
 that you should design your program before writing a single
@@ -275,7 +277,7 @@ them.</li>
 <li>The controller supplies the logic to connect the
 model and the view. It can send commands to the model
 to update its state ("next photo") and when instructed
-buy the model, sends the necessary commands to the view
+by the model, sends the necessary commands to the view
 to maintain the widget's consistency</li>
 </ul>
 <p>
@@ -298,7 +300,57 @@ know when something has happened.
 
 <div class="left">
 <h3>Background</h3>
+<p>
+We're going to use the Qt widget set to design a GUI program.
+Qt (pronounced "Cute") is a cross-platform toolkit
+written by Trolltech, and currently owned by
+<a href="https://www.qt.io/">The Qt Company</a> in Finland.
+It is dual licensed under both version&nbsp;3 of the
+<a href="https://www.gnu.org/licenses/gpl-faq.html">GNU
+Public License</a> and a proprietary licence which
+permits distribution of software without the obligations
+attached to GPLv3. This document is based on version&nbsp;5
+of Qt.
+</p>
+
+<p>
+Qt is written in C++, so the
+<a href="http://doc.qt.io/qt-5/">documentation</a>
+assumes that the reader will be creating classes
+and calling methods from a C++ program.
+We're going to use it via Python modules
+created from the C++ API using SWIG. The top-level
+Python module is called <em>PyQt5</em>. PyQt5 has its own 
+<a href="http://pyqt.sourceforge.net/Docs/PyQt5/">documentation</a>
+but for the most part, it simply instructs you
+how to load the Python class and then simply
+directs you to the Qt C++ documentation page.
+</p>
+
+<p>
+At some time or another, you'll most likely be asked to
+use some other GUI framework to write a program.
+There's no good reason for that as there are a huge
+number of reliable and large-scale applications
+written with Qt, for example
+<a href="http://www.muse-sequencer.org/" >MusE</a>,
+<a href="http://www.rosegardenmusic.com/" >Rosegarden</a>,
+<a href="https://musescore.org/" >MuseScore</a>,
+<a href="http://frescobaldi.org/">Frescobali</a>,
+<a href="https://kdenlive.org/">Kdenlive</a>,
+
+
+
+
+</p>
+
+</div>
+
+<div class="right">
+<h3>Details and Reference</h3>
 <p>http://zetcode.com/gui/pyqt5/
+<br/><a href="http://doc.qt.io/qt-5/">Qt5 documentation</a>
+<br/><a href="http://pyqt.sourceforge.net/Docs/PyQt5/">PyQt5 documentation</a>
 </p>
 
 </div>
