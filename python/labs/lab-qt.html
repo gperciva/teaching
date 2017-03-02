@@ -338,24 +338,286 @@ written with Qt, for example
 <a href="https://musescore.org/" >MuseScore</a>,
 <a href="http://frescobaldi.org/">Frescobali</a>,
 <a href="https://kdenlive.org/">Kdenlive</a>,
+<a href="http://pythonhosted.org/spyder/">Spyder</a>,
+<a href="https://www.skype.com/en/">Skype</a>,
+<a href="https://www.google.com/earth/">Google Earth</a>,
+<a href="https://www.scribus.net/">Scribus</a>,
+<a href="http://www.avid.com/sibelius" >Sibelius</a>,
+<a href="https://www.videolan.org/vlc/" >VLC</a>
+and <a href="https://www.spotify.com/uk/" >Spotify</a>'s client
+to name but a few.
+</p>
 
+<p>
+The Qt application usually consists of a <code>QApplication</code>
+instance and one or more <code>QWidgets</code> which define the
+visual appearance. Depending on the platform style guidelines,
+the widget might consist of a framed window, a menu bar,
+a toolbar, and an interaction area consisting of a variety
+of widgets drawn from the familiar standard types (spin boxes,
+editable and read-only text areas, images, sliders, push-buttons
+and so on). An application might present the user with <em>dialogues</em>
+in other windows during the course of its execution.
+Such dialogues might be modal (grab the application's inputs
+until it is dismissed) or not depending on the program's
+requirements.
+</p>
 
+<p>
+Once the widgets are created they can be laid out using
+one of Qt's <em>layout managers</em>. This ensures that
+window resizing causes the widgets to expand and/or
+move around in an expected fashion. Several different
+layout algorithms are available and one can be chosen
+to suit the complexity of the GUI being designed.
+The program will create a layout manager instance
+and attach it to its window, then add widgets to
+the layout manager. Layout managers may be nested
+hierarchically. Having created, populated and laid-out
+the window, its <code>show()</code> method can be
+called to make it appear on the screen, and control
+handed over to Qt's event-handling loop.
+</p>
 
+<p>
+That's only half the story, however. If you want the
+program to respond to user inputs, the widgets have
+to inform the relevant functions of the application
+when user-events happen to them. Different GUI
+frameworks have different ways of doing this, and
+the way Qt does it has been somewhat controversial
+in the past. The idea is that <code>QObjects</code>
+can emit <em>signals</em> to send information about
+events to interested listeners and <em>slots</em>
+to receive such information. Why is this controvertial?
+Because the slots were implemented by <em>extending
+the C++ language</em> and then running a
+<em>metaobject compiler</em> on them to obtain a
+compilable C++ file. This enraged the C++ standards
+people and almost started a civil war. Consider the following
+C++ code. It creates a window with a single button
+(that bit's omitted for brevity) and changed the
+button's label when it's clicked.
+</p>
 
+<pre class="example">
+class MyWindow :
+   public QWidget,
+   public Ui::AMainWindow
+{
+   Q_OBJECT
+public:
+   explicit MyWindow(QWidget *parent = 0) :
+       QWidget(parent)
+   {
+       // create the interface
+       this->setupUi(this);
+
+       // connect the signal to lambda
+       // (using [this] to capture 
+       // the object's this pointer)
+       connect(theButton,
+               &QPushButton::clicked,
+               [this]() {
+                   this->setString("Bye!");
+               });
+   }
+
+public slots:
+   void setString(QString text)
+   {
+       theButton->setText(text);
+   }
+};
+</pre>
+
+<p>
+The <code>Q_OBJECT</code> gets expanded to include
+the necessary "boiler-plate", but the main bone
+of contention is the <code>public slots:</code>
+access specifier. <code>public slots:</code> isn't
+valid C++: it's expanded by the MOC to generate
+the necessary public function which can accept
+signals. Then then <code>QObject</code>'s
+<code>connect</code> function is used to cause
+<code>theButton</code>'s <code>clicked</code>
+signal to propagate to the given function.
+In this case we want to pass an argument,
+so we use a C++ &lambda;-expression to call
+the this <code>MyWindow</code>'s <code>setString()</code>
+method with the desired value.
+</p>
+
+<p>
+As you can imagine, building a hierarchy of widgets
+which send each other signals presents a challenge
+with C++'s memory model. Qt is very carefully written
+to handle memory very efficiently and seems to be
+watertight &mdash; at least I've never experienced
+a memory leak that wasn't my fault. It even has a
+<code>QObject::deleteLater()</code> method so you
+can request the event loop to destroy an object
+as soon as it's safe to do so. Of course, the other
+way around that is to write in Python, where the
+memory-management point is moot.
 </p>
 
 </div>
 
 <div class="right">
-<h3>Details and Reference</h3>
-<p>http://zetcode.com/gui/pyqt5/
+<h3>Getting Started and Reference</h3>
+<p>
+Let's write an application!
+</p>
+<p>
+Perhaps more than with any other kind of program,
+you should begin by sketching the appearance of what
+you want. Here's what I want the main window of my
+program to look like.
+</p>
+<img width="100%" src="qt_sketch-1.png" alt="" />
+<p>
+The code to create my class, <code>ExecutiveToy</code>
+is this:
+</p>
+<pre class="example">
+class ExecutiveToy(QWidget):
+
+    def __init__(self, parent = None):
+        super().__init__(parent)
+        self.create_UI(parent)
+</pre>
+<p>
+I'm going to break the layout into two rows, so the
+main layout manager of my window will be a <code>QVBoxLayout</code>
+with two elements:
+</p>
+<img width="100%" src="qt_sketch-2.png" alt="" />
+<p>
+The lower of the two rows will contain three elements:
+two <code>QPushButtons</code> and some elastic filler
+to push the buttons to the outer edge of the window.
+That way it will keep a consistent layout if and when
+it is resized.
+</p>
+<img width="100%" src="qt_sketch-3.png" alt="" />
+<p>
+Let's create the widgets. Continuing the <code>ExecutiveToy</code>
+class:
+</p>
+<pre class="example">
+    def create_UI(self, parent):        
+        # Create a slider and two buttons
+        self.mySlider = QSlider(Qt.Horizontal)
+        self.showButton = \
+            QPushButton(self.tr('&Show Value'))
+        self.quitButton = \
+            QPushButton(self.tr('&Quit'))
+        
+        # No parent: we're going to add this
+        # to vLayout.
+        hLayout = QHBoxLayout()
+        hLayout.addWidget(self.showButton)
+        hLayout.addStretch(1)
+        hLayout.addWidget(self.quitButton)
+        
+        # parent = self: this is the
+        # "top level" layout
+        vLayout = QVBoxLayout(self)
+        vLayout.addWidget(self.mySlider)
+        vLayout.addLayout(hLayout)  
+</pre>
+<p>
+Now to define the actions. I'm going to do
+two things. First I'll connect the clicked
+signals of the buttons to their respective
+slots, then I'll provide the functions which
+will act as slots. PyQt provides
+<a href="https://wiki.python.org/moin/PythonDecorators">decorators</a>
+to hint to the interpreter that a function is
+a slot. If you are expecting your slot to
+receive arguments, you can say
+<code>@pyqtSlot(int)</code> for example.
+</p>
+
+<p>
+The <code>quitClicked()</code> method simply
+closes the widget; the <code>showClicked()</code>
+method creates a modal dialogue box, populates
+it with some data from the slider object,
+and gives it control.
+</p>
+<pre class="example">
+        self.quitButton.clicked.connect(
+            self.quitClicked
+        )
+        self.showButton.clicked.connect(
+            self.showClicked
+        )
+    
+    # Now the slots which accept events
+    @pyqtSlot()
+    def quitClicked(self):
+        self.close()
+        
+    @pyqtSlot()
+    def showClicked(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+    
+        msg.setText('Current Slider Value')
+        msg.setInformativeText(
+            'When requested, value was '
+            + str(self.mySlider.value())
+        )
+        msg.setWindowTitle('mySlider')
+        msg.setDetailedText('That is all I know')
+        msg.setStandardButtons(QMessageBox.Ok)
+    	
+        msg.exec()
+</pre>
+<p>
+To make it all work, you'll need to top and tail the code
+with the necessary <code>import</code>s and a few lines
+to create the application and its window, make the window visible,
+then pass control to Qt's event loop until the window is closed,
+whereupon the application should exit cleanly. Here is
+the appropriate incantation:
+</p>
+<pre class="example">
+import sys
+from PyQt5.QtCore import \
+    Qt, pyqtSlot
+from PyQt5.QtWidgets import \
+    QApplication, QWidget, \
+    QSlider, QPushButton, \
+    QMessageBox, \
+    QVBoxLayout, QHBoxLayout
+    
+...
+
+if __name__ == "__main__":
+
+    app = QApplication(sys.argv)
+    window = ExecutiveToy()
+    window.show()
+    sys.exit(app.exec_())
+</pre>
+<hr/>
+
+<p><a href="http://zetcode.com/gui/pyqt5/">Zetcode's Introduction to PyQt5</a>
 <br/><a href="http://doc.qt.io/qt-5/">Qt5 documentation</a>
 <br/><a href="http://pyqt.sourceforge.net/Docs/PyQt5/">PyQt5 documentation</a>
+<br/><a href="https://wiki.python.org/moin/PythonDecorators">Python Decorators</a>
 </p>
 
 </div>
+<div style="margin-bottom:0.5cm;overflow:hidden;text-align:right;clear:left">
+<p style="display:inline-block;">Read this next ⇗</p>
+<hr/>
+</div>
 
-<br style="clear:both"/>
+<!--br style="clear:both"/-->
 
 
 
