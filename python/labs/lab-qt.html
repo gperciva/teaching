@@ -21,7 +21,7 @@ Exercises:
 <li class="mines">
 19. Thinking about GUIs
 </li><li class="mines">
-20. 
+20. <a href="#very-simple-qt">A(nother) Very Simple Example</a>
 </li>
 </ul>
 </div>
@@ -72,7 +72,7 @@ class TurnCounter:
     def __init__(self):
         self._seq = 0;
         
-    # Return the next in seqence,
+    # Return the next in sequence,
     # skipping as required.    
     def get(self, skip):
         ticket = self._seq
@@ -98,17 +98,20 @@ Out[34]: 3
 <h5>Creating a coroutine</h5>
 <pre>
 # Turn counting with a co-routine
-# (also called a generator object in Python)
+# (also called a generator in Python)
 def turn_counter():
-    # Our state variable local to this function
-    _seq = 0
+    # Our state variable,
+    # local to this function
+    seq = 0
     
     while True:
-        # Pass back the sequence count to our
-        # coroutine, and receive the next skip value
-        skip = yield _seq
-        # Do some processing and loop forever
-        _seq += 1 + skip
+        # Pass back the sequence count
+        # to our coroutine, and receive
+        # the next skip value
+        skip = yield seq
+        # My turn to use the CPU: do some
+        # processing and yield the result
+        seq += 1 + skip
 </pre>
 <p>
 The clue's in the name: a coroutine isn't subordinate to its caller
@@ -151,7 +154,7 @@ In [40]: tc.send(1)
 Out[40]: 3
 </pre>
 <p>
-Here we create a generator (coroutine) called tc. Python knows
+Here we create a generator (coroutine) called <code>tc</code>. Python knows
 it's a generator because its <code>def</code>inition contained
 a <code>yield</code> statement. Then we run the coroutine
 to the first <code>yield</code> with <code>next(tc)</code>
@@ -295,7 +298,7 @@ know when something has happened.
 
 
 <br style="clear:both"/>
-<a name="very-simple-swig">
+<a name="very-simple-qt">
 <h2>Exercise 17: A Very Simple Example</h2>
 
 <div class="left">
@@ -396,7 +399,7 @@ the C++ language</em> and then running a
 compilable C++ file. This enraged the C++ standards
 people and almost started a civil war. Consider the following
 C++ code. It creates a window with a single button
-(that bit's omitted for brevity) and changed the
+(that bit's omitted for brevity) and changes the
 button's label when it's clicked.
 </p>
 
@@ -617,11 +620,359 @@ if __name__ == "__main__":
 <hr/>
 </div>
 
-<!--br style="clear:both"/-->
+<p>
+Being single-threaded, The Qt executive has to be in charge
+at all times. So it isn't possible to write a single function
+which loops around for an arbitrary time generating
+audio samples. This is why we asked you to make your
+audio-generating classes capable of working with
+small buffers, and be called repeatedly as more samples
+were required.
+</p>
+
+<p>
+The framework with Qt to deal with audio samples is
+called <em>QtMultimedia</em>. It uses a stream model
+to create and route audio and/or video streams.
+If we use QtMultimedia, the executive will provide
+the necessary time for the Qt application to generate
+buffers of audio samples as required. However,
+if we want our audio synthesis object to be
+a <i>bona fide</i> output stream, we have to
+"play ball" with the Qt executive, and that
+means providing the minimum functionality it
+expects. This isn't intellectually taxing, but
+it does take around 100 lines of Python code.
+</p>
+
+<p>
+We might hope that Qt also handles MIDI input and
+output so we can connect to MIDI event sources
+which will appear in our program as signals,
+or create MIDI synthesisers which accept MIDI
+events via sockets. Sorry to disappoint you.
+There is no MIDI support in Qt at this time.
+Qt is considered a general-purpose GUI framework
+for general use, and while that includes audio
+and video these days, the Qt developers think
+of MIDI as just a bit too specialist.
+</p>
+
+<p>
+Fortunately, a(t least one) solution exists,
+and we'll be using python's Mido module to handle
+the arrival of MIDI events. This will be covered
+later on, but first, let's write a(n almost) trivial
+audio class. <em>Meep</em> is generates a 1kHz
+tone which Qt can play.
+</p>
+
+<hr/>
+<br style="clear:right">
+<h2>QtMultimedia</h2>
+<div class="left">
+<h3>Looking to your right...</h3>
+<p>
+Opposite is the code for a mimimalist PyQt
+QIODeivce-based audio generator. It's quite long,
+so I've not broken it up into fragments. You'll
+have to pay attention.
+</p>
+
+<p>
+We'll begin by defining some "application-wide"
+constants and here I'm just using global variables
+to hold the sample rate, number of channels
+and audio resolution in bits. I'm also specifying
+how big the "chunk size" is. That is to say,
+if I'm asked for the next batch of samples,
+the caller's going to get this many milliseconds'
+worth of audio.
+</p>
+
+<p>
+After importing the module's dependencies,
+I'm declaring my signal generating class <em>Meep</em>.
+<code>Meep</code> will generate at most <code>SAMPLES_PER_READ</code>
+samples per request. Making this number smaller means
+lower latency between changing a control parameter
+and the response taking effect in the audio output
+stream, but also causes a greater overhead passing
+samples around and in the worst case can lead to
+"stuttering" if the samples are prepared before
+the audio playback hardware needs them.
+</p>
+
+<p>
+Meep is derived from <code>QIODevice</code>, so its initialiser
+first makes sure the base class is initialised.
+The it reserves a <code>QByteArray</code>, <code>data</code>,
+which will hold the raw audio samples, and
+<code>phase</code> which will preserve the final
+phase of the previous audio output between calls
+to make sure the audio is click-free.
+</p>
+
+<p>
+<code>QIODevices</code> are supposed to be capable of dealing with
+a number of output sample formats, but this is a minimum
+example so only 16-bit, signed integer, little-endian
+samples will be countenanced. The format type is checked
+and if it agrees, a congratulatory message will be issued.
+</p>
+
+<p>
+A <code>QIODevice</code> can be used it one of two ways.
+In <em>push</em> mode, you write a bunch of samples to
+it and it plays them. This is great for simple "plink fizz"
+special effects which might be needed to alert that user
+that something interesting has happened. However, we need
+to use the device in <em>pull</em> mode so that we're
+informed via the Qt system when more samples are required,
+then supply them. This means all the other GUI-related
+activity can continue concurrently with a continuous audio
+output. Such a device needs to supply a <code>start</code> method
+and in this case it's a simple one: the parent
+QIODevice's <code>open</code> method to indicate
+the device's readiness and to place it into read-only mode.
+</p>
+
+<p>
+The other required method is <code>readData</code>
+but I've chosen to provide a <code>generateData</code>
+method to segregate the sample generation activity
+from the mechanics of preparing samples for dispatch.
+It uses a trivial vector-<code>sin</code> together
+with <code>arange</code> to create a sinusoid from
+an array of phase angles, then saves the phase for
+the next call so that the waveform recommenced from
+the "same place". In case the phase angle eventually
+waxes too large, it is stored modulus 2π.
+The 16-bit integer samples are
+returned as a byte array using the <code>tostring</code>
+method of a numpy array. 
+</p>
+
+<p>
+Qt's executive will call <code>readData</code> when
+the output stream needs more bytes. Note that the
+number of <em>bytes</em> is what is specified, not
+the number of samples. We know we only work with
+16-bit integers, so we ask <code>generateData</code>
+to produce half that number of <em>samples</em> or,
+to preserve interactivity, <code>SAMPLES_PER_READ</code>
+samples if that number is smaller.
+The binary representation of the samples is returned.
+</p>
+
+<p>
+Now for the <code>QWidget</code> which deploys a
+<code>Meep</code>. The audio format of the <code>Meep</code>
+needs to be specified, so the local variable <code>format</code>
+specifies this. An audio output device is summoned
+into existence with an agreeing <code>format</code> and stored
+in <code>self.output</code>. Its buffer size is kept to within
+the limits specified by the <code>CTRL_INTERVAL</code>.
+</p>
+
+<p>
+Finally, <code>self.generator</code> is an instance of <code>Meep</code>.
+After starting our <code>Meep</code> it's used to supply
+the input data to <code>self.output</code> by passing it
+to the latter's <code>start</code> method.
+</p>
+
+<p>The rest of the code is unremarkable.</p>
+</div>
+<div class="right">
+<h3>A(n almost) Minimal Audio Output Class</h3>
+<pre class="example">
+SAMPLE_RATE = 32000
+AUDIO_CHANS = 1
+SAMPLE_SIZE = 16
+CTRL_INTERVAL = 100 # milliseconds of audio
+
+import sys
+import numpy as np
+from PyQt5.QtCore import QByteArray, QIODevice
+from PyQt5.QtMultimedia import QAudioFormat, \
+                               QAudioOutput
+from PyQt5.QtWidgets import QApplication, \
+                            QWidget
+
+class Meep(QIODevice):
+    
+    SAMPLES_PER_READ = 1024
+    
+    def __init__(self, format, parent = None):
+
+        QIODevice.__init__(self, parent)
+        self.data = QByteArray()
+        
+        # Preserve phase across calls
+        self.phase = 0
+        
+        # Check we can deal with the supplied
+        # sample format. We're supposed to be
+        # able to deal with any requested
+        # sample format. But this is a
+        # _minimal_ example, right?
+        if format.isValid() and \
+           format.sampleSize() == 16 and \
+           format.byteOrder() == \
+                QAudioFormat.LittleEndian and \
+           format.sampleType() == \
+                QAudioFormat.SignedInt and \
+           format.channelCount() == 1 :
+               print(
+                 "Meep: Format compatible. Good."
+               )
+               self.format = format
+    
+    
+    def start(self):
+        
+        # Call QIODevices open
+        # making this object readable
+        self.open(QIODevice.ReadOnly)
+    
+ 
+    def generateData(self, format, samples):
+        
+        pps = 1000*2*np.pi/format.sampleRate()
+        finalphase = samples*pps + self.phase
+        tone = (
+          10000 * np.sin(
+            np.arange(self.phase,
+                      finalphase,
+                      pps)
+          )
+        ).astype(np.int16)
+        
+        self.phase = finalphase % (2*np.pi)
+        return tone.tostring()
+    
+    
+    def readData(self, bytes):
+
+        if bytes > 2 * Meep.SAMPLES_PER_READ:
+            bytes = 2 * Meep.SAMPLES_PER_READ
+        return self.generateData(self.format,
+                                 bytes//2)
 
 
+class ToneGenerator(QWidget):
+    
+    def __init__(self, parent=None):
+        
+        QWidget.__init__(self, parent)
+
+        format = QAudioFormat()
+        format.setChannelCount(AUDIO_CHANS)
+        format.setSampleRate(SAMPLE_RATE)
+        format.setSampleSize(SAMPLE_SIZE)
+        format.setCodec("audio/pcm")
+        format.setByteOrder(
+            QAudioFormat.LittleEndian
+        )
+        format.setSampleType(
+            QAudioFormat.SignedInt
+        )
+
+        self.output = QAudioOutput(format, self)
+        output_buffer_size = \
+            int(2*SAMPLE_RATE \
+                 *CTRL_INTERVAL/1000)
+        self.output.setBufferSize(
+            output_buffer_size
+        )
+        
+        self.generator = Meep(format, self)        
+        self.generator.start()
+        self.output.start(self.generator)
 
 
+if __name__ == "__main__":
+
+    app = QApplication(sys.argv)
+    window = ToneGenerator()
+    window.show()
+    sys.exit(app.exec_())
+</pre>
+</div>
+
+<br clear="both"/>
+<h3>What about MIDI?</h3>
+
+<div class="left">
+<h2>It's easy.</h2>
+<p>
+If you use <code>mido</code>,
+Reading MIDI events is as concise as
+<code>QIODevice</code> was verbose.
+</p>
+<p>
+GNU/Linux supports a variety of MIDI backends
+so on that platform you'll have to tell it which
+one to use. One of the most tried and tested is
+<code>librtmidi</code>, and to use that you'll
+have to install the <code>python3-librtmidi</code> package
+if it isn't already on your machine. I've chosen
+this one because it's so widely used, but also
+because it supports <em>virtual MIDI devices</em>
+meaning you can create a virtual MIDI port (called
+"pipes" in this application) and route MIDI signals
+to it.
+</p>
+
+<p>
+After that we just sit and wait for MIDI signals.
+<code>mido</code> can tell you the <em>type</em> of
+the signal (Note_on, Note_off, etc) and also let you
+access the three-byte MIDI message in the raw.
+That lets you access information like the key-number
+and the velocity on a Note_on event.
+</p>
+
+<p>
+There's only one problem here. The <code>with</code>
+loop declares and opens the MIDI input (<code>mip</code>)
+but this code fragment sits and reads the input forever,
+producing MIDI messages (<code>mmsg</code>) as they arrive.
+<em>This is <strong>incompatible</strong> with the
+Qt executive</em> which expects functions to complete
+their work and hand control back a short time.
+Something needs to be done about this. And the way
+to do it is...
+</p>
+</div>
+<div class="right">
+<h3>Reading MIDI events</h3>
+<pre class="example">
+import mido
+
+mido.set_backend(
+    'mido.backends.rtmidi/LINUX_ALSA'
+)
+print(
+    "Using MIDI APIs: {}".format(
+        mido.backend.module.get_api_names()
+    )
+)
+
+with mido.open_input(
+    'pipes',
+    virtual=True
+) as mip:
+    for mmsg in mip:
+        print(mmsg.type)
+        print(mmsg.bytes())
+</pre>
+</div>
+
+<br clear="both"/>
+
+<h2>QtThread</h2>
 
 
 
