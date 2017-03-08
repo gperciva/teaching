@@ -699,7 +699,7 @@ lower latency between changing a control parameter
 and the response taking effect in the audio output
 stream, but also causes a greater overhead passing
 samples around and in the worst case can lead to
-"stuttering" if the samples are prepared before
+"stuttering" if the samples aren't prepared before
 the audio playback hardware needs them.
 </p>
 
@@ -746,8 +746,8 @@ It uses a trivial vector-<code>sin</code> together
 with <code>arange</code> to create a sinusoid from
 an array of phase angles, then saves the phase for
 the next call so that the waveform recommenced from
-the "same place". In case the phase angle eventually
-waxes too large, it is stored modulus 2π.
+the "same place". To avoid the phase angle eventually
+waxing too large, it is stored modulus 2π.
 The 16-bit integer samples are
 returned as a byte array using the <code>tostring</code>
 method of a numpy array. 
@@ -931,7 +931,7 @@ After that we just sit and wait for MIDI signals.
 the signal (Note_on, Note_off, etc) and also let you
 access the three-byte MIDI message in the raw.
 That lets you access information like the key-number
-and the velocity on a Note_on event.
+and the velocity of a Note_on event.
 </p>
 
 <p>
@@ -989,7 +989,7 @@ opens a whole new can of worms. In addition to the
 usual bugs, there will be deadlocks, races, and other
 dynamic conditions which can cause the system to
 lock-up for no apparent reason even when the multiple
-threads of execution have all be tested and shown
+threads of execution have all been tested and shown
 to work perfectly. In the early 1980s, Tony&nbsp;Hoare showed it
 was possible to prove a multi-threaded
 program to be deadlock free, but only if (some would
@@ -1006,7 +1006,7 @@ processing capacity. Consequently, in Python&nbsp;3,
 we have the <em>threading</em> module to support
 multiple execution threads. <em>This module does not
 do what you probably think it does</em>.
-CPython, which is the one you are probably used
+CPython, which is the one you are probably using
 (so-called because it's written in C), implements
 a "Global Interpreter Lock" (GIL) Mutex. So multiple
 threads can't run in a single Python interpreter
@@ -1016,7 +1016,7 @@ won't run concurrently, however many processor cores
 your machine has. It's so hard to make the interpreter
 thread-safe (memory allocation being the main source
 of difficulty) that the GIL won't allow it.
-Fortuantely, The GIL is released when a thread enters
+Fortunately, The GIL is released when a thread enters
 an external library (such as Qt, via a PyQt call)
 whereupon all the problems associated with multitasking
 become the external library's problem. The utter nightmare
@@ -1093,7 +1093,7 @@ you receive notifications when notes happen:
 # Create the port reader object
 self.midiListener = MidiPortReader()
 
-# Create a thread which will it
+# Create a thread which will read it
 self.listenerThread = QThread()
 
 # Take the object and move it
