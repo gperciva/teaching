@@ -17,7 +17,7 @@ Exercises:
 <ul style="list-style-type:none;">
 <li>
 9. <a href="#arrays">Arrays</a>
-</li><li class="mines">
+</li><li>
 10. <a href="#two-d-arrays">Two-dimensional arrays</a>
 </li>
 </ul>
@@ -336,8 +336,10 @@ X . .
 </pre>
 
 </li><li>
-You must use a two-dimensional array (you can't have variables
-like
+You <em>must</em> use a two-dimensional array to represent the
+game board in memory.
+<br>
+(you can't have variables like
 <code>int&nbsp;squareUpperLeft,&nbsp;squareBottomMiddle;</code>&nbsp;...)
 
 </li><li>
@@ -363,7 +365,13 @@ print a warning message and ask them to choose again.
 Continue playing the game until all squares are filled.
 
 </li><li>
-Hints: create formulae to deal with "number &lt;=&gt; row and
+You <em>must</em> create formulae to deal with "number &lt;=&gt;
+row and column".  You <em>may not</em> use <code>if</code>
+statements or a <code>switch...case</code> statement for these
+formulae, but you can use them elsewhere in the assignment.
+
+</li><li>
+Hint: create formulae to deal with "number &lt;=&gt; row and
 column" for these three cases:
 
 <pre>
@@ -377,6 +385,10 @@ easy        mobile        computer keypad
 0 1 2       0 1 2         0 1 2
 column      column        column
 </pre>
+
+Your assignment needs to work with the <em>computer keypad</em>,
+but it is strongly recommended that you learn how to solve (a) and
+(b) before trying to do (c).
 
 <ul>
 <li>
