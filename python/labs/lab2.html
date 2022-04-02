@@ -9,7 +9,7 @@
 
 <a href="../index.html">Back to main</a>
 
-<h1>Lab 2 for C programming</h1>
+<h1>Lab 2 for Python programming</h1>
 
 <div class="center">
 Exercises:
@@ -77,13 +77,13 @@ x = 3
 
 if x == 4:
     # this line will not be printed
-    print "x is equal to 4"
+    print("x is equal to 4")
 
 # one of these two lines will be printed
 if (x &gt; 10) or (1 != 0):
-    print "Expression is true"
+    print("Expression is true")
 else:
-    print "Expression is false"
+    print("Expression is false")
 </pre>
 
 <p>
@@ -106,7 +106,7 @@ import random
 # between 0 and 0.999999999999
 number = random.random()
 
-print "Random number is:", number
+print("Random number is:", number)
 </pre>
 
 <div class="info">
@@ -220,7 +220,7 @@ Infinite loops are fun:
 
 <pre>
 while True:
-    print "Infinite loop is infinite"
+    print("Infinite loop is infinite")
 </pre>
 
 <p>
@@ -230,7 +230,7 @@ Non-infinite loops are more useful:
 <pre>
 i = 0
 while i &lt; 10:
-    print "The loop has repeated", i, "times."
+    print("Looped {} times.".format(i))
     i = i + 1
 </pre>
 
@@ -325,7 +325,7 @@ The most common form of loop is this:
 
 <pre>
 for i in range(10):
-    print "The loop has repeated", i, "times."
+    print("For the {} time.".format(i))
 </pre>
 
 <p>
@@ -334,10 +334,10 @@ Here's two weirder loops:
 
 <pre>
 for i in range(5, 15):
-    print "What is this loop doing?  i is", i
+    print("What is this doing?  i is", i)
 
 for i in range(20, 2, -2):
-    print "What is this loop doing?  i is", i
+    print("What is this doing?  i is", i)
 </pre>
 
 </div>

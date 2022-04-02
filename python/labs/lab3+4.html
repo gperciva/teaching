@@ -2,14 +2,14 @@
 "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-<title>Lab 3</title>
+<title>Lab 3 and 4</title>
 <link rel="stylesheet" href="../eeip1.css">
 </head>
 <body>
 
 <a href="../index.html">Back to main</a>
 
-<h1>Lab 3 for C programming</h1>
+<h1>Lab 3 for audio programming</h1>
 
 <div class="center">
 Exercises:
@@ -22,6 +22,7 @@ Exercises:
 </li><li>
 10. Classes and buffer-based audio
 </li>
+<li>11. <a href="#ootone">Object-oriented Tone Generation</a></li>
 </ul>
 </div>
 
@@ -37,7 +38,7 @@ Exercises:
 
 <p>
 An <em>array</em> is an ordered sequence of values; you cannot
-rearrange values without changing the meaning).  A two-dimensional
+rearrange values without changing the meaning.  A two-dimensional
 array is just a normal "table".
 </p>
 
@@ -74,7 +75,7 @@ Initializing and displaying:
 import numpy
 # initialize all positions with 0
 arr = numpy.zeros(8)
-print arr
+print(arr)
 </pre>
 
 <p>
@@ -197,7 +198,7 @@ convert_16_bit = float(2**15)
 
 sample_rate, samples = scipy.io.wavfile.read(
     "a440-1second.wav")
-print "Data type is:", samples.dtype
+print("Data type is:", samples.dtype)
 
 # scale to -1.0 -- 1.0
 samples = samples / convert_16_bit
@@ -208,7 +209,7 @@ samples = samples * 0.25
 
 # scale to -32768 -- 32767
 samples = numpy.int16( samples * convert_16_bit )
-print "Data type is now:", samples.dtype
+print("Data type is now:", samples.dtype)
 
 scipy.io.wavfile.write("quieter.wav",
     sample_rate, samples)
@@ -309,7 +310,7 @@ class CounterOne:
 # note the capitalization (convention)
 counter = CounterOne()
 for i in range(8):
-    print counter.get_next()
+    print(counter.get_next())
 </pre>
 
 <p>
@@ -345,7 +346,7 @@ else:
 # the code here doesn't know if it's
 # using CounterOne or CounterTwo!
 for i in range(8):
-    print counter.get_next()
+    print(counter.get_next())
 </pre>
 
 <p>
@@ -367,7 +368,7 @@ class CounterOne:
 # pass in increment_value
 counter = CounterOne(4)
 for i in range(8):
-    print counter.get_next()
+    print(counter.get_next())
 </pre>
 
 <p>
@@ -386,12 +387,30 @@ big_buffer = numpy.append(big_buffer, extra_stuff)
 extra_stuff = numpy.zeros(2)
 big_buffer = numpy.append(big_buffer, extra_stuff)
 
-print big_buffer
+print(big_buffer)
 </pre>
 
 </div>
 
 <br style="clear:both"/>
+
+<h1>Lab 4 for Audio Programming</h1>
+
+<h2 ><a name="ootone"/>Exercise 11: Object-oriented Tone Generation</h2>
+
+<div class="left" style="width:95%">
+<h3>Making a Noise</h3>
+<p>
+What objects do you need if you want to write a program to make
+a tone?
+</p>
+<p>
+Sometimes you need to generate a sound in small blocks,
+for example in real-time response to some input like a
+MIDI-keyboard or an event in a video game. Does this change
+your design?
+</p>
+</div>
 
 <div class="task">
 <h3>Your task...</h3>
@@ -428,7 +447,7 @@ each wave, but it would be neat if you did.  :)
 </div>
 
 
-<p><a href="lab4.html">Move on to Lab 4</a></p>
+<p><a href="lab5.xhtml">Move on to Lab 5</a></p>
 
 <!-- footer -->
 <br style="clear:both"/>

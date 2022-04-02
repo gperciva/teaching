@@ -10,12 +10,11 @@ Disclaimers:
   enough to get students started in the right direction, I stopped
   working on it.  I accept no blame for any faults in the labs.
 
-- I provided some input to the syllabus, but the final call was
-  always the lecturer, not me.  These labs include some stuff
-  that I don't think is useful; they even include some stuff that
-  I think is actively harmful to students learning to program.
-  (e.g. pointers, excessive amounts of sine waves)
-  Again, I accept no fault for these.
+"The Lecturer" has now rewritten a lot of the course with
+Python and PyQt, although it's now been replaced by
+a completely new course and back to C++ again, as it's for
+electronics engineers who will be doing embedded stuff.
+This can stay here in case it's of any use to anyone.
 
 
 This material is dual-licensed under:

@@ -1,0 +1,1188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Getting Ready II - Qt GUI</title>
+<link rel="stylesheet" href="../eeip1.css">
+</head>
+<body>
+
+<a href="../index.html">Back to main</a>
+
+<h1>
+	Getting Ready for the Grand Challenge II<br/>
+	Building a Graphics User Interface using PyQt
+</h1>
+
+<div class="center">
+Exercises:
+
+<ul style="list-style-type:none;">
+<li class="mines">
+20. Thinking about GUIs
+</li><li class="mines">
+21. <a href="#very-simple-qt">A(nother) Very Simple Example</a>
+</li><li class="mines">
+22. <a href="#qtmultimedia">QtMultimedia</a>
+</li>
+<li class="mines">23. <a href="#midi">MIDI</a></li>
+<li class="mines">24. <a href="#threads">QThreads</a></li>
+</ul>
+</div>
+
+<div class="task">
+<h3 style="background:#f090e0">Thinking about GUIs...</h3>
+<h2>Objects or co-routines?</h2>
+<p>
+Sometimes, it's important to think hard, and work out if
+what you're writing in your code isn't more for the benefit
+of the computer than for you. This is one of those times.
+</p>
+<p>
+CPUs have hardware support for subroutines. So languages like
+C, which is about as "close to the metal" as you can get
+without assembler, base their whole modus operandi on breaking
+up larger programs into a bunch of subroutines, which 
+pass arguments around and reserve local memory.
+CPUs are built with (one or more) stacks which make
+this easy for the compiler and fast to run. But
+when a program gets bigger, and particularly when
+it has to respond to asynchronous events, this isn't
+necessarily the easiest way to express things.
+</p>
+<p>
+Donald Knuth, a renowned computer scientist, famously
+described subroutines as "special cases of ... coroutines."
+[<i>Knuth, Donald Ervin (1997). Fundamental Algorithms. The Art of Computer Programming. 1
+(3rd ed.). Addison-Wesley. Section 1.4.2: Coroutines, pp. 193–200. ISBN 0-201-89683-4.)</i>]
+So what's a coroutine? Here's an example.
+</p>
+<p>
+Suppose you wish to simulate those ticket dispensers you
+get in up-market delicatessens. Anybody can walk in and
+take a ticket; every time a ticket is dispensed, the number
+is one bigger than the previous ticket. In our software version,
+I'm going to add the facility to skip ahead. Normally we'll
+pass 0 and just get the next number; otherwise we can pass
+a number of tickets to skip (these numbers are lost forever).
+</p>
+<div class="left">
+<h5>Creating an object</h5>
+<pre class="code">
+# Turn counting with an Object
+class TurnCounter:
+
+    # Initialise the sequence counter to 0.
+    def __init__(self):
+        self._seq = 0;
+        
+    # Return the next in sequence,
+    # skipping as required.    
+    def get(self, skip):
+        ticket = self._seq
+        self._seq += 1 + skip
+        return ticket
+</pre>
+<p>
+We'd then create an instance of the object (thus
+initializing its state) and repeatedly call
+<code>get(0)</code> to receive tickets.
+</p>
+<pre class="example">
+In [31]: tc=TurnCounter()
+In [32]: tc.get(0)
+Out[32]: 0
+In [33]: tc.get(0)
+Out[33]: 1
+In [34]: tc.get(1)
+Out[34]: 3
+</pre>
+</div>
+<div class="right">
+<h5>Creating a coroutine</h5>
+<pre>
+# Turn counting with a co-routine
+# (also called a generator in Python)
+def turn_counter():
+    # Our state variable,
+    # local to this function
+    seq = 0
+    
+    while True:
+        # Pass back the sequence count
+        # to our coroutine, and receive
+        # the next skip value
+        skip = yield seq
+        # My turn to use the CPU: do some
+        # processing and yield the result
+        seq += 1 + skip
+</pre>
+<p>
+The clue's in the name: a coroutine isn't subordinate to its caller
+like a subroutine. Subroutines get passed variables, process them
+and return a value. Any information stored in the
+subroutine's local variables is lost when the subroutine
+returns.
+</p>
+<p>
+Coroutines get created, and are allowed to proceed by the routine
+that created them. The coroutine then takes the conn until
+it's ready to pass control back to the original routine
+&mdash; <em>its</em> coroutine &mdash; using the <code>yield</code>
+command.
+</p>
+<p>
+Execution now passes back to the original coroutine until it
+decides to yield control back again. It can do that by invoking
+<code>next()</code> with the coroutine as an argument, or to
+send data to the coroutine, using the coroutine's <code>send()</code>
+method.  <code>send()</code> causes execution to continue after
+the <code>yield</code> command which relinquished it, and with
+the sent value being treated like returned data.
+</p>
+<p>
+The important thing here is that the coroutine's state &mdash; its
+local variables and so forth &mdash; remain intact with the same
+values as they had when the thread of execution was yielded on
+the previous occasion.
+</p>
+<pre class="example">
+In [35]: tc = turn_counter()
+In [36]: tc
+Out[36]: <generator object turn_counter at 0x7f8b2011ddb0>
+In [37]: next(tc)
+Out[37]: 0
+In [38]: tc.send(0)
+Out[38]: 1
+In [40]: tc.send(1)
+Out[40]: 3
+</pre>
+<p>
+Here we create a generator (coroutine) called <code>tc</code>. Python knows
+it's a generator because its <code>def</code>inition contained
+a <code>yield</code> statement. Then we run the coroutine
+to the first <code>yield</code> with <code>next(tc)</code>
+(<code>tc.send(None)</code> would have worked too). We get the
+first ticket as a result. Then we as for two more tickets,
+and the last time ask to skip one.
+</p>
+</div>
+<div style="margin-bottom:0.5cm;overflow:hidden;text-align:right;clear:left">
+<p style="display:inline-block;">Read this next ⇗</p>
+<hr/>
+</div>
+<p>
+So what's the benefit of the coroutine approach over using
+an object? The answer is that to program well, you should
+<em>say what you mean</em>. In the case of a single object
+and a single coroutine, the difference between
+the two methods of expression
+aren't that obvious. But suppose there were many different
+coroutines which became ready to run at different times
+and that they all had arbitrary, equally important roles
+in the overall program... choosing an object hierarchy and
+deciding which object called which others might well be
+syntactically opaque compared with an egalitarian collection
+of coroutines. Check out Python&nbsp;>=3.4's
+<a href="https://docs.python.org/3/library/asyncio-task.html#coroutines"><code>asyncio</code></a>
+library (and keep reading to the end of
+<a href="https://docs.python.org/3/library/asyncio-task.html#example-chain-coroutines">this
+section</a>) for an example of how coroutines can simply
+and elegantly organise different <strike>sub</strike>co-tasks
+under the auspices of an event loop.
+</p>
+<p>
+No imagine each of the coroutines belonged to different
+graphic objects, each of which needs to communicate with
+other objects at any time the user chooses to interact
+with them. They can do this by communicating though
+a single executive which can <code>gather</code> all
+the information the waiting coroutines may (asynchronously)
+yield. Does that sound like a GUI yet?
+</p>
+<p>
+One last point to make is that what is being described here
+is in no way "parallel processing". It is co-operative
+multitasking. The coroutines get to keep the single
+thread of execution until they yield it up.
+Coroutines don't run in parallel (for example
+on multiple cores of a modern CPU) but neither do they
+impose the considerable overhead of starting a new process,
+allocating resources and resynchronising the machine when
+necessary. You can perform a 4096-point FFT on a single core
+of a modern Intel processor faster than you can force
+two threads on two different cores to synchronise.
+Coroutines permit the expression of complex interactions
+between entities handling asynchronous events in a
+convenient way which is efficient for both the programmer
+and the computer.
+</p>
+<p>
+Coroutines feature big-time "under the hood" of the GUI
+toolkit we're going to use in due course, and if you 
+understand what they do, it will demystify what's going
+on. We'll also fire up a separate thread of execution
+which will jump to C++-space, permitting potentially
+generally parallel execution, but Python makes sure it
+will never execute code concurrently within a single
+instance of its interpreter.
+</p>
+<p>
+Now, about Graphic User Interfaces...
+</p>
+<br clear="both" />
+<h2>GUI components: the MVC model</h2>
+<p>
+<div class="right" style="width:12cm;padding:8px">
+<h5>Model View Controller interaction</h5>
+<img src="MVC-basic.svg" style="width:100%"/><br/>
+By Totallybradical - Own work, CC BY-SA 4.0, https://commons.wikimedia.org/w/index.php?curid=56162327
+</div>
+If you've learned one thing from this course, I hope it's
+that you should design your program before writing a single
+line of code. It's therefore appropriate at this juncture
+to review the current thinking behind the design of modern
+GUI systems.
+</p>
+<p>
+GUI programs are generally composed from <em>Widgets</em> (the
+generic name for buttons, text entry fields, spin-boxes,
+sliders and other graphical components) assembled into
+one or more <em>frames</em>. The widgets are positioned
+by a <em>layout manager</em> whose job it is to construct
+their spacing and size in accordance with the style rules
+for the platform on which the program is running.
+</p>
+<p>
+All <em>widget sets</em> will enable the programmer to
+define new widgets, but the choice of a modern and popular
+widget set makes it unlikely that it will ever be necessary
+to do more than enhance the functionality of one of the
+supplied widgets.
+</p>
+<p>
+It is considered to be good design to split the interface up
+into three aspects: the <em>model</em>, <em>view</em>
+and <em>controller</em>.
+</p>
+<ul>
+<li>The model determines the behaviour
+of a widget in response to input and defines the information
+available to the application program. It is independent of
+the user interface. If the idea of the widget were
+reimplemented in a non-graphical way, for example for
+blind users, the model would remain unchanged.</li>
+<li>The view is concerned with the presentation of
+the widget to the user and hence determining to
+an extent what input gestures take effect. The application
+may supply different views depending upon the intended
+platform: on a phone, a photo gallery might move to
+the next image with a swipe, whereas on a workstation
+it may accept a mouse click. The view will not be involved
+in the interpretation of such gestures, only reporting
+them.</li>
+<li>The controller supplies the logic to connect the
+model and the view. It can send commands to the model
+to update its state ("next photo") and when instructed
+by the model, sends the necessary commands to the view
+to maintain the widget's consistency</li>
+</ul>
+<p>
+Splitting the GUI into these three aspects ensures maximum
+code reuse and enables consistency of behaviour across a
+variety of access methods with as little code modification
+(read "breaking") as possible. The diagram summarises the
+interactions. The widget set will permit us to add ways for
+the widget's controller to let the application program
+know when something has happened.
+</p>
+
+<h4 style="background:#f090e0">...On to some programming</h4>
+</div>
+
+
+<br style="clear:both"/>
+<a name="very-simple-qt">
+<h2>Exercise 21: A Very Simple Example</h2>
+
+<div class="left">
+<h3>Background</h3>
+<p>
+We're going to use the Qt widget set to design a GUI program.
+Qt (pronounced "Cute") is a cross-platform toolkit
+written by Trolltech, and currently owned by
+<a href="https://www.qt.io/">The Qt Company</a> in Finland.
+It is dual licensed under both version&nbsp;3 of the
+<a href="https://www.gnu.org/licenses/gpl-faq.html">GNU
+Public License</a> and a proprietary licence which
+permits distribution of software without the obligations
+attached to GPLv3. This document is based on version&nbsp;5
+of Qt.
+</p>
+
+<p>
+Qt is written in C++, so the
+<a href="http://doc.qt.io/qt-5/">documentation</a>
+assumes that the reader will be creating classes
+and calling methods from a C++ program.
+We're going to use it via Python modules
+created from the C++ API using SWIG. The top-level
+Python module is called <em>PyQt5</em>. PyQt5 has its own 
+<a href="http://pyqt.sourceforge.net/Docs/PyQt5/">documentation</a>
+but for the most part, it simply instructs you
+how to load the Python class and then simply
+directs you to the Qt C++ documentation page.
+</p>
+
+<p>
+At some time or another, you'll most likely be asked to
+use some other GUI framework to write a program.
+There's no good reason for that as there are a huge
+number of reliable and large-scale applications
+written with Qt, for example
+<a href="http://www.muse-sequencer.org/" >MusE</a>,
+<a href="http://www.rosegardenmusic.com/" >Rosegarden</a>,
+<a href="https://musescore.org/" >MuseScore</a>,
+<a href="http://frescobaldi.org/">Frescobali</a>,
+<a href="https://kdenlive.org/">Kdenlive</a>,
+<a href="http://pythonhosted.org/spyder/">Spyder</a>,
+<a href="https://www.skype.com/en/">Skype</a>,
+<a href="https://www.google.com/earth/">Google Earth</a>,
+<a href="https://www.scribus.net/">Scribus</a>,
+<a href="http://www.avid.com/sibelius" >Sibelius</a>,
+<a href="https://www.videolan.org/vlc/" >VLC</a>
+and <a href="https://www.spotify.com/uk/" >Spotify</a>'s client
+to name but a few.
+</p>
+
+<p>
+The Qt application usually consists of a <code>QApplication</code>
+instance and one or more <code>QWidgets</code> which define the
+visual appearance. Depending on the platform style guidelines,
+the widget might consist of a framed window, a menu bar,
+a toolbar, and an interaction area consisting of a variety
+of widgets drawn from the familiar standard types (spin boxes,
+editable and read-only text areas, images, sliders, push-buttons
+and so on). An application might present the user with <em>dialogues</em>
+in other windows during the course of its execution.
+Such dialogues might be modal (grab the application's inputs
+until it is dismissed) or not depending on the program's
+requirements.
+</p>
+
+<p>
+Once the widgets are created they can be laid out using
+one of Qt's <em>layout managers</em>. This ensures that
+window resizing causes the widgets to expand and/or
+move around in an expected fashion. Several different
+layout algorithms are available and one can be chosen
+to suit the complexity of the GUI being designed.
+The program will create a layout manager instance
+and attach it to its window, then add widgets to
+the layout manager. Layout managers may be nested
+hierarchically. Having created, populated and laid-out
+the window, its <code>show()</code> method can be
+called to make it appear on the screen, and control
+handed over to Qt's event-handling loop.
+</p>
+
+<p>
+That's only half the story, however. If you want the
+program to respond to user inputs, the widgets have
+to inform the relevant functions of the application
+when user-events happen to them. Different GUI
+frameworks have different ways of doing this, and
+the way Qt does it has been somewhat controversial
+in the past. The idea is that <code>QObjects</code>
+can emit <em>signals</em> to send information about
+events to interested listeners and <em>slots</em>
+to receive such information. Why is this controvertial?
+Because the slots were implemented by <em>extending
+the C++ language</em> and then running a
+<em>metaobject compiler</em> on them to obtain a
+compilable C++ file. This enraged the C++ standards
+people and almost started a civil war. Consider the following
+C++ code. It creates a window with a single button
+(that bit's omitted for brevity) and changes the
+button's label when it's clicked.
+</p>
+
+<pre class="example">
+class MyWindow :
+   public QWidget,
+   public Ui::AMainWindow
+{
+   Q_OBJECT
+public:
+   explicit MyWindow(QWidget *parent = 0) :
+       QWidget(parent)
+   {
+       // create the interface
+       this->setupUi(this);
+
+       // connect the signal to lambda
+       // (using [this] to capture 
+       // the object's this pointer)
+       connect(theButton,
+               &QPushButton::clicked,
+               [this]() {
+                   this->setString("Bye!");
+               });
+   }
+
+public slots:
+   void setString(QString text)
+   {
+       theButton->setText(text);
+   }
+};
+</pre>
+
+<p>
+The <code>Q_OBJECT</code> gets expanded to include
+the necessary "boiler-plate", but the main bone
+of contention is the <code>public slots:</code>
+access specifier. <code>public slots:</code> isn't
+valid C++: it's expanded by the MOC to generate
+the necessary public function which can accept
+signals. Then then <code>QObject</code>'s
+<code>connect</code> function is used to cause
+<code>theButton</code>'s <code>clicked</code>
+signal to propagate to the given function.
+In this case we want to pass an argument,
+so we use a C++ &lambda;-expression to call
+the this <code>MyWindow</code>'s <code>setString()</code>
+method with the desired value.
+</p>
+
+<p>
+As you can imagine, building a hierarchy of widgets
+which send each other signals presents a challenge
+with C++'s memory model. Qt is very carefully written
+to handle memory very efficiently and seems to be
+watertight &mdash; at least I've never experienced
+a memory leak that wasn't my fault. It even has a
+<code>QObject::deleteLater()</code> method so you
+can request the event loop to destroy an object
+as soon as it's safe to do so. Of course, the other
+way around that is to write in Python, where the
+memory-management point is moot.
+</p>
+
+</div>
+
+<div class="right">
+<h3>Getting Started and Reference</h3>
+<p>
+Let's write an application!
+</p>
+<p>
+Perhaps more than with any other kind of program,
+you should begin by sketching the appearance of what
+you want. Here's what I want the main window of my
+program to look like.
+</p>
+<img width="100%" src="qt_sketch-1.png" alt="" />
+<p>
+The code to create my class, <code>ExecutiveToy</code>
+is this:
+</p>
+<pre class="example">
+class ExecutiveToy(QWidget):
+
+    def __init__(self, parent = None):
+        super().__init__(parent)
+        self.create_UI(parent)
+</pre>
+<p>
+I'm going to break the layout into two rows, so the
+main layout manager of my window will be a <code>QVBoxLayout</code>
+with two elements:
+</p>
+<img width="100%" src="qt_sketch-2.png" alt="" />
+<p>
+The lower of the two rows will contain three elements:
+two <code>QPushButtons</code> and some elastic filler
+to push the buttons to the outer edge of the window.
+That way it will keep a consistent layout if and when
+it is resized.
+</p>
+<img width="100%" src="qt_sketch-3.png" alt="" />
+<p>
+Let's create the widgets. Continuing the <code>ExecutiveToy</code>
+class:
+</p>
+<pre class="example">
+    def create_UI(self, parent):        
+        # Create a slider and two buttons
+        self.mySlider = QSlider(Qt.Horizontal)
+        self.showButton = \
+            QPushButton(self.tr('&Show Value'))
+        self.quitButton = \
+            QPushButton(self.tr('&Quit'))
+        
+        # No parent: we're going to add this
+        # to vLayout.
+        hLayout = QHBoxLayout()
+        hLayout.addWidget(self.showButton)
+        hLayout.addStretch(1)
+        hLayout.addWidget(self.quitButton)
+        
+        # parent = self: this is the
+        # "top level" layout
+        vLayout = QVBoxLayout(self)
+        vLayout.addWidget(self.mySlider)
+        vLayout.addLayout(hLayout)  
+</pre>
+<p>
+Now to define the actions. I'm going to do
+two things. First I'll connect the clicked
+signals of the buttons to their respective
+slots, then I'll provide the functions which
+will act as slots. PyQt provides
+<a href="https://wiki.python.org/moin/PythonDecorators">decorators</a>
+to hint to the interpreter that a function is
+a slot. If you are expecting your slot to
+receive arguments, you can say
+<code>@pyqtSlot(int)</code> for example.
+</p>
+
+<p>
+The <code>quitClicked()</code> method simply
+closes the widget; the <code>showClicked()</code>
+method creates a modal dialogue box, populates
+it with some data from the slider object,
+and gives it control.
+</p>
+<pre class="example">
+        self.quitButton.clicked.connect(
+            self.quitClicked
+        )
+        self.showButton.clicked.connect(
+            self.showClicked
+        )
+    
+    # Now the slots which accept events
+    @pyqtSlot()
+    def quitClicked(self):
+        self.close()
+        
+    @pyqtSlot()
+    def showClicked(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+    
+        msg.setText('Current Slider Value')
+        msg.setInformativeText(
+            'When requested, value was '
+            + str(self.mySlider.value())
+        )
+        msg.setWindowTitle('mySlider')
+        msg.setDetailedText('That is all I know')
+        msg.setStandardButtons(QMessageBox.Ok)
+    	
+        msg.exec()
+</pre>
+<p>
+To make it all work, you'll need to top and tail the code
+with the necessary <code>import</code>s and a few lines
+to create the application and its window, make the window visible,
+then pass control to Qt's event loop until the window is closed,
+whereupon the application should exit cleanly. Here is
+the appropriate incantation:
+</p>
+<pre class="example">
+import sys
+from PyQt5.QtCore import \
+    Qt, pyqtSlot
+from PyQt5.QtWidgets import \
+    QApplication, QWidget, \
+    QSlider, QPushButton, \
+    QMessageBox, \
+    QVBoxLayout, QHBoxLayout
+    
+...
+
+if __name__ == "__main__":
+
+    app = QApplication(sys.argv)
+    window = ExecutiveToy()
+    window.show()
+    sys.exit(app.exec_())
+</pre>
+<hr/>
+
+<p><a href="http://zetcode.com/gui/pyqt5/">Zetcode's Introduction to PyQt5</a>
+<br/><a href="http://doc.qt.io/qt-5/">Qt5 documentation</a>
+<br/><a href="http://pyqt.sourceforge.net/Docs/PyQt5/">PyQt5 documentation</a>
+<br/><a href="https://wiki.python.org/moin/PythonDecorators">Python Decorators</a>
+</p>
+
+</div>
+<div style="margin-bottom:0.5cm;overflow:hidden;text-align:right;clear:left">
+<p style="display:inline-block;">Read this next ⇗</p>
+<hr/>
+</div>
+
+<p>
+Being single-threaded, The Qt executive has to be in charge
+at all times. So it isn't possible to write a single function
+which loops around for an arbitrary time generating
+audio samples. This is why we asked you to make your
+audio-generating classes capable of working with
+small buffers, and be called repeatedly as more samples
+were required.
+</p>
+
+<p>
+The framework with Qt to deal with audio samples is
+called <em>QtMultimedia</em>. It uses a stream model
+to create and route audio and/or video streams.
+If we use QtMultimedia, the executive will provide
+the necessary time for the Qt application to generate
+buffers of audio samples as required. However,
+if we want our audio synthesis object to be
+a <i>bona fide</i> output stream, we have to
+"play ball" with the Qt executive, and that
+means providing the minimum functionality it
+expects. This isn't intellectually taxing, but
+it does take around 100 lines of Python code.
+</p>
+
+<p>
+We might hope that Qt also handles MIDI input and
+output so we can connect to MIDI event sources
+which will appear in our program as signals,
+or create MIDI synthesisers which accept MIDI
+events via sockets. Sorry to disappoint you.
+There is no MIDI support in Qt at this time.
+Qt is considered a general-purpose GUI framework
+for general use, and while that includes audio
+and video these days, the Qt developers think
+of MIDI as just a bit too specialist.
+</p>
+
+<p>
+Fortunately, a(t least one) solution exists,
+and we'll be using python's Mido module to handle
+the arrival of MIDI events. This will be covered
+later on, but first, let's write a(n almost) trivial
+audio class. <em>Meep</em> is generates a 1kHz
+tone which Qt can play.
+</p>
+
+<hr/>
+<br style="clear:right">
+<a name="qtmultimedia"/>
+<h2>QtMultimedia</h2>
+<div class="left">
+<h3>Looking to your right...</h3>
+<p>
+Opposite is the code for a mimimalist PyQt
+QIODeivce-based audio generator. It's quite long,
+so I've not broken it up into fragments. You'll
+have to pay attention.
+</p>
+
+<p>
+We'll begin by defining some "application-wide"
+constants and here I'm just using global variables
+to hold the sample rate, number of channels
+and audio resolution in bits. I'm also specifying
+how big the "chunk size" is. That is to say,
+if I'm asked for the next batch of samples,
+the caller's going to get this many milliseconds'
+worth of audio.
+</p>
+
+<p>
+After importing the module's dependencies,
+I'm declaring my signal generating class <em>Meep</em>.
+<code>Meep</code> will generate at most <code>SAMPLES_PER_READ</code>
+samples per request. Making this number smaller means
+lower latency between changing a control parameter
+and the response taking effect in the audio output
+stream, but also causes a greater overhead passing
+samples around and in the worst case can lead to
+"stuttering" if the samples aren't prepared before
+the audio playback hardware needs them.
+</p>
+
+<p>
+Meep is derived from <code>QIODevice</code>, so its initialiser
+first makes sure the base class is initialised.
+The it reserves a <code>QByteArray</code>, <code>data</code>,
+which will hold the raw audio samples, and
+<code>phase</code> which will preserve the final
+phase of the previous audio output between calls
+to make sure the audio is click-free.
+</p>
+
+<p>
+<code>QIODevices</code> are supposed to be capable of dealing with
+a number of output sample formats, but this is a minimum
+example so only 16-bit, signed integer, little-endian
+samples will be countenanced. The format type is checked
+and if it agrees, a congratulatory message will be issued.
+</p>
+
+<p>
+A <code>QIODevice</code> can be used it one of two ways.
+In <em>push</em> mode, you write a bunch of samples to
+it and it plays them. This is great for simple "plink fizz"
+special effects which might be needed to alert that user
+that something interesting has happened. However, we need
+to use the device in <em>pull</em> mode so that we're
+informed via the Qt system when more samples are required,
+then supply them. This means all the other GUI-related
+activity can continue concurrently with a continuous audio
+output. Such a device needs to supply a <code>start</code> method
+and in this case it's a simple one: the parent
+QIODevice's <code>open</code> method to indicate
+the device's readiness and to place it into read-only mode.
+</p>
+
+<p>
+The other required method is <code>readData</code>
+but I've chosen to provide a <code>generateData</code>
+method to segregate the sample generation activity
+from the mechanics of preparing samples for dispatch.
+It uses a trivial vector-<code>sin</code> together
+with <code>arange</code> to create a sinusoid from
+an array of phase angles, then saves the phase for
+the next call so that the waveform recommences from
+the "same place". To avoid the phase angle eventually
+waxing too large, it is stored modulus 2π.
+The 16-bit integer samples are
+returned as a byte array using the <code>tostring</code>
+method of a numpy array. 
+</p>
+
+<p>
+Qt's executive will call <code>readData</code> when
+the output stream needs more bytes. Note that the
+number of <em>bytes</em> is what is specified, not
+the number of samples. We know we only work with
+16-bit integers, so we ask <code>generateData</code>
+to produce half that number of <em>samples</em> or,
+to preserve interactivity, <code>SAMPLES_PER_READ</code>
+samples if that number is smaller.
+The binary representation of the samples is returned.
+</p>
+
+<p>
+Now for the <code>QWidget</code> which deploys a
+<code>Meep</code>. The audio format of the <code>Meep</code>
+needs to be specified, so the local variable <code>format</code>
+specifies this. An audio output device is summoned
+into existence with an agreeing <code>format</code> and stored
+in <code>self.output</code>. Its buffer size is kept to within
+the limits specified by the <code>CTRL_INTERVAL</code>.
+</p>
+
+<p>
+Finally, <code>self.generator</code> is an instance of <code>Meep</code>.
+After starting our <code>Meep</code> it's used to supply
+the input data to <code>self.output</code> by passing it
+to the latter's <code>start</code> method.
+</p>
+
+<p>The rest of the code is unremarkable.</p>
+</div>
+<div class="right">
+<h3>A(n almost) Minimal Audio Output Class</h3>
+<pre class="example">
+SAMPLE_RATE = 32000
+AUDIO_CHANS = 1
+SAMPLE_SIZE = 16
+CTRL_INTERVAL = 100 # milliseconds of audio
+
+import sys
+import numpy as np
+from PyQt5.QtCore import QByteArray, QIODevice
+from PyQt5.QtMultimedia import QAudioFormat, \
+                               QAudioOutput
+from PyQt5.QtWidgets import QApplication, \
+                            QWidget
+
+class Meep(QIODevice):
+    
+    SAMPLES_PER_READ = 1024
+    
+    def __init__(self, format, parent = None):
+
+        QIODevice.__init__(self, parent)
+        self.data = QByteArray()
+        
+        # Preserve phase across calls
+        self.phase = 0
+        
+        # Check we can deal with the supplied
+        # sample format. We're supposed to be
+        # able to deal with any requested
+        # sample format. But this is a
+        # _minimal_ example, right?
+        if format.isValid() and \
+           format.sampleSize() == 16 and \
+           format.byteOrder() == \
+                QAudioFormat.LittleEndian and \
+           format.sampleType() == \
+                QAudioFormat.SignedInt and \
+           format.channelCount() == 1 :
+               print(
+                 "Meep: Format compatible. Good."
+               )
+               self.format = format
+    
+    
+    def start(self):
+        
+        # Call QIODevices open
+        # making this object readable
+        self.open(QIODevice.ReadOnly)
+    
+ 
+    def generateData(self, format, samples):
+        
+        pps = 1000*2*np.pi/format.sampleRate()
+        finalphase = samples*pps + self.phase
+        tone = (
+          10000 * np.sin(
+            np.arange(self.phase,
+                      finalphase,
+                      pps)
+          )
+        ).astype(np.int16)
+        
+        self.phase = finalphase % (2*np.pi)
+        return tone.tostring()
+    
+    
+    def readData(self, bytes):
+
+        if bytes > 2 * Meep.SAMPLES_PER_READ:
+            bytes = 2 * Meep.SAMPLES_PER_READ
+        return self.generateData(self.format,
+                                 bytes//2)
+
+
+class ToneGenerator(QWidget):
+    
+    def __init__(self, parent=None):
+        
+        QWidget.__init__(self, parent)
+
+        format = QAudioFormat()
+        format.setChannelCount(AUDIO_CHANS)
+        format.setSampleRate(SAMPLE_RATE)
+        format.setSampleSize(SAMPLE_SIZE)
+        format.setCodec("audio/pcm")
+        format.setByteOrder(
+            QAudioFormat.LittleEndian
+        )
+        format.setSampleType(
+            QAudioFormat.SignedInt
+        )
+
+        self.output = QAudioOutput(format, self)
+        output_buffer_size = \
+            int(2*SAMPLE_RATE \
+                 *CTRL_INTERVAL/1000)
+        self.output.setBufferSize(
+            output_buffer_size
+        )
+        
+        self.generator = Meep(format, self)        
+        self.generator.start()
+        self.output.start(self.generator)
+
+
+if __name__ == "__main__":
+
+    app = QApplication(sys.argv)
+    window = ToneGenerator()
+    window.show()
+    sys.exit(app.exec_())
+</pre>
+</div>
+
+<br clear="both"/>
+<a name="midi" />
+<h2>What about MIDI?</h2>
+
+<div class="left">
+<h3>It's easy.</h3>
+<p>
+If you use <code>mido</code>,
+Reading MIDI events is as concise as
+<code>QIODevice</code> was verbose.
+</p>
+<p>
+GNU/Linux supports a variety of MIDI backends
+so on that platform you'll have to tell it which
+one to use. One of the most tried and tested is
+<code>librtmidi</code>, and to use that you'll
+have to install the <code>python3-librtmidi</code> package
+if it isn't already on your machine. I've chosen
+this one because it's so widely used, but also
+because it supports <em>virtual MIDI devices</em>
+meaning you can create a virtual MIDI port (called
+"pipes" in this application) and route MIDI signals
+to it.
+</p>
+
+<p>
+After that we just sit and wait for MIDI signals.
+<code>mido</code> can tell you the <em>type</em> of
+the signal (Note_on, Note_off, etc) and also let you
+access the three-byte MIDI message in the raw.
+That lets you access information like the key-number
+and the velocity of a Note_on event.
+</p>
+
+<p>
+There's only one problem here. The <code>with</code>
+loop declares and opens the MIDI input (<code>mip</code>)
+but this code fragment sits and reads the input forever,
+producing MIDI messages (<code>mmsg</code>) as they arrive.
+<em>This is <strong>incompatible</strong> with the
+Qt executive</em> which expects functions to complete
+their work and hand control back a short time.
+Something needs to be done about this. And the way
+to do it is...
+</p>
+</div>
+<div class="right">
+<h3>Reading MIDI events</h3>
+<pre class="example">
+import mido
+
+mido.set_backend(
+    'mido.backends.rtmidi/LINUX_ALSA'
+)
+print(
+    "Using MIDI APIs: {}".format(
+        mido.backend.module.get_api_names()
+    )
+)
+
+with mido.open_input(
+    'pipes',
+    virtual=True
+) as mip:
+    for mmsg in mip:
+        print(mmsg.type)
+        print(mmsg.bytes())
+</pre>
+</div>
+
+<br clear="both"/>
+<a name="threads" />
+<h2>QThread</h2>
+<div class="left">
+<h3>Python and Threads</h3>
+<div class="info">
+Whenever faced with a problem, some people say
+"Let's use Threads".
+<br/>
+Now, they have two problems.
+<p style="text-align:right"><i>after D. Tilbrook, USENET, 1988</i></p>
+</div>
+<p>
+Until very recently, Python ignored multiprogramming.
+This is a good thing to do if you can. Multiprogramming
+opens a whole new can of worms. In addition to the
+usual bugs, there will be deadlocks, races, and other
+dynamic conditions which can cause the system to
+lock-up for no apparent reason even when the multiple
+threads of execution have all been tested and shown
+to work perfectly. In the early 1980s, Tony&nbsp;Hoare showed it
+was possible to prove a multi-threaded
+program to be deadlock free, but only if (some would
+say impractically rigorous) conditions were imposed
+on the programming language and run-time.
+</p>
+<p>
+Python saw itself as a RAD (Rapid Application Development)
+language which did not concentrate on running as fast
+as possible. However even some phones have 8 CPU cores
+(in 2017) so to ignore multiprogramming condemns the
+application to use no more than 12½% of the device's
+processing capacity. Consequently, in Python&nbsp;3,
+we have the <em>threading</em> module to support
+multiple execution threads. <em>This module does not
+do what you probably think it does</em>.
+CPython, which is the one you are probably using
+(so-called because it's written in C), implements
+a "Global Interpreter Lock" (GIL) Mutex. So multiple
+threads can't run in a single Python interpreter
+at the same time. Sure you can represent a
+program as a collection of threads, but they
+won't run concurrently, however many processor cores
+your machine has. It's so hard to make the interpreter
+thread-safe (memory allocation being the main source
+of difficulty) that the GIL won't allow it.
+Fortunately, The GIL is released when a thread enters
+an external library (such as Qt, via a PyQt call)
+whereupon all the problems associated with multitasking
+become the external library's problem. The utter nightmare
+that is process synchronisation and inter-process
+communication is handled in a safe and memory-tight
+way by Qt <code>signal</code>s and <code>slot</code>s
+so we can thank our lucky stars for that.
+</p>
+<p>
+The question arises should we use a Qt thread or a
+Python native thread to read the MIDI port in the
+background. It's really up to you. Since we're
+using the Qt framework for everything else, it
+seems sensible not to court disaster by trying
+to go it alone on thread provision. If you were
+writing a program which didn't use the Qt framework,
+you'd probably want to use Python native threads
+to avoid importing a whole sophisticated run-time
+environment just for that one feature. Really,
+the best thing to do is to try not to use threads
+at all, but here is a good time to use them.
+</p>
+<p>
+There is more than one way to start a <code>QThread</code>.
+In the example opposite, I've chosen to extend
+a <code>QObject</code>, create a thread, then
+move the object into that thread. This allowed
+me to wire up the signals and slots associated
+with the object before handing it off to run in
+its own little universe.
+You might alternatively have extended a thread
+object and overriden its <code>run</code> method.
+See the QThread
+<a href="http://doc.qt.io/qt-5/qthread.html">documentation</a>
+and
+<a href="https://wiki.qt.io/QThreads_general_usage">use notes</a>.
+</p>
+
+</div>
+<div class="right">
+<h3>QThread example and References</h3>
+<h5>Suggested template for a MIDI port reader object</h5>
+<pre class="example">
+class MidiPortReader(QObject):
+
+    # Create a signal for when a
+    # MIDI note_on happens
+    newNoteFrequency = pyqtSignal(float)
+    
+    # Object initialisation:
+    def __init__(self):
+        QObject.__init__(self)
+        ...
+    
+    # Define a function which is to
+    # run in its own thread
+    def listener(self):
+        
+        ....
+        # Only communicate via the Qt signal
+        # Qt will stop us hurting ourselves
+        if something_happens:
+            self.newNoteFrequency.emit(0.)
+        ...
+</pre>
+<h5>Creating a thread to listen for MIDI events</h5>
+<p>
+In the main object (probably the QWindow),
+you might say something like this to start a
+thread listening to a MIDI port and make sure
+you receive notifications when notes happen:
+</p>
+<pre class="example">
+# Create the port reader object
+self.midiListener = MidiPortReader()
+
+# Create a thread which will read it
+self.listenerThread = QThread()
+
+# Take the object and move it
+# to the new thread (it isn't running yet)
+self.midiListener.moveToThread(
+    self.listenerThread
+)
+
+# Tell Qt the function to call
+# when it starts the thread 
+self.listenerThread.started.connect(
+    self.midiListener.listener
+)
+
+# Fingers in ears, eyes tight shut...
+self.listenerThread.start()
+
+# Good grief, IT WORKS!
+</pre>
+<p>
+The thread you created can now do blocking
+reads on the MIDI port, and the Qt executive
+will be able to run its other thread while
+that's happening. When the listener function
+can run, if the GUI thread is dormant it will
+receive midi messages and emit signals,
+enabling the GUI/synthesis thread to behave
+accordingly. Everyone's a winner.
+</p>
+<hr/>
+<!--h5></h5-->
+<ul>
+
+<li>
+A <a href="http://stackoverflow.com/questions/1595649/threading-in-a-pyqt-application-use-qt-threads-or-python-threads">stackoverflow discussion</a>
+on the relative merits of Python threads <i>vs</i> Qt threads
+and <a href="http://www.mail-archive.com/pyqt@riverbankcomputing.com/msg16050.html" >this discussion</a>
+from Riverbank Computing's mail archive.
+</li>
+<li>
+Wikipedia's <a href="http://stackoverflow.com/questions/1595649/threading-in-a-pyqt-application-use-qt-threads-or-python-threads">multiprogramming</a>
+page.
+</li>
+<li>
+<a href="http://www.usingcsp.com/cspbook.pdf" >C.A.R.Hoare: Communicating
+Sequential Processes</a> Prentice Hall, 1985
+</li>
+<li>
+Documention for Python&nbsp;3's
+<a href="https://docs.python.org/3/library/threading.html" >threading</a> support.
+</li>
+<li>
+Python's <a href="https://wiki.python.org/moin/GlobalInterpreterLock" >GIL</a>
+(Global Interpreter Lock).
+</li>
+<li>
+QThread
+<a href="http://doc.qt.io/qt-5/qthread.html">documentation</a>
+and
+<a href="https://wiki.qt.io/QThreads_general_usage">use notes</a>.
+</li>
+
+</ul>
+</div>
+<br style="clear:both"/>
+<div class="task">
+<h4>... Write up and hand in your work. It's worth 2 normal exercises.</h4>
+</div>
+<p><a href="../index.html">Back to main</a></p>
+
+<!-- footer -->
+
+<p>
+<a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/"><img
+alt="Creative Commons License" style="border-width:0"
+src="http://i.creativecommons.org/l/by-sa/2.5/scotland/88x31.png"
+/></a>Unless otherwise noted, all materials on these pages
+are licenced under a <a rel="license"
+href="http://creativecommons.org/licenses/by-sa/2.5/scotland/">Creative
+Commons Licence</a>.
+</p>
+
+
+</body>
+
